@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lexi.Core.Api", "Lexi.Core.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lexi.Core.Api.Tests.Unit", "Lexi.Core.Api.Tests.Unit\Lexi.Core.Api.Tests.Unit.csproj", "{2C0AA61D-DC8E-4D69-B358-9C38F0FDE109}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lexi.Core.Api.Infrastructure.Build", "Lexi.Core.Api.Infrastructure.Build\Lexi.Core.Api.Infrastructure.Build.csproj", "{D4CCBCEC-54A8-403C-A1B0-3ED3A3526EAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{2C0AA61D-DC8E-4D69-B358-9C38F0FDE109}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C0AA61D-DC8E-4D69-B358-9C38F0FDE109}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C0AA61D-DC8E-4D69-B358-9C38F0FDE109}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4CCBCEC-54A8-403C-A1B0-3ED3A3526EAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4CCBCEC-54A8-403C-A1B0-3ED3A3526EAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4CCBCEC-54A8-403C-A1B0-3ED3A3526EAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4CCBCEC-54A8-403C-A1B0-3ED3A3526EAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
