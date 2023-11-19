@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Lexi.Core.Api/LexiCore.db-wal
+/Lexi.Core.Api/LexiCore.db-shm
