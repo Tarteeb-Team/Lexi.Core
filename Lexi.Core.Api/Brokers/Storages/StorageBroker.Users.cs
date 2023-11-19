@@ -1,4 +1,9 @@
-﻿using Lexi.Core.Api.Models.Foundations.Users;
+﻿//=================================
+// Copyright (c) Tarteeb LLC.
+// Powering True Leadership
+//=================================
+
+using Lexi.Core.Api.Models.Foundations.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lexi.Core.Api.Brokers.Storages
