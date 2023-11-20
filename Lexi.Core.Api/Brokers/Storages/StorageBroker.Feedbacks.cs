@@ -25,6 +25,6 @@ namespace Lexi.Core.Api.Brokers.Storages
             DeleteAsync(feedback);
 
         public ValueTask<Feedback> SelectFeedbackByIdAsync(Guid id) =>
-            SelectFeedbackByIdAsync(id);
+            SelectAsync<Feedback>();
     }
 }
