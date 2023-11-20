@@ -3,16 +3,16 @@
 // Powering True Leadership
 //=================================
 
-using System.Linq;
 using System.Threading.Tasks;
-using Lexi.Core.Api.Models.Foundations.Users;
+
+using System.Linq;
+using Lexi.Core.Api.Models.Foundations.Speeches;
 
 namespace Lexi.Core.Api.Brokers.Storages
 {
     public partial interface IStorageBroker
     {
-        ValueTask<User> InsertUserAsync(User user);
-        IQueryable<User> GetUsers();
-        ValueTask<User> UpdateUserAsync(User user);
+        ValueTask<Speech> InsertSpeechAsync(Speech speech);
+        IQueryable<Speech> SelectAllSpeeches();
     }
 }
