@@ -23,5 +23,7 @@ namespace Lexi.Core.Api.Brokers.Storages
 
         public ValueTask<Speech> SelectSpeechByIdAsync(Guid id) =>
             SelectAsync<Speech>();
+        public ValueTask<Speech> DeleteSpeechAsync(Speech speech) =>
+            DeleteAsync(speech);
     }
 }
