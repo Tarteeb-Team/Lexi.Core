@@ -14,6 +14,8 @@ namespace Lexi.Core.Api.Brokers.Storages
         public DbSet<User> Users { get; set; }
         public async ValueTask<User> InsertUserAsync(User user) =>
             await InsertAsync(user);
+        public async ValueTask<User> UpdateUserAsync(User user) =>
+            await UpdateUserAsync(user);
 
     }
 }
