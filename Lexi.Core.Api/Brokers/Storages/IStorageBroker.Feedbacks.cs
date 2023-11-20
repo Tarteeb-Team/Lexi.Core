@@ -13,5 +13,6 @@ namespace Lexi.Core.Api.Brokers.Storages
     {
         ValueTask<Feedback> InsertFeedbackAsync(Feedback feedback);
         IQueryable<Feedback> SelectAllFeedbacks();
+        ValueTask<Feedback> DeleteFeedbackAsync(Feedback feedback);
     }
 }
