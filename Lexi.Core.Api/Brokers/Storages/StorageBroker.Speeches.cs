@@ -3,18 +3,18 @@
 // Powering True Leadership
 //=================================
 
-using System.Threading.Tasks;
+using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Lexi.Core.Api.Models.Foundations.Speeches;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Lexi.Core.Api.Brokers.Storages
 {
     public partial class StorageBroker
     {
         public DbSet<Speech> Speeches { get; set; }
-        
+
         public async ValueTask<Speech> InsertSpeechAsync(Speech speech) =>
             await InsertAsync(speech);
 

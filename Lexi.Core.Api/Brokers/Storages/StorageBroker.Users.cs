@@ -4,11 +4,10 @@
 //=================================
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Lexi.Core.Api.Brokers.Storages
 {
