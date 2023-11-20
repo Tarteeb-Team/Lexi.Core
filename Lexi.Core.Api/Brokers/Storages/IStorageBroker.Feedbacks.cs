@@ -7,6 +7,7 @@ using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Lexi.Core.Api.Models.Foundations.Feedbacks;
 
 namespace Lexi.Core.Api.Brokers.Storages
 {
