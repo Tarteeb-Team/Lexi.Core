@@ -4,6 +4,7 @@
 //=================================
 
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,5 +15,6 @@ namespace Lexi.Core.Api.Brokers.Storages
         ValueTask<Feedback> InsertFeedbackAsync(Feedback feedback);
         IQueryable<Feedback> SelectAllFeedbacks();
         ValueTask<Feedback> DeleteFeedbackAsync(Feedback feedback);
+        ValueTask<Feedback> SelectFeedbackByIdAsync(Guid id);
     }
 }
