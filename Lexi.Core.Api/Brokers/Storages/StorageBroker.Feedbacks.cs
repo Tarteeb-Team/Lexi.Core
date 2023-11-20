@@ -3,6 +3,7 @@
 // Powering True Leadership
 //=================================
 
+using System.Linq;
 using System.Threading.Tasks;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
@@ -16,5 +17,8 @@ namespace Lexi.Core.Api.Brokers.Storages
 
         public async ValueTask<Feedback> InsertFeedbackAsync(Feedback feedback) =>
             await InsertAsync(feedback);
+
+        public IQueryable<Feedback> SelectAllFeedbacks() =>
+            SelectAll<Feedback>();
     }
 }
