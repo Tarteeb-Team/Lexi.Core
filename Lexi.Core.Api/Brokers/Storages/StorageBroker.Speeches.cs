@@ -19,5 +19,8 @@ namespace Lexi.Core.Api.Brokers.Storages
 
         public IQueryable<Speech> SelectAllSpeeches() =>
             SelectAll<Speech>();
+
+        public ValueTask<Speech> DeleteSpeechAsync(Speech speech) =>
+            DeleteAsync(speech);
     }
 }
