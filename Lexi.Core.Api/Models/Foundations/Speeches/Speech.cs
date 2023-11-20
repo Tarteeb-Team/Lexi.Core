@@ -4,6 +4,7 @@
 //=================================
 
 using System;
+using Lexi.Core.Api.Models.Foundations.Users;
 
 namespace Lexi.Core.Api.Models.Foundations.Speeches
 {
@@ -12,5 +13,6 @@ namespace Lexi.Core.Api.Models.Foundations.Speeches
         public Guid Id { get; set; }
         public string Sentence { get; set; }
         public Guid UserId { get; set; }
+        public User User { get; set; }
     }
 }
