@@ -21,7 +21,7 @@ namespace Lexi.Core.Api.Brokers.Storages
             await UpdateUserAsync(user);
         public async ValueTask<User> SelectUserById(Guid id) =>
             await SelectAsync<User>(id);
-        public IQueryable<User> GetUsers() =>
+        public IQueryable<User> SelectAllUsersAsync() =>
             SelectAll<User>().AsQueryable();
     }
 }
