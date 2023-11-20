@@ -3,9 +3,9 @@
 // Powering True Leadership
 //=================================
 
-using Lexi.Core.Api.Models.Foundations.Speeches;
 using System;
 using System.Collections.Generic;
+using Lexi.Core.Api.Models.Foundations.Speeches;
 
 namespace Lexi.Core.Api.Models.Foundations.Users
 {
