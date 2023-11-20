@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EFxceptions;
 using Lexi.Core.Api.Models.Foundations.Users;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
