@@ -23,5 +23,7 @@ namespace Lexi.Core.Api.Brokers.Storages
             await SelectAsync<User>(id);
         public IQueryable<User> SelectAllUsersAsync() =>
             SelectAll<User>().AsQueryable();
+        public ValueTask<User> DeleteUserAsync(User user) =>
+            DeleteAsync(user);
     }
 }

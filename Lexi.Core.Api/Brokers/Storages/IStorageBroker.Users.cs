@@ -16,5 +16,6 @@ namespace Lexi.Core.Api.Brokers.Storages
         IQueryable<User> SelectAllUsersAsync();
         ValueTask<User> UpdateUserAsync(User user);
         ValueTask<User> SelectUserById(Guid id);
+        ValueTask<User> DeleteUserAsync(User user);
     }
 }
