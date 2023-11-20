@@ -5,14 +5,11 @@
 
 using System.Threading.Tasks;
 using Lexi.Core.Api.Models.Foundations.Speeches;
-using Microsoft.EntityFrameworkCore;
 
 namespace Lexi.Core.Api.Brokers.Storages
 {
-    public partial class StorageBroker
+    public partial interface IStorageBroker
     {
-        public DbSet<Speech> Speeches { get; set; }
-        public async ValueTask<Speech> InsertSpeechAsync(Speech speech) =>
-            await InsertAsync(speech);
+        ValueTask<Speech> InsertSpeechAsync(Speech speech);
     }
 }
