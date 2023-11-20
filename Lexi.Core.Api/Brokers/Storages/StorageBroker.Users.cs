@@ -7,6 +7,8 @@ using System;
 using System.Threading.Tasks;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Lexi.Core.Api.Brokers.Storages
 {
@@ -20,5 +22,7 @@ namespace Lexi.Core.Api.Brokers.Storages
             await UpdateUserAsync(user);
         public async ValueTask<User> SelectUserById(Guid id) =>
             await SelectAsync<User>(id);
+        public IQueryable<User> GetUsers() =>
+            SelectAll<User>().AsQueryable();
     }
 }
