@@ -18,10 +18,10 @@ namespace Lexi.Core.Api.Brokers.Storages
         public async ValueTask<User> InsertUserAsync(User user) =>
             await InsertAsync(user);
         public async ValueTask<User> UpdateUserAsync(User user) =>
-            await UpdateUserAsync(user);
-        public async ValueTask<User> SelectUserById(Guid id) =>
+            await UpdateAsync(user);
+        public async ValueTask<User> SelectUserByIdAsync(Guid id) =>
             await SelectAsync<User>(id);
-        public IQueryable<User> SelectAllUsersAsync() =>
+        public IQueryable<User> SelectAllUsers() =>
             SelectAll<User>().AsQueryable();
         public ValueTask<User> DeleteUserAsync(User user) =>
             DeleteAsync(user);

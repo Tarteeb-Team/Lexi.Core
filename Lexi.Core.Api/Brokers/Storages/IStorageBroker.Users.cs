@@ -13,9 +13,9 @@ namespace Lexi.Core.Api.Brokers.Storages
     public partial interface IStorageBroker
     {
         ValueTask<User> InsertUserAsync(User user);
-        IQueryable<User> SelectAllUsersAsync();
+        IQueryable<User> SelectAllUsers();
         ValueTask<User> UpdateUserAsync(User user);
-        ValueTask<User> SelectUserById(Guid id);
+        ValueTask<User> SelectUserByIdAsync(Guid id);
         ValueTask<User> DeleteUserAsync(User user);
     }
 }
