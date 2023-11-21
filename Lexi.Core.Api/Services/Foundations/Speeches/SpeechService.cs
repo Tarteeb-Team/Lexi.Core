@@ -23,7 +23,7 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
         
         public async ValueTask<Speech> AddSpechesAsync(Speech speech)
         {
-            await return this.storageBroker.InsertSpeechAsync(speech);
+            return await this.storageBroker.InsertSpeechAsync(speech);
         }
     }
 }
