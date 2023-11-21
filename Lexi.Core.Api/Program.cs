@@ -11,7 +11,7 @@ using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
-builder.Services.AddTransient<IStorageBroker, StorageBroker>();
+builder.Services.AddDbContext<IStorageBroker, StorageBroker>();
 builder.Services.AddTransient<ILoggingBroker, LoggingBroker>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
