@@ -13,5 +13,6 @@ namespace Lexi.Core.Api.Services.Foundations.Users
     {
         ValueTask<User> AddUserAsync(User user);
         ValueTask<User> RetrieveUserByIdAsync(Guid userId);
+        ValueTask<User> ModifyUserAsync(User user);
     }
 }
