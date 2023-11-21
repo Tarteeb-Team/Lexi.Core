@@ -24,6 +24,10 @@ namespace Lexi.Core.Api.Services.Foundations.Users
             this.storageBroker = storageBroker;
             this.loggingBroker = loggingBroker;
         }
+        public async ValueTask<User> AddUserAsync(User user)
+        {
+            return await this.storageBroker.InsertUserAsync(user);
+        }
         public async ValueTask<User> RetrieveUserByIdAsync(Guid userId)
         {
             User persistedUser = await this.storageBroker.SelectUserByIdAsync(userId);
