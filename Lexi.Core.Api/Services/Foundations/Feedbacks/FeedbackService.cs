@@ -6,6 +6,7 @@
 using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.Storages;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Lexi.Core.Api.Services.Foundations.Feedbacks
@@ -24,6 +25,11 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
         public async ValueTask<Feedback> AddFeedbackAsync(Feedback feedback)
         {
             return await this.storageBroker.InsertFeedbackAsync(feedback);
+        }
+
+        public IQueryable<Feedback> RetrieveAllFeedbacks()
+        {
+            return this.storageBroker.SelectAllFeedbacks();
         }
     }
 }
