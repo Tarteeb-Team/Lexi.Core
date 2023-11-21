@@ -9,13 +9,9 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\**" />
-    <Compile Remove="Services\Foundations\NewFolder\**" />
     <Content Remove="Controllers\**" />
-    <Content Remove="Services\Foundations\NewFolder\**" />
     <EmbeddedResource Remove="Controllers\**" />
-    <EmbeddedResource Remove="Services\Foundations\NewFolder\**" />
     <None Remove="Controllers\**" />
-    <None Remove="Services\Foundations\NewFolder\**" />
   </ItemGroup>
 
   <ItemGroup>
