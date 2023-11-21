@@ -15,5 +15,6 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
         ValueTask<Feedback> AddFeedbackAsync(Feedback feedback);
         IQueryable<Feedback> RetrieveAllFeedbacks();
         ValueTask<Feedback> RetrieveFeedbackByIdAsync(Guid id);
+        ValueTask<Feedback> RemoveFeedbackAsync(Feedback feedback);
     }
 }
