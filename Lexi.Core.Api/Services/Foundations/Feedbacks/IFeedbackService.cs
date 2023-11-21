@@ -4,6 +4,7 @@
 //=================================
 
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,5 +14,6 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
     {
         ValueTask<Feedback> AddFeedbackAsync(Feedback feedback);
         IQueryable<Feedback> RetrieveAllFeedbacks();
+        ValueTask<Feedback> RetrieveFeedbackByIdAsync(Guid id);
     }
 }
