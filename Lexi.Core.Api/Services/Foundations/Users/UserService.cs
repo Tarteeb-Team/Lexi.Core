@@ -47,5 +47,9 @@ namespace Lexi.Core.Api.Services.Foundations.Users
         {
             return this.storageBroker.SelectAllUsers();
         }
+        public async ValueTask<User> DeleteUserAsync(User user)
+        {
+            return await this.storageBroker.DeleteUserAsync(user);
+        }
     }
 }

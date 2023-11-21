@@ -16,5 +16,6 @@ namespace Lexi.Core.Api.Services.Foundations.Users
         ValueTask<User> RetrieveUserByIdAsync(Guid userId);
         IQueryable<User> RetrieveAllUsers();
         ValueTask<User> ModifyUserAsync(User user);
+        ValueTask<User> DeleteUserAsync(User user);
     }
 }
