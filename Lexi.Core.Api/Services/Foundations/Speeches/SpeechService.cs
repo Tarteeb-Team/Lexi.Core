@@ -3,6 +3,7 @@
 // Powering True Leadership
 //=================================
 
+using System.Linq;
 using System.Threading.Tasks;
 using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.Storages;
@@ -24,6 +25,11 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
         public async ValueTask<Speech> AddSpechesAsync(Speech speech)
         {
             return await this.storageBroker.InsertSpeechAsync(speech);
+        }
+
+        public IQueryable<Speech> RetrieveAllSpeeches()
+        {
+            return this.storageBroker.SelectAllSpeeches();
         }
     }
 }
