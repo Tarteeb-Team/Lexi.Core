@@ -37,5 +37,10 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
         {
             return await storageBroker.SelectFeedbackByIdAsync(id);
         }
+
+        public async ValueTask<Feedback> RemoveFeedbackAsync(Feedback feedback)
+        {
+            return await this.storageBroker.DeleteFeedbackAsync(feedback);
+        }
     }
 }
