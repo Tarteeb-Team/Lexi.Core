@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\Foundations\" />
+    <Folder Include="Models\Foundations\Speeches\Exceptions\" />
   </ItemGroup>
 
 </Project>
