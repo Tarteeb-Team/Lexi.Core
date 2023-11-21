@@ -9,9 +9,13 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\**" />
+    <Compile Remove="Services\Foundations\NewFolder\**" />
     <Content Remove="Controllers\**" />
+    <Content Remove="Services\Foundations\NewFolder\**" />
     <EmbeddedResource Remove="Controllers\**" />
+    <EmbeddedResource Remove="Services\Foundations\NewFolder\**" />
     <None Remove="Controllers\**" />
+    <None Remove="Services\Foundations\NewFolder\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,10 +31,6 @@
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <PackageReference Include="Xeption" Version="2.6.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\Foundations\" />
   </ItemGroup>
 
 </Project>
