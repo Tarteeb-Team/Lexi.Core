@@ -15,5 +15,6 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
         ValueTask<Speech> AddSpechesAsync(Speech speech);
         IQueryable<Speech> RetrieveAllSpeeches();
         ValueTask<Speech> RetrieveSpeechesByIdAsync(Guid id);
+        ValueTask<Speech> RemoveSpeechAsync(Speech speech);
     }
 }
