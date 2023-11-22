@@ -3,8 +3,11 @@
 // Powering True Leadership
 //=================================
 
+using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Lexi.Core.Api.Models.ObjcetModels;
 using Lexi.Core.Api.Services.Cognitives;
 using Lexi.Core.Api.Services.Orchestrations.Cognitive;
@@ -34,5 +37,14 @@ namespace Lexi.Core.Api.Services.Orchestrations
 
             return responseCognitive;
         }
+
+        public ValueTask<Feedback> RemoveFeedbackAsync(Feedback feedback) =>
+            this.speechOrchestrationService.RemoveFeedbackAsync(feedback);
+
+        public IQueryable<Feedback> RetrieveAllFeedbacks() =>
+            this.speechOrchestrationService?.RetrieveAllFeedbacks();
+
+        public ValueTask<Feedback> RetrieveFeedbackByIdAsync(Guid id) =>
+            this.speechOrchestrationService.RetrieveFeedbackByIdAsync(id);
     }
 }
