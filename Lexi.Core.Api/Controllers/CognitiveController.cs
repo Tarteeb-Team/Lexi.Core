@@ -6,6 +6,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Lexi.Core.Api.Models.ObjcetModels;
 using Lexi.Core.Api.Services.Orchestrations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,8 +28,9 @@ namespace Lexi.Core.Api.Controllers
         public async Task<string> UploadOggFile(IFormFile formFile)
         {
             using var stream = formFile.OpenReadStream();
-            string result = await this.orchestrationService.GetOggFile(stream);
-            return result;
+            ResponseCognitive responseCognitive = await this.orchestrationService.GetOggFile(stream);
+
+            return responseCognitive.RecognitionStatus;
         }
 
     }

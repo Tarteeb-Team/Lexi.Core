@@ -6,11 +6,10 @@
 using System.IO;
 using System.Threading.Tasks;
 using Lexi.Core.Api.Models.ObjcetModels;
-using Microsoft.AspNetCore.Http;
 
-namespace Lexi.Core.Api.Services.Orchestrations
+namespace Lexi.Core.Api.Services.Orchestrations.Cognitive
 {
-    public interface IOrchestrationService
+    public interface ICognitiveOrchestrationService
     {
         Task<ResponseCognitive> GetOggFile(Stream stream);
     }
