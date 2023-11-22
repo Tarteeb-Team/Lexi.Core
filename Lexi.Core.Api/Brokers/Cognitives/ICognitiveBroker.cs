@@ -10,6 +10,6 @@ namespace Lexi.Core.Api.Brokers.Cognitives
 {
     public interface ICognitiveBroker
     {
-        Task<string> GetOggFile(byte[] audio);
+        Task<string> GetOggFile(Stream stream);
     }
 }

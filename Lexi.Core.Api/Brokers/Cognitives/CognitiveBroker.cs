@@ -20,30 +20,10 @@ namespace Lexi.Core.Api.Brokers.Cognitives
     {
         string speechKey = "4c16b8cafd324366830b415ad566f667";
         string speechRegion = "centralindia";
-        string _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
-        string fileName = "output.ogg";
-        string wavName = "output.wav";
-        public async Task<string> GetOggFile(byte[] audio)
+        string _filePath = Path.Combine("audio.wav");
+        public async Task<string> GetOggFile(Stream stream)
         {
-            #region reg
-            using (MemoryStream memoryStream = new MemoryStream())
-            {
-                byte[] data = audio; // Replace this with your data source
-
-                memoryStream.Write(data, 0, data.Length);
-
-                string folderPath = _filePath;
-     
-
-                string filePath = Path.Combine(folderPath, fileName);
-
-                // Write the MemoryStream contents to the file
-                File.WriteAllBytes(filePath, memoryStream.ToArray());
-
-                Console.WriteLine("MemoryStream saved to file successfully.");
-                ReturningConvertOggToWav(fileName, wavName);
-            }
-            #endregion
+            ReturningConvertOggToWav(stream);
             return await GetJsonString();
         }
 
@@ -61,7 +41,7 @@ namespace Lexi.Core.Api.Brokers.Cognitives
             pronunciationAssessmentConfig.EnableProsodyAssessment();
             pronunciationAssessmentConfig.EnableContentAssessmentWithTopic("greeting");
 
-            using var audioConfig = AudioConfig.FromWavFileInput(Path.Combine(_filePath, wavName));
+            using var audioConfig = AudioConfig.FromWavFileInput(_filePath);
             using (var speechRecognizer = new SpeechRecognizer(speechConfig, audioConfig))
             {
                 pronunciationAssessmentConfig.ApplyTo(speechRecognizer);
@@ -77,15 +57,12 @@ namespace Lexi.Core.Api.Brokers.Cognitives
                 return pronunciationAssessmentResultJson;
             }
         }
-        static string ReturningConvertOggToWav(string oggName, string wavName)
+        void ReturningConvertOggToWav(Stream stream)
         {
-            var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
-
-            using (FileStream fileIn = new FileStream($"{filePath}{oggName}", FileMode.Open))
             using (MemoryStream pcmStream = new MemoryStream())
             {
                 OpusDecoder decoder = OpusDecoder.Create(48000, 1);
-                OpusOggReadStream oggIn = new OpusOggReadStream(decoder, fileIn);
+                OpusOggReadStream oggIn = new OpusOggReadStream(decoder, stream);
                 while (oggIn.HasNextPacket)
                 {
                     short[] packet = oggIn.DecodeNextPacket();
@@ -101,8 +78,7 @@ namespace Lexi.Core.Api.Brokers.Cognitives
                 pcmStream.Position = 0;
                 var wavStream = new RawSourceWaveStream(pcmStream, new WaveFormat(48000, 1));
                 var sampleProvider = wavStream.ToSampleProvider();
-                WaveFileWriter.CreateWaveFile16($"{filePath}{wavName}", sampleProvider);
-                return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, wavName);
+                WaveFileWriter.CreateWaveFile16(_filePath, sampleProvider);
             }
         }
     }

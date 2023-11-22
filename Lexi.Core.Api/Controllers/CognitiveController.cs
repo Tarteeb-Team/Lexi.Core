@@ -21,18 +21,10 @@ namespace Lexi.Core.Api.Controllers
         [HttpPost]
         public async Task<string> UploadOggFile(IFormFile formFile)
         {
-            byte[] fileBytes = ConvertFormFileToByteArray(formFile);
-            string result = await this.orchestrationService.GetOggFile(fileBytes);
+            using var stream = formFile.OpenReadStream();
+            string result = await this.orchestrationService.GetOggFile(stream);
             return result;
         }
 
-        private byte[] ConvertFormFileToByteArray(IFormFile formFile)
-        {
-            using (MemoryStream memoryStream = new MemoryStream())
-            {
-                formFile.CopyTo(memoryStream);
-                return memoryStream.ToArray();
-            }
-        }
     }
 }
