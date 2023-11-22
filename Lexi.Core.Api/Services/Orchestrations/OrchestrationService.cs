@@ -5,23 +5,34 @@
 
 using System.IO;
 using System.Threading.Tasks;
+using Lexi.Core.Api.Models.ObjcetModels;
 using Lexi.Core.Api.Services.Cognitives;
+using Lexi.Core.Api.Services.Orchestrations.Cognitive;
+using Lexi.Core.Api.Services.Orchestrations.Speech;
 using Microsoft.AspNetCore.Http;
 
 namespace Lexi.Core.Api.Services.Orchestrations
 {
     public class OrchestrationService : IOrchestrationService
     {
-        private readonly ICognitiveServices cogniticeServices;
+        private readonly ICognitiveOrchestrationService cognitiveOrchestrationService;
+        private readonly ISpeechOrchestrationService speechOrchestrationService;
 
-        public OrchestrationService(ICognitiveServices cogniticeServices)
+        public OrchestrationService(ICognitiveOrchestrationService cognitiveOrchestrationService,
+            ISpeechOrchestrationService speechOrchestrationService)
         {
-            this.cogniticeServices = cogniticeServices;
+            this.cognitiveOrchestrationService = cognitiveOrchestrationService;
+            this.speechOrchestrationService = speechOrchestrationService;
         }
 
-        public async Task<string> GetOggFile(Stream stream)
+        public async Task<ResponseCognitive> GetOggFile(Stream stream)
         {
-            return await this.cogniticeServices.GetOggFile(stream);
+            ResponseCognitive responseCognitive = await this.cognitiveOrchestrationService.GetOggFile(stream);
+
+            await speechOrchestrationService.MapToSpeech(responseCognitive);
+            await speechOrchestrationService.MapToFeedback(responseCognitive);
+
+            return responseCognitive;
         }
     }
 }
