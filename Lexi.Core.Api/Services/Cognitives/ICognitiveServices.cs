@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Lexi.Core.Api.Services.Cognitives
 {
-    public interface ICognitiveServices 
+    public interface ICognitiveServices
     {
         Task<string> GetOggFile(Stream stream);
     }

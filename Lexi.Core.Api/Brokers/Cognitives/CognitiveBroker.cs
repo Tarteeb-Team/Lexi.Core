@@ -11,7 +11,6 @@ using Concentus.Structs;
 using Microsoft.CognitiveServices.Speech;
 using Microsoft.CognitiveServices.Speech.Audio;
 using Microsoft.CognitiveServices.Speech.PronunciationAssessment;
-using Microsoft.VisualBasic;
 using NAudio.Wave;
 
 namespace Lexi.Core.Api.Brokers.Cognitives
@@ -20,7 +19,7 @@ namespace Lexi.Core.Api.Brokers.Cognitives
     {
         string speechKey = "4c16b8cafd324366830b415ad566f667";
         string speechRegion = "centralindia";
-        string _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"audio.wav");
+        string _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "audio.wav");
         public async Task<string> GetOggFile(Stream stream)
         {
             ReturningConvertOggToWav(stream);

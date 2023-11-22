@@ -16,13 +16,13 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
     {
         private readonly IStorageBroker storageBroker;
         private readonly ILoggingBroker loggingBroker;
-        
+
         public SpeechService(IStorageBroker storageBroker, ILoggingBroker loggingBroker)
         {
             this.storageBroker = storageBroker;
             this.loggingBroker = loggingBroker;
         }
-        
+
         public async ValueTask<Speech> AddSpechesAsync(Speech speech)
         {
             return await this.storageBroker.InsertSpeechAsync(speech);
