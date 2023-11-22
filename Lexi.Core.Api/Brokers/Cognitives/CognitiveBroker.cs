@@ -20,7 +20,7 @@ namespace Lexi.Core.Api.Brokers.Cognitives
     {
         string speechKey = "4c16b8cafd324366830b415ad566f667";
         string speechRegion = "centralindia";
-        string _filePath = Path.Combine("audio.wav");
+        string _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"audio.wav");
         public async Task<string> GetOggFile(Stream stream)
         {
             ReturningConvertOggToWav(stream);
