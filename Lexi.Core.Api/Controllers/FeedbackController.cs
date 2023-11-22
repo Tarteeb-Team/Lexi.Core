@@ -31,7 +31,7 @@ namespace Lexi.Core.Api.Controllers
             return feedbacks;
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async ValueTask<Feedback> GetFeedbackByIdAsync(Guid id)
         {
             Feedback feedback = await this.orchestrationService.RetrieveFeedbackByIdAsync(id);
