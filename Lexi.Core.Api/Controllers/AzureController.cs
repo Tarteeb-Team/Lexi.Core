@@ -1,4 +1,5 @@
 ﻿using Lexi.Core.Api.Services.Azures;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CognitiveServices.Speech.Audio;
 using System.Threading.Tasks;
@@ -16,12 +17,12 @@ namespace Lexi.Core.Api.Controllers
             this.azureService = azureService;
         }
 
-        [HttpGet]
-        public async ValueTask<ActionResult> GetFeedback()
+        [HttpPost]
+        public async ValueTask<ActionResult> GetFeedback(IFormFile file)
         {
-            AudioConfig audioConfig = AudioConfig.FromDefaultMicrophoneInput();
+           // AudioConfig audioConfig = AudioConfig.FromWavFileInput(file.FileName);
 
-            string result = await this.azureService.TakeFeedbackAsync(audioConfig);
+            string result = await this.azureService.TakeFeedbackAsync(file);
 
             return Ok(result);
         }

@@ -3,6 +3,7 @@
 // Powering True Leadership
 //=================================
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.CognitiveServices.Speech;
 using Microsoft.CognitiveServices.Speech.Audio;
 using Newtonsoft.Json;
@@ -13,10 +14,10 @@ namespace Lexi.Core.Api.Brokers.Azures
 {
     public class AzureBroker : IAzureBroker
     {
-        public async ValueTask<string> TakeFeedbackAsync(AudioConfig audioConfig)
+        public async ValueTask<string> TakeFeedbackAsync(string formFile)
         {
             SpeechConfig config = SpeechConfig.FromSubscription("b0865984f22d42ebb91601daa3eb27a7", "eastus");
-
+            using var audioConfig = AudioConfig.FromWavFileInput(formFile);
             string language = "en-US";
             string topic = "your own topic";
 
