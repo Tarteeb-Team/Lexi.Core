@@ -28,9 +28,6 @@ namespace Lexi.Core.Api.Services.Orchestrations.Speech
             this.speechService = speechService;
         }
 
-        public ValueTask<Feedback> AddFeedbackAsync(Feedback feedback) =>
-            this.feedbackService.AddFeedbackAsync(feedback);
-
         public ValueTask<Feedback> RemoveFeedbackAsync(Feedback feedback) =>
             this.RemoveFeedbackAsync(feedback);
 
@@ -68,5 +65,14 @@ namespace Lexi.Core.Api.Services.Orchestrations.Speech
             _speechId = speech.Id;
             await speechService.AddSpechesAsync(speech);
         }
+
+        public IQueryable<SpeechModel> RetrieveAllSpeeches() =>
+            this.speechService.RetrieveAllSpeeches();
+
+        public ValueTask<SpeechModel> RetrieveSpeechByIdAsync(Guid id) =>
+            this.speechService.RetrieveSpeechesByIdAsync(id);
+
+        public ValueTask<SpeechModel> RemoveSpeechAsync(SpeechModel speechModel) =>
+            this.speechService.RemoveSpeechAsync(speechModel);
     }
 }
