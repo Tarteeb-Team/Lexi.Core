@@ -3,7 +3,6 @@
 // Powering True Leadership
 //=================================
 
-using System;
 using System.Collections.Generic;
 
 namespace Lexi.Core.Api.Models.ObjcetModels

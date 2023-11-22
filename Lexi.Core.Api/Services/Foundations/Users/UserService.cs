@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.Storages;
 using Lexi.Core.Api.Models.Foundations.Users;
-using Microsoft.Extensions.Logging;
 
 namespace Lexi.Core.Api.Services.Foundations.Users
 {

@@ -4,14 +4,13 @@
 //=================================
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
-using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
 using Lexi.Core.Api.Models.ObjcetModels;
 using Lexi.Core.Api.Services.Foundations.Feedbacks;
 using Lexi.Core.Api.Services.Foundations.Speeches;
-using Lexi.Core.Api.Services.Foundations.Users;
-using System.Linq;
+using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
 
 namespace Lexi.Core.Api.Services.Orchestrations.Speech
 {

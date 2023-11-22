@@ -20,7 +20,7 @@ namespace Lexi.Core.Api.Services.Cognitives
 
         public async Task<string> GetOggFile(Stream stream)
         {
-           return await this.cognitiveBroker.GetOggFile(stream);
+            return await this.cognitiveBroker.GetOggFile(stream);
         }
     }
 }

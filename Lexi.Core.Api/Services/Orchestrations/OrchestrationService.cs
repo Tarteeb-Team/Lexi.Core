@@ -9,10 +9,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Lexi.Core.Api.Models.ObjcetModels;
-using Lexi.Core.Api.Services.Cognitives;
 using Lexi.Core.Api.Services.Orchestrations.Cognitive;
 using Lexi.Core.Api.Services.Orchestrations.Speech;
-using Microsoft.AspNetCore.Http;
 
 namespace Lexi.Core.Api.Services.Orchestrations
 {
