@@ -39,10 +39,20 @@ namespace Lexi.Core.Api.Services.Orchestrations
         public ValueTask<Feedback> RemoveFeedbackAsync(Feedback feedback) =>
             this.speechOrchestrationService.RemoveFeedbackAsync(feedback);
 
+        public ValueTask<Models.Foundations.Speeches.Speech> RemoveSpeechAsync(
+            Models.Foundations.Speeches.Speech speechModel) =>
+            this.speechOrchestrationService.RemoveSpeechAsync(speechModel);
+
         public IQueryable<Feedback> RetrieveAllFeedbacks() =>
             this.speechOrchestrationService?.RetrieveAllFeedbacks();
 
+        public IQueryable<Models.Foundations.Speeches.Speech> RetrieveAllSpeeches() =>
+            this.speechOrchestrationService.RetrieveAllSpeeches();
+
         public ValueTask<Feedback> RetrieveFeedbackByIdAsync(Guid id) =>
             this.speechOrchestrationService.RetrieveFeedbackByIdAsync(id);
+
+        public ValueTask<Models.Foundations.Speeches.Speech> RetrieveSpeechByIdAsync(Guid id) =>
+            this.speechOrchestrationService.RetrieveSpeechByIdAsync(id);
     }
 }
