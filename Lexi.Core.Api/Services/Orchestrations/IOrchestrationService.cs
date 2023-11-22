@@ -11,6 +11,6 @@ namespace Lexi.Core.Api.Services.Orchestrations
 {
     public interface IOrchestrationService
     {
-        Task<string> GetOggFile(byte[] audio);
+        Task<string> GetOggFile(Stream stream);
     }
 }

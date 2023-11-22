@@ -19,9 +19,9 @@ namespace Lexi.Core.Api.Services.Orchestrations
             this.cogniticeServices = cogniticeServices;
         }
 
-        public async Task<string> GetOggFile(byte[] audio)
+        public async Task<string> GetOggFile(Stream stream)
         {
-            return await this.cogniticeServices.GetOggFile(audio);
+            return await this.cogniticeServices.GetOggFile(stream);
         }
     }
 }

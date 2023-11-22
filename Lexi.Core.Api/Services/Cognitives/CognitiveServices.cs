@@ -18,9 +18,9 @@ namespace Lexi.Core.Api.Services.Cognitives
             this.cognitiveBroker = cognitiveBroker;
         }
 
-        public async Task<string> GetOggFile(byte[] audio)
+        public async Task<string> GetOggFile(Stream stream)
         {
-           return await this.cognitiveBroker.GetOggFile(audio);
+           return await this.cognitiveBroker.GetOggFile(stream);
         }
     }
 }
