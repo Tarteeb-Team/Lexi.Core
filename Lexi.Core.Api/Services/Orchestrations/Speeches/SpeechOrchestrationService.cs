@@ -11,6 +11,7 @@ using Lexi.Core.Api.Models.ObjcetModels;
 using Lexi.Core.Api.Services.Foundations.Feedbacks;
 using Lexi.Core.Api.Services.Foundations.Speeches;
 using Lexi.Core.Api.Services.Foundations.Users;
+using System.Linq;
 
 namespace Lexi.Core.Api.Services.Orchestrations.Speech
 {
@@ -26,6 +27,18 @@ namespace Lexi.Core.Api.Services.Orchestrations.Speech
             this.feedbackService = feedbackService;
             this.speechService = speechService;
         }
+
+        public ValueTask<Feedback> AddFeedbackAsync(Feedback feedback) =>
+            this.feedbackService.AddFeedbackAsync(feedback);
+
+        public ValueTask<Feedback> RemoveFeedbackAsync(Feedback feedback) =>
+            this.RemoveFeedbackAsync(feedback);
+
+        public IQueryable<Feedback> RetrieveAllFeedbacks() =>
+            this.feedbackService.RetrieveAllFeedbacks();
+
+        public ValueTask<Feedback> RetrieveFeedbackByIdAsync(Guid id) =>
+            this.feedbackService.RetrieveFeedbackByIdAsync(id);
 
         public async Task MapToFeedback(ResponseCognitive responseCognitive)
         {
