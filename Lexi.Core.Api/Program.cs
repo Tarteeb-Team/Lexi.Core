@@ -3,10 +3,13 @@
 // Powering True Leadership
 //=================================
 
+using Lexi.Core.Api.Brokers.Cognitives;
 using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.Storages;
+using Lexi.Core.Api.Services.Cognitives;
 using Lexi.Core.Api.Services.Foundations.Feedbacks;
 using Lexi.Core.Api.Services.Foundations.Speeches;
+using Lexi.Core.Api.Services.Orchestrations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -17,6 +20,9 @@ builder.Services.AddDbContext<IStorageBroker, StorageBroker>();
 builder.Services.AddTransient<ILoggingBroker, LoggingBroker>();
 builder.Services.AddTransient<ISpeechService, SpeechService>();
 builder.Services.AddTransient<IFeedbackService, FeedbackService>();
+builder.Services.AddTransient<IOrchestrationService, OrchestrationService>();
+builder.Services.AddTransient<ICognitiveServices, CognitiveServices>();
+builder.Services.AddTransient<ICognitiveBroker, CognitiveBroker>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 var app = builder.Build();
