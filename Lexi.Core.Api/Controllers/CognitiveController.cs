@@ -1,4 +1,9 @@
-﻿using System;
+﻿//=================================
+// Copyright (c) Tarteeb LLC.
+// Powering True Leadership
+//=================================
+
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using Lexi.Core.Api.Services.Orchestrations;
