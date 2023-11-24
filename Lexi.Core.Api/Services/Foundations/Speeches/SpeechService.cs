@@ -24,7 +24,7 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
         }
 
         public async ValueTask<Speech> AddSpechesAsync(Speech speech) =>
-            throw new NotImplementedException();
+           await this.storageBroker.InsertSpeechAsync(speech);
 
         public IQueryable<Speech> RetrieveAllSpeeches()
         {
