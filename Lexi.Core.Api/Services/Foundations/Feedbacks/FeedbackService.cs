@@ -12,7 +12,7 @@ using Lexi.Core.Api.Models.Foundations.Feedbacks;
 
 namespace Lexi.Core.Api.Services.Foundations.Feedbacks
 {
-    public class FeedbackService : IFeedbackService
+    public partial class FeedbackService : IFeedbackService
     {
         private readonly IStorageBroker storageBroker;
         private readonly ILoggingBroker loggingBroker;
@@ -25,6 +25,8 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
 
         public async ValueTask<Feedback> AddFeedbackAsync(Feedback feedback)
         {
+            ValidateFeedbackNotNull(feedback);
+
             return await this.storageBroker.InsertFeedbackAsync(feedback);
         }
 

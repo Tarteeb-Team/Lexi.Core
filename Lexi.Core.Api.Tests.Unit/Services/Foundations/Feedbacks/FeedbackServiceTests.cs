@@ -6,9 +6,13 @@
 using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.Storages;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
+using Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions;
 using Lexi.Core.Api.Services.Foundations.Feedbacks;
 using Moq;
+using System.Linq.Expressions;
+using System;
 using Tynamix.ObjectFiller;
+using Xeptions;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
 {
@@ -38,5 +42,9 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
 
             return filler;
         }
+
+        private Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException) =>
+            actualException => actualException.SameExceptionAs(expectedException);
+
     }
 }
