@@ -25,7 +25,7 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
 
         public async ValueTask<Feedback> AddFeedbackAsync(Feedback feedback)
         {
-            return await this.storageBroker.InsertFeedbackAsync(feedback);
+            throw new NotImplementedException();
         }
 
         public IQueryable<Feedback> RetrieveAllFeedbacks()
