@@ -3,12 +3,14 @@
 // Powering True Leadership
 //=================================
 
+using System.Linq.Expressions;
 using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.Storages;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Services.Foundations.Users;
 using Moq;
 using Tynamix.ObjectFiller;
+using Xeptions;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.NewFolder.Users
 {
@@ -37,5 +39,8 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.NewFolder.Users
 
             return filler;
         }
+
+        private Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException) =>
+            actualException => actualException.SameExceptionAs(expectedException);
     }
 }
