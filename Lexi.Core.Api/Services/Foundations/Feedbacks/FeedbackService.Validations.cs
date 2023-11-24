@@ -11,6 +11,14 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
 {
     public partial class FeedbackService
     {
+        private void VaidateFeedbackOnAdd(Feedback feedback)
+        {
+            ValidateFeedbackNotNull(feedback);
+
+            Validate(
+                (Rule: IsInvalid(feedback.Id), Parameter: nameof(Feedback.Id)));
+        }
+
         private static dynamic IsInvalid(Guid feeedbakcId) => new
         {
             Condition = feeedbakcId == default,
@@ -19,7 +27,7 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
 
         private void ValidateFeedbackNotNull(Feedback feedback)
         {
-            if(feedback == null)
+            if (feedback == null)
             {
                 throw new NullFeedbackException();
             }

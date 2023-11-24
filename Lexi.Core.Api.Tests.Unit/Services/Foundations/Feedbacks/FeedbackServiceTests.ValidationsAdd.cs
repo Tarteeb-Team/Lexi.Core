@@ -8,7 +8,6 @@ using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions;
 using Moq;
 using System;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -47,8 +46,8 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
         }
 
         [Theory]
-        [InlineData]
-        public async Task ShouldThrowValidationExceptionOnAddIfFeedbackIsInvalidAndLogItAsync(Guid invalidId = default)
+        [InlineData(default)]
+        public async Task ShouldThrowValidationExceptionOnAddIfFeedbackIsInvalidAndLogItAsync(Guid invalidId)
         {
             //given
             Feedback invalidFeedback = new Feedback

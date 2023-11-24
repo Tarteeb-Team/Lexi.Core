@@ -26,6 +26,10 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
             {
                 throw CreateAndLogValidationException(nullFeedbackException);
             }
+            catch(InvalidFeedbackException invalidFeedbackException)
+            {
+                throw CreateAndLogValidationException(invalidFeedbackException);
+            }
         }
 
         private FeedbackValidationException CreateAndLogValidationException(Xeption xeption)
