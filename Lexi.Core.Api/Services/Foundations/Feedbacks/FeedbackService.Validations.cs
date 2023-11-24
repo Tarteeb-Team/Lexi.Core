@@ -16,11 +16,6 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
             Condition = feeedbakcId == default,
             Message = "Id is required"
         };
-        private static dynamic IsInvalid(decimal score) => new
-        {
-            Condition = score == default,
-            Message = "Score is required"
-        };
 
         private void ValidateFeedbackNotNull(Feedback feedback)
         {

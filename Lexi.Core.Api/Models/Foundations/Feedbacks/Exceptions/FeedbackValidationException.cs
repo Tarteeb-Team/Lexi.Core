@@ -3,6 +3,7 @@
 // Powering True Leadership
 //=================================
 
+using System;
 using Xeptions;
 
 namespace Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions
