@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\Foundations\" />
+    <ProjectReference Include="..\Lexi.Core.Api\Lexi.Core.Api.csproj" />
   </ItemGroup>
 
 </Project>
