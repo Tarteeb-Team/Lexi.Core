@@ -9,6 +9,8 @@ using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.Storages;
 using Lexi.Core.Api.Services.Foundations.Speeches;
 using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
+using System.Linq.Expressions;
+using Xeptions;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
 {
@@ -29,7 +31,8 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
 
         private static SpeechModel CreateRandomSpeech() =>
             CreateSpeechFiller().Create();
-
+        private Expression<Func<Xeption, bool>> SameExceptionAss(Xeption expectedException) =>
+         actualException => actualException.SameExceptionAs(expectedException);
         private static Filler<SpeechModel> CreateSpeechFiller() =>
             new Filler<SpeechModel>();
     }
