@@ -24,10 +24,10 @@ namespace Lexi.Core.Api.Services.Foundations.Users
             this.storageBroker = storageBroker;
             this.loggingBroker = loggingBroker;
         }
-        public async ValueTask<User> AddUserAsync(User user)
-        {
-            return await this.storageBroker.InsertUserAsync(user);
-        }
+        //public async ValueTask<User> AddUserAsync(User user)
+        //{
+        //    return await this.storageBroker.InsertUserAsync(user);
+        //}
 
         public async ValueTask<User> ModifyUserAsync(User user)
         {
@@ -49,6 +49,11 @@ namespace Lexi.Core.Api.Services.Foundations.Users
         public async ValueTask<User> DeleteUserAsync(User user)
         {
             return await this.storageBroker.DeleteUserAsync(user);
+        }
+
+        public ValueTask<User> AddUserAsync(User user)
+        {
+            throw new NotImplementedException();
         }
     }
 }
