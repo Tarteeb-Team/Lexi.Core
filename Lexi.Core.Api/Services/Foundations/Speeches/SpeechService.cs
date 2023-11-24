@@ -23,10 +23,8 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
             this.loggingBroker = loggingBroker;
         }
 
-        public async ValueTask<Speech> AddSpechesAsync(Speech speech)
-        {
-            return await this.storageBroker.InsertSpeechAsync(speech);
-        }
+        public async ValueTask<Speech> AddSpechesAsync(Speech speech) =>
+            throw new NotImplementedException();
 
         public IQueryable<Speech> RetrieveAllSpeeches()
         {

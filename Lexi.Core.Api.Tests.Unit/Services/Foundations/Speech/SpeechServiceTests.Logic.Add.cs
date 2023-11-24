@@ -7,6 +7,7 @@ using Moq;
 using Xunit;
 using FluentAssertions;
 using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
+using Force.DeepCloner;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
 {
@@ -19,7 +20,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
             SpeechModel randomSpeech = CreateRandomSpeech();
             SpeechModel inputSpeech = randomSpeech;
             SpeechModel storedSpeech = inputSpeech;
-            SpeechModel expectedSpeech = storedSpeech;
+            SpeechModel expectedSpeech = storedSpeech.DeepClone();
 
             this.storageBrokerMock.Setup(broker =>
             broker.InsertSpeechAsync(inputSpeech))
@@ -30,7 +31,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
                 await this.speechService.AddSpechesAsync(inputSpeech);
 
             //then
-            actualSpeech.Should().NotBeEquivalentTo(expectedSpeech);
+            actualSpeech.Should().BeEquivalentTo(expectedSpeech);
 
             this.storageBrokerMock.Verify(broker =>
             broker.InsertSpeechAsync(inputSpeech), Times.Once());
