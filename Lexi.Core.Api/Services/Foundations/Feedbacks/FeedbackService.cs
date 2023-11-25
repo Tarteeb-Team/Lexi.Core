@@ -6,6 +6,8 @@
 using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.Storages;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
+using Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,7 +35,22 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
 
         public IQueryable<Feedback> RetrieveAllFeedbacks()
         {
-            return this.storageBroker.SelectAllFeedbacks();
+            try
+            {
+                return this.storageBroker.SelectAllFeedbacks();
+            }
+            catch (SqlException sqlException)
+            {
+                var failedFeedbackStorageException =
+                    new FailedFeedbackStorageException(sqlException);
+
+                var feedbackDependencyException =
+                    new FeedbackDependencyException(failedFeedbackStorageException);
+
+                this.loggingBroker.LogCritical(feedbackDependencyException);
+
+                throw feedbackDependencyException;
+            }
         }
 
         public async ValueTask<Feedback> RetrieveFeedbackByIdAsync(Guid id)

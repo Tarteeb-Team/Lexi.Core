@@ -30,14 +30,14 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
 
             this.storageBrokerMock.Setup(broker =>
                 broker.SelectAllFeedbacks())
-                .Returns(someFeedbacks);
+                .Throws(sqlException);
 
             //when
             Action retrieveAllFeedbacksAction = () =>
                 this.feedbackService.RetrieveAllFeedbacks();
 
             FeedbackDependencyException feedbackDependencyException =
-                Assert.Throws<FeedbackDependencyException>(() =>
+                Assert.Throws<FeedbackDependencyException>(
                 retrieveAllFeedbacksAction);
 
             feedbackDependencyException.Should().BeEquivalentTo(expectedFeedbackDependencyException);
