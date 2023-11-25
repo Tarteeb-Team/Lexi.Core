@@ -3,6 +3,7 @@
 // Powering True Leadership
 //=================================
 
+using System;
 using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
 using FluentAssertions;
@@ -92,6 +93,45 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldThrowServiceExceptionOnAddIfErrorOccursAndLogItAsync()
+        {
+            //given
+            Feedback someFeedBack = CreateRandomFeedback();
+            var serviceException = new Exception();
+            var failedFeedbackServiceException =
+                new FailedFeedbackServiceException(serviceException);
+
+            var expectedFeedbackServiceException =
+                new FeedbackServiceException(failedFeedbackServiceException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.InsertFeedbackAsync(someFeedBack))
+                .ThrowsAsync(serviceException);
+
+            //when
+            ValueTask<Feedback> addFeedbackTask =
+                this.feedbackService.AddFeedbackAsync(someFeedBack);
+
+            FeedbackServiceException feedbackServiceException =
+                await Assert.ThrowsAsync<FeedbackServiceException>(() =>
+                addFeedbackTask.AsTask());
+
+            feedbackServiceException.Should().BeEquivalentTo(expectedFeedbackServiceException);
+
+            //then
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertFeedbackAsync(someFeedBack), Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedFeedbackServiceException))),
+                Times.Once);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+
         }
     }
 }
