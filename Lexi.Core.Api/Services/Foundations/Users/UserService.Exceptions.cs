@@ -52,9 +52,20 @@ namespace Lexi.Core.Api.Services.Foundations.Users
 
                 throw CreateAndLogDependencyException(failedUserStorageException);
             }
+            catch (Exception exception)
+            {
+                var failedUserServiceException = new FailedUserServiceException(exception);
 
+                throw CreateAndLogServiceException(failedUserServiceException);
+            }
         }
-    
+        private UserServiceException CreateAndLogServiceException(Xeption exception)
+        {
+            var userServiceException = new UserServiceException(exception);
+            this.loggingBroker.LogError(userServiceException);
+
+            return userServiceException;
+        }
         private UserDependencyException CreateAndLogDependencyException(Xeption exception)
         {
             UserDependencyException userDependencyException =
