@@ -3,6 +3,7 @@
 // Powering True Leadership
 //=================================
 
+using EFxceptions.Models.Exceptions;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions;
 using Microsoft.Data.SqlClient;
@@ -37,6 +38,13 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
 
                 throw CreateAndLogCriticalDepenedencyException(failedFeedbackStorageException);
             }
+            catch(DuplicateKeyException duplicateKeyException)
+            {
+                AlreadyExistValidationException alreadyExistValidationException =
+                    new AlreadyExistValidationException(duplicateKeyException);
+
+                throw CreateAndLogDependencyValidationException(alreadyExistValidationException);
+            }
         }
 
         private FeedbackValidationException CreateAndLogValidationException(Xeption xeption)
@@ -54,6 +62,16 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
             this.loggingBroker.LogCritical(feedbackDependencyException);
 
             return feedbackDependencyException;
+        }
+
+        private FeedbackDependencyValidationException CreateAndLogDependencyValidationException(Xeption exception)
+        {
+            var feedbackDependencyValidationException =
+                new FeedbackDependencyValidationException(exception);
+
+            this.loggingBroker.LogError(feedbackDependencyValidationException);
+
+            return feedbackDependencyValidationException;
         }
     }
 }
