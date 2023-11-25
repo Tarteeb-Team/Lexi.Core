@@ -3,6 +3,8 @@
 // Powering True Leadership
 //=================================
 
+using System;
+using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
 using FluentAssertions;
 using Lexi.Core.Api.Models.Foundations.Speeches.Exceptions;

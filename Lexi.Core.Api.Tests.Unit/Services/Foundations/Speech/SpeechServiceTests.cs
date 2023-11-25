@@ -13,6 +13,7 @@ using System.Linq.Expressions;
 using Xeptions;
 using Microsoft.Data.SqlClient;
 using System.Runtime.Serialization;
+using System;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
 {

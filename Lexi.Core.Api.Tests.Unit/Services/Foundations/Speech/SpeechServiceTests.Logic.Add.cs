@@ -8,6 +8,7 @@ using Xunit;
 using FluentAssertions;
 using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
 using Force.DeepCloner;
+using System.Threading.Tasks;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
 {
