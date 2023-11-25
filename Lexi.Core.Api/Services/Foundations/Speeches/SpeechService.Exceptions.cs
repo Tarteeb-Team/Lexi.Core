@@ -9,6 +9,7 @@ using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
 using Lexi.Core.Api.Models.Foundations.Speeches.Exceptions;
 using EFxceptions.Models.Exceptions;
 using Microsoft.Data.SqlClient;
+using System;
 
 
 namespace Lexi.Core.Api.Services.Foundations.Speeches
@@ -45,6 +46,13 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
 
                 throw CreateAndLogCriticalDependencyException(failedSpeechStorageException);
             }
+            catch (Exception exception)
+            {
+                var failedSpeechServiceException =
+                    new FailedSpeechServiceException(exception);
+
+                throw CreateAndLogServiceException(failedSpeechServiceException);
+            }
         }
 
         private SpeechValidationException CreateAndLogValidationException(Xeption exception)
@@ -73,6 +81,14 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
             this.loggingBroker.LogCritical(speechDependencyExcpetion);
 
             return speechDependencyExcpetion;
+        }
+
+        private SpeechServiceException CreateAndLogServiceException(Xeption exception)
+        {
+            var speechServiceException = new SpeechServiceException(exception);
+            this.loggingBroker.LogError(speechServiceException);
+
+            return speechServiceException;
         }
     }
 }
