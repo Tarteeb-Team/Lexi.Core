@@ -11,6 +11,8 @@ using Lexi.Core.Api.Services.Foundations.Speeches;
 using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
 using System.Linq.Expressions;
 using Xeptions;
+using Microsoft.Data.SqlClient;
+using System.Runtime.Serialization;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
 {
@@ -31,8 +33,13 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
 
         private static SpeechModel CreateRandomSpeech() =>
             CreateSpeechFiller().Create();
+
         private Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException) =>
          actualException => actualException.SameExceptionAs(expectedException);
+
+        private static SqlException GetSqlError() =>
+            (SqlException)FormatterServices.GetUninitializedObject(typeof(SqlException));
+
         private static Filler<SpeechModel> CreateSpeechFiller() =>
             new Filler<SpeechModel>();
 
