@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Models.Foundations.Users.Exceptions;
+using Microsoft.EntityFrameworkCore;
 using Xeptions;
 
 namespace Lexi.Core.Api.Services.Foundations.Users
@@ -37,8 +38,9 @@ namespace Lexi.Core.Api.Services.Foundations.Users
 
                 throw CreateAndALogDependencyValidationException(alreadyExistsUserException);
             }
+            
         }
-
+        
         private UserDependencyValidationException CreateAndALogDependencyValidationException(Xeption exception)
         {
             var userDependencyValidationException =
