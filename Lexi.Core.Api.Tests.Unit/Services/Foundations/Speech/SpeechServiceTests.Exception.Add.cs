@@ -24,7 +24,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
             var duplicateKeyException = new DuplicateKeyException(someMessage);
 
             var alreadyExistsSpeechException =
-                new AlreadyExistsSpeechException(duplicateKeyException);
+                new AlreadyExistValidationException(duplicateKeyException);
 
             var expectedSpeechDependencyValidationException =
                 new SpeechDependencyValidationException(alreadyExistsSpeechException);
@@ -49,7 +49,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
                  broker.InsertSpeechAsync(randomSpeech), Times.Once);
 
             this.loggingBrokerMock.Verify(broker =>
-              broker.LogCritical(It.Is(SameExceptionAs(
+              broker.LogError(It.Is(SameExceptionAs(
                   expectedSpeechDependencyValidationException))), Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();

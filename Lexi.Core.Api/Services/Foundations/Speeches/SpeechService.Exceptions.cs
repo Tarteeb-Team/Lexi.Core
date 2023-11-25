@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Xeptions;
 using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
 using Lexi.Core.Api.Models.Foundations.Speeches.Exceptions;
+using EFxceptions.Models.Exceptions;
 
 
 namespace Lexi.Core.Api.Services.Foundations.Speeches
@@ -29,6 +30,13 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
             {
                 throw CreateAndLogValidationException(invalidSpeechException);
             }
+            catch (DuplicateKeyException duplicateKeyException)
+            {
+                var alreadyExistValidationException =
+                    new AlreadyExistValidationException(duplicateKeyException);
+
+                throw CreateAndLogDependencyValidationException(alreadyExistValidationException);
+            }
         }
 
         private SpeechValidationException CreateAndLogValidationException(Xeption exception)
@@ -39,6 +47,16 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
             this.loggingBroker.LogError(speechValidationException);
 
             return speechValidationException;
+        }
+
+        private SpeechDependencyValidationException CreateAndLogDependencyValidationException(Xeption exception)
+        {
+            var speechDependencyValidationException =
+                new SpeechDependencyValidationException(exception);
+
+            this.loggingBroker.LogError(speechDependencyValidationException);
+
+            return speechDependencyValidationException;
         }
     }
 }

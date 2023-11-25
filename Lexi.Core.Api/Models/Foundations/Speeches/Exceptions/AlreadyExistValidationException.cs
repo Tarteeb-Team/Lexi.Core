@@ -8,9 +8,9 @@ using Xeptions;
 
 namespace Lexi.Core.Api.Models.Foundations.Speeches.Exceptions
 {
-    public class AlreadyExistsSpeechException : Xeption
+    public class AlreadyExistValidationException : Xeption
     {
-        public AlreadyExistsSpeechException(Exception exception)
+        public AlreadyExistValidationException(Exception exception)
             : base(message: "Speech already exists", exception)
         { }
     }
