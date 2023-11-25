@@ -29,7 +29,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
             actualSpeechValidationException.Should().BeEquivalentTo(excpectedSpeechValidationException);
 
             this.loggingBrokerMock.Verify(broker =>
-                broker.LogError(It.Is(SameExceptionAss(excpectedSpeechValidationException))), Times.Once);
+                broker.LogError(It.Is(SameExceptionAs(excpectedSpeechValidationException))), Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
             broker.InsertSpeechAsync(It.IsAny<SpeechModel>()), Times.Never);
