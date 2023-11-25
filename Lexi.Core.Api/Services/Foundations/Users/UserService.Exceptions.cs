@@ -45,6 +45,13 @@ namespace Lexi.Core.Api.Services.Foundations.Users
 
                 throw CreateAndLogDependencyException(lockedUserException);
             }
+            catch (DbUpdateException dbUpdateException)
+            {
+                var failedUserStorageException =
+                     new FailedUserStorageException(dbUpdateException);
+
+                throw CreateAndLogDependencyException(failedUserStorageException);
+            }
         }
     
         private UserDependencyException CreateAndLogDependencyException(Xeption exception)
