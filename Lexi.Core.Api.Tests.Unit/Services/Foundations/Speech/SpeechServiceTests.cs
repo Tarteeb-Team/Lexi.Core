@@ -35,5 +35,8 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
          actualException => actualException.SameExceptionAs(expectedException);
         private static Filler<SpeechModel> CreateSpeechFiller() =>
             new Filler<SpeechModel>();
+
+        private string GetRandomString() =>
+             new MnemonicString().GetValue();
     }
 }
