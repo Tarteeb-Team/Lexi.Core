@@ -15,6 +15,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
         [Fact]
         public async Task ShouldThrowValidationExceptionOnAddIfInputIsNullAndLogItAsnyc()
         {
+
             //given
             SpeechModel NoSpeech = null;
             NullSpeechException nullSpeechException = new NullSpeechException();
