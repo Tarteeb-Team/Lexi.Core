@@ -5,6 +5,7 @@
 
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Threading.Tasks;
@@ -30,6 +31,12 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
             {
                 throw CreateAndLogValidationException(invalidFeedbackException);
             }
+            catch(SqlException sqlException)
+            {
+                var failedFeedbackStorageException = new FailedFeedbackStorageException(sqlException);
+
+                throw CreateAndLogCriticalDepenedencyException(failedFeedbackStorageException);
+            }
         }
 
         private FeedbackValidationException CreateAndLogValidationException(Xeption xeption)
@@ -38,6 +45,15 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
             this.loggingBroker.LogError(feedbackValidationException);
 
             return feedbackValidationException;
+        }
+
+        private FeedbackDependencyException CreateAndLogCriticalDepenedencyException(Xeption exception)
+        {
+            var feedbackDependencyException = new FeedbackDependencyException(exception);
+
+            this.loggingBroker.LogCritical(feedbackDependencyException);
+
+            return feedbackDependencyException;
         }
     }
 }
