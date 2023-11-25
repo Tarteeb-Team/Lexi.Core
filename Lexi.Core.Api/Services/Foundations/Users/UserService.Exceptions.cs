@@ -38,9 +38,23 @@ namespace Lexi.Core.Api.Services.Foundations.Users
 
                 throw CreateAndALogDependencyValidationException(alreadyExistsUserException);
             }
-            
+            catch (DbUpdateConcurrencyException dbUpdateConcurrencyException)
+            {
+                var lockedUserException =
+                   new LockedUserException(dbUpdateConcurrencyException);
+
+                throw CreateAndLogDependencyException(lockedUserException);
+            }
         }
-        
+        private UserDependencyException CreateAndLogDependencyException(Xeption exception)
+        {
+            UserDependencyException userDependencyException =
+                new UserDependencyException(exception);
+
+            this.loggingBroker.LogError(userDependencyException);
+
+            return userDependencyException;
+        }
         private UserDependencyValidationException CreateAndALogDependencyValidationException(Xeption exception)
         {
             var userDependencyValidationException =
