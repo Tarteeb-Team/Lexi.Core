@@ -15,11 +15,10 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
         [Fact]
         public async Task ShouldThrowValidationExceptionOnAddIfInputIsNullAndLogItAsnyc()
         {
-
             //given
             SpeechModel NoSpeech = null;
-            NullSpeechException nullSpeechException = new NullSpeechException();
-            SpeechValidationException excpectedSpeechValidationException = 
+            var nullSpeechException = new NullSpeechException();
+            var excpectedSpeechValidationException = 
                     new SpeechValidationException(nullSpeechException);
             //when
             ValueTask<SpeechModel> addSpeechTask = this.speechService.AddSpechesAsync(NoSpeech);
@@ -38,6 +37,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
+
         [Theory]
         [InlineData(null)]
         [InlineData("")]
@@ -80,7 +80,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
             ValueTask<SpeechModel> addSpeechTask =
                 this.speechService.AddSpechesAsync(invalidSpeech);
 
-            SpeechValidationException actualSpeechValidationException =
+            var actualSpeechValidationException =
                 await Assert.ThrowsAsync<SpeechValidationException>(addSpeechTask.AsTask);
 
             // then

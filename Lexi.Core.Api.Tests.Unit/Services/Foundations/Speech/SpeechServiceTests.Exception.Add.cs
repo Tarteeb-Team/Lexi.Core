@@ -92,5 +92,39 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task ShouldThrowServiceExceptionOnAddIfServiceErrorOccursAndLogItAsync()
+        {
+            //given
+            SpeechModel randomSpeech = CreateRandomSpeech();
+            var serviceException = new Exception();
+
+            var failedSpeechServiceException =
+                new FailedSpeechServiceException(serviceException);
+
+            var expectedSpeechServiceException =
+                new SpeechServiceException(failedSpeechServiceException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.InsertSpeechAsync(randomSpeech))
+                .ThrowsAsync(serviceException);
+
+            //when
+            ValueTask<SpeechModel> addSpeechTask =
+                this.speechService.AddSpechesAsync(randomSpeech);
+
+            //then
+            await Assert.ThrowsAsync<SpeechServiceException>(() =>
+                addSpeechTask.AsTask());
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertSpeechAsync(randomSpeech),
+                    Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedSpeechServiceException))),
+                    Times.Once);
+        }
     }
 }
