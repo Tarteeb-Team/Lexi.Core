@@ -12,7 +12,7 @@ using Lexi.Core.Api.Models.Foundations.Users;
 
 namespace Lexi.Core.Api.Services.Foundations.Users
 {
-    public class UserService : IUserService
+    public partial class UserService : IUserService
     {
         private readonly IStorageBroker storageBroker;
         private readonly ILoggingBroker loggingBroker;
@@ -24,10 +24,13 @@ namespace Lexi.Core.Api.Services.Foundations.Users
             this.storageBroker = storageBroker;
             this.loggingBroker = loggingBroker;
         }
-        public async ValueTask<User> AddUserAsync(User user)
+        public ValueTask<User> AddUserAsync(User user) =>
+        TryCatch( async () =>
         {
+            ValidateUserOnAdd(user);
+
             return await this.storageBroker.InsertUserAsync(user);
-        }
+        });
 
         public async ValueTask<User> ModifyUserAsync(User user)
         {
