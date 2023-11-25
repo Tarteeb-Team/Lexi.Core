@@ -29,10 +29,11 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.NewFolder.Users
                 storageBroker: this.storageBrokerMock.Object,
                 loggingBroker: this.loggingBrokerMock.Object);
         }
-
+        private string GetRandomString() =>
+           new MnemonicString().GetValue();
         private static User CreateRandomUser() =>
             CreateAccountFiller().Create();
-
+    
         private static Filler<User> CreateAccountFiller()
         {
             var filler = new Filler<User>();
