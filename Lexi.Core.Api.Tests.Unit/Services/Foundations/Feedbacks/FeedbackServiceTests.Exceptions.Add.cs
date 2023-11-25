@@ -4,6 +4,7 @@
 //=================================
 
 using System.Threading.Tasks;
+using EFxceptions.Models.Exceptions;
 using FluentAssertions;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions;
@@ -47,6 +48,46 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
 
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogCritical(It.Is(SameExceptionAs(feedbackDependencyException))),
+                Times.Once);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldThrowDependencyValidationExceptionOnAddIfAlreadyExistErrorOccursAndLogItAsync()
+        {
+            //given
+            Feedback someFeedback = CreateRandomFeedback();
+            var duplicateKeyException = new DuplicateKeyException(GetRandomString());
+
+            var alreadyExistValidationException =
+                new AlreadyExistValidationException(duplicateKeyException);
+
+            var expectedFeedbackDependencyValidationException =
+                new FeedbackDependencyValidationException(alreadyExistValidationException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.InsertFeedbackAsync(someFeedback))
+                .ThrowsAsync(duplicateKeyException);
+
+            //when
+            ValueTask<Feedback> addFeedbackTask =
+                this.feedbackService.AddFeedbackAsync(someFeedback);
+
+            FeedbackDependencyValidationException feedbackDependencyValidationException =
+                await Assert.ThrowsAsync<FeedbackDependencyValidationException>(() =>
+                    addFeedbackTask.AsTask());
+
+            feedbackDependencyValidationException.Should().BeEquivalentTo(expectedFeedbackDependencyValidationException);
+
+            //then
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertFeedbackAsync(someFeedback), Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedFeedbackDependencyValidationException))),
                 Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();

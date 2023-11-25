@@ -50,5 +50,8 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
 
         private SqlException GetSqlError() =>
             (SqlException)FormatterServices.GetUninitializedObject(typeof(SqlException));
+
+        private string GetRandomString() =>
+            new MnemonicString().GetValue();
     }
 }
