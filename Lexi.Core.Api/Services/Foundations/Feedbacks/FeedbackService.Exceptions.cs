@@ -68,6 +68,13 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
 
                 throw CreateAndLogCriticalDepenedencyException(failedFeedbackStorageException);
             }
+            catch(Exception exception)
+            {
+                var failedFeedbackServiceException =
+                    new FailedFeedbackServiceException(exception);
+
+                throw CreateAndLogServiceException(failedFeedbackServiceException);
+            }
         }
 
         private FeedbackValidationException CreateAndLogValidationException(Xeption xeption)
