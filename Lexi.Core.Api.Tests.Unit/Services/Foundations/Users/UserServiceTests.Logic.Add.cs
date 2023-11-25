@@ -7,6 +7,7 @@ using FluentAssertions;
 using Force.DeepCloner;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Moq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.NewFolder.Users

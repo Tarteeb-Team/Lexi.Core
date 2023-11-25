@@ -9,6 +9,8 @@ using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Models.Foundations.Users.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.NewFolder.Users

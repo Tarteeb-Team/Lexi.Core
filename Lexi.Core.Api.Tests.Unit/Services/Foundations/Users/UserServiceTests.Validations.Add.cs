@@ -7,6 +7,7 @@ using FluentAssertions;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Models.Foundations.Users.Exceptions;
 using Moq;
+using System.Threading.Tasks;
 using Xunit;
 using Xunit.Sdk;
 
