@@ -45,6 +45,12 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
 
                 throw CreateAndLogDependencyValidationException(alreadyExistValidationException);
             }
+            catch(Exception exception)
+            {
+                var feedbackServiceException = new FailedFeedbackServiceException(exception);
+
+                throw CreateAndLogServiceException(feedbackServiceException);
+            }
         }
 
         private FeedbackValidationException CreateAndLogValidationException(Xeption xeption)
@@ -72,6 +78,15 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
             this.loggingBroker.LogError(feedbackDependencyValidationException);
 
             return feedbackDependencyValidationException;
+        }
+
+        private FeedbackServiceException CreateAndLogServiceException(Xeption exception)
+        {
+            var feedbackServiceException = new FeedbackServiceException(exception);
+
+            this.loggingBroker.LogError(feedbackServiceException);
+            
+            return feedbackServiceException;
         }
     }
 }
