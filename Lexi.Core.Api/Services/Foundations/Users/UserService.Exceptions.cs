@@ -3,7 +3,9 @@
 // Powering True Leadership
 //=================================
 
+using System;
 using System.Threading.Tasks;
+using EFxceptions.Models.Exceptions;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Models.Foundations.Users.Exceptions;
 using Xeptions;
@@ -28,6 +30,22 @@ namespace Lexi.Core.Api.Services.Foundations.Users
             {
                 throw CreateAndLogValidationException(invalidUserException);
             }
+            catch(DuplicateKeyException duplicateKeyException)
+            {
+                var alreadyExistsUserException =
+                    new UserAlreadyExistsException(duplicateKeyException);
+
+                throw CreateAndALogDependencyValidationException(alreadyExistsUserException);
+            }
+        }
+
+        private UserDependencyValidationException CreateAndALogDependencyValidationException(Xeption exception)
+        {
+            var userDependencyValidationException =
+                new UserDependencyValidationException(exception);
+            this.loggingBroker.LogError(userDependencyValidationException);
+
+            return userDependencyValidationException;
         }
 
         private UserValidationException CreateAndLogValidationException(Xeption exception)
