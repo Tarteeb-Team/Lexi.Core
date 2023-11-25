@@ -67,11 +67,11 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
 
             invalidSpeechException.AddData(
                 key: nameof(SpeechModel.User),
-                values: "Text is required");
+                values: "User is required");
 
             invalidSpeechException.AddData(
                 key: nameof(SpeechModel.Feedbacks),
-                values: "Text is required");
+                values: "Feedback is required");
 
             var expectedSpeechValidationException =
                 new SpeechValidationException(invalidSpeechException);
