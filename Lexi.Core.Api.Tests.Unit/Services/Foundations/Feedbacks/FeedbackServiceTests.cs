@@ -15,6 +15,7 @@ using Tynamix.ObjectFiller;
 using Xeptions;
 using Microsoft.Data.SqlClient;
 using System.Runtime.Serialization;
+using System.Linq;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
 {
@@ -37,6 +38,9 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
 
         private Feedback CreateRandomFeedback() =>
             CreateFeedbackFiller().Create();
+
+        private IQueryable<Feedback> CreateRandomFeedbacks() =>
+            CreateFeedbackFiller().Create(5).AsQueryable();
 
         private static Filler<Feedback> CreateFeedbackFiller()
         {
