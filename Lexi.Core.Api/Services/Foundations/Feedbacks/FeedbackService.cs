@@ -33,7 +33,7 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
 
         public IQueryable<Feedback> RetrieveAllFeedbacks()
         {
-            throw new NotImplementedException();
+            return this.storageBroker.SelectAllFeedbacks();
         }
 
         public async ValueTask<Feedback> RetrieveFeedbackByIdAsync(Guid id)
