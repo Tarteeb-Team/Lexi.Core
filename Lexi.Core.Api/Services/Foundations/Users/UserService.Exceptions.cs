@@ -46,6 +46,7 @@ namespace Lexi.Core.Api.Services.Foundations.Users
                 throw CreateAndLogDependencyException(lockedUserException);
             }
         }
+    
         private UserDependencyException CreateAndLogDependencyException(Xeption exception)
         {
             UserDependencyException userDependencyException =
