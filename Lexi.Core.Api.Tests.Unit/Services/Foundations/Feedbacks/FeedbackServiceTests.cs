@@ -13,6 +13,8 @@ using System.Linq.Expressions;
 using System;
 using Tynamix.ObjectFiller;
 using Xeptions;
+using Microsoft.Data.SqlClient;
+using System.Runtime.Serialization;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
 {
@@ -46,5 +48,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
         private Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException) =>
             actualException => actualException.SameExceptionAs(expectedException);
 
+        private SqlException GetSqlError() =>
+            (SqlException)FormatterServices.GetUninitializedObject(typeof(SqlException));
     }
 }
