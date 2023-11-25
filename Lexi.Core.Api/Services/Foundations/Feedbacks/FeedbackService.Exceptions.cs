@@ -9,6 +9,7 @@ using Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xeptions;
 
@@ -17,6 +18,7 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
     public partial class FeedbackService
     {
         private delegate ValueTask<Feedback> ReturningFeedbackFunction();
+        private delegate IQueryable<Feedback> ReturningFeedbacksFunction();
 
         private async ValueTask<Feedback> TryCatch(ReturningFeedbackFunction returningFeedbackFunction)
         {
@@ -50,6 +52,21 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
                 var feedbackServiceException = new FailedFeedbackServiceException(exception);
 
                 throw CreateAndLogServiceException(feedbackServiceException);
+            }
+        }
+
+        private IQueryable<Feedback> TryCatch(ReturningFeedbacksFunction returningFeedbacksFunction)
+        {
+            try
+            {
+                return returningFeedbacksFunction();
+            }
+            catch (SqlException sqlException)
+            {
+                var failedFeedbackStorageException =
+                    new FailedFeedbackStorageException(sqlException);
+
+                throw CreateAndLogCriticalDepenedencyException(failedFeedbackStorageException);
             }
         }
 
