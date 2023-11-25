@@ -52,6 +52,7 @@ namespace Lexi.Core.Api.Services.Foundations.Users
 
                 throw CreateAndLogDependencyException(failedUserStorageException);
             }
+
         }
     
         private UserDependencyException CreateAndLogDependencyException(Xeption exception)
