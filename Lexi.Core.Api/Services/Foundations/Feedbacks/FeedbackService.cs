@@ -3,16 +3,16 @@
 // Powering True Leadership
 //=================================
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.Storages;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Lexi.Core.Api.Services.Foundations.Feedbacks
 {
-    public class FeedbackService : IFeedbackService
+    public partial class FeedbackService : IFeedbackService
     {
         private readonly IStorageBroker storageBroker;
         private readonly ILoggingBroker loggingBroker;
@@ -23,10 +23,13 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
             this.loggingBroker = loggingBroker;
         }
 
-        public async ValueTask<Feedback> AddFeedbackAsync(Feedback feedback)
+        public ValueTask<Feedback> AddFeedbackAsync(Feedback feedback) =>
+        TryCatch(async () =>
         {
+            VaidateFeedbackOnAdd(feedback);
+
             return await this.storageBroker.InsertFeedbackAsync(feedback);
-        }
+        });
 
         public IQueryable<Feedback> RetrieveAllFeedbacks()
         {
