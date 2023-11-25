@@ -124,7 +124,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
 
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(expectedSpeechServiceException))),
-                    Times.Once);
+                    Times.Once); 
         }
     }
 }
