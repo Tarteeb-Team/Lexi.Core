@@ -3,11 +3,11 @@
 // Powering True Leadership
 //=================================
 
+using Lexi.Core.Api.Models.Foundations.Feedbacks;
+using Lexi.Core.Api.Models.ObjcetModels;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Lexi.Core.Api.Models.Foundations.Feedbacks;
-using Lexi.Core.Api.Models.ObjcetModels;
 using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
 
 namespace Lexi.Core.Api.Services.Orchestrations.Speech

@@ -8,11 +8,10 @@ using Xeptions;
 
 namespace Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions
 {
-    public class FailedFeedbackStorageException : Xeption
+    public class NotFoundFeedbackException : Xeption
     {
-        public FailedFeedbackStorageException(Exception innerExxception)
-            : base("Failed feedback storage error occured, contact support",
-                 innerExxception)
+        public NotFoundFeedbackException(Guid feedbackId)
+            : base(message: $"Feedback not found with id: {feedbackId}.")
         { }
     }
 }

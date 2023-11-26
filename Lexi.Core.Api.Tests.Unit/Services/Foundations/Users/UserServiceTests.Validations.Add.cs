@@ -9,7 +9,6 @@ using Lexi.Core.Api.Models.Foundations.Users.Exceptions;
 using Moq;
 using System.Threading.Tasks;
 using Xunit;
-using Xunit.Sdk;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.NewFolder.Users
 {
@@ -22,7 +21,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.NewFolder.Users
             User nullUser = null;
             var nullUserException = new NullUserException();
 
-            var expectedUserValidationException = 
+            var expectedUserValidationException =
                 new UserValidationException(nullUserException);
 
             // when

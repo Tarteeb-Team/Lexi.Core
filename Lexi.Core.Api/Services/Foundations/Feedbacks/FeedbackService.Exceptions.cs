@@ -7,7 +7,6 @@ using EFxceptions.Models.Exceptions;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,28 +25,32 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
             {
                 return await returningFeedbackFunction();
             }
-            catch(NullFeedbackException nullFeedbackException)
+            catch (NullFeedbackException nullFeedbackException)
             {
                 throw CreateAndLogValidationException(nullFeedbackException);
             }
-            catch(InvalidFeedbackException invalidFeedbackException)
+            catch (InvalidFeedbackException invalidFeedbackException)
             {
                 throw CreateAndLogValidationException(invalidFeedbackException);
             }
-            catch(SqlException sqlException)
+            catch (NotFoundFeedbackException notFoundFeedbackException)
+            {
+                throw CreateAndLogValidationException(notFoundFeedbackException);
+            }
+            catch (SqlException sqlException)
             {
                 var failedFeedbackStorageException = new FailedFeedbackStorageException(sqlException);
 
                 throw CreateAndLogCriticalDepenedencyException(failedFeedbackStorageException);
             }
-            catch(DuplicateKeyException duplicateKeyException)
+            catch (DuplicateKeyException duplicateKeyException)
             {
                 AlreadyExistValidationException alreadyExistValidationException =
                     new AlreadyExistValidationException(duplicateKeyException);
 
                 throw CreateAndLogDependencyValidationException(alreadyExistValidationException);
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 var feedbackServiceException = new FailedFeedbackServiceException(exception);
 
@@ -68,7 +71,7 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
 
                 throw CreateAndLogCriticalDepenedencyException(failedFeedbackStorageException);
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 var failedFeedbackServiceException =
                     new FailedFeedbackServiceException(exception);
@@ -109,7 +112,7 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
             var feedbackServiceException = new FeedbackServiceException(exception);
 
             this.loggingBroker.LogError(feedbackServiceException);
-            
+
             return feedbackServiceException;
         }
     }

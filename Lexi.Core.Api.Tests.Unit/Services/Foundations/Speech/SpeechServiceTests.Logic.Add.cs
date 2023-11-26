@@ -3,12 +3,12 @@
 // Powering True Leadership
 //=================================
 
-using Moq;
-using Xunit;
 using FluentAssertions;
-using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
 using Force.DeepCloner;
+using Moq;
 using System.Threading.Tasks;
+using Xunit;
+using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
 {

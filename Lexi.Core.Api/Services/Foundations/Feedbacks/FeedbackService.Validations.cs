@@ -33,6 +33,17 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
             }
         }
 
+        private static void ValidateFeedbackId(Guid feedbackId) =>
+            Validate((Rule: IsInvalid(feedbackId), Parameter: nameof(Feedback.Id)));
+
+        private static void ValidateStorageFeedback(Feedback maybeFeedback, Guid feedbackId)
+        {
+            if (maybeFeedback == null)
+            {
+                throw new NotFoundFeedbackException(feedbackId);
+            }
+        }
+
         private static void Validate(params (dynamic Rule, string Parameter)[] validations)
         {
             var invalidFeedbackException = new InvalidFeedbackException();

@@ -30,7 +30,7 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
 
             return await this.storageBroker.InsertSpeechAsync(speech);
         });
-            
+
         public IQueryable<Speech> RetrieveAllSpeeches()
         {
             return this.storageBroker.SelectAllSpeeches();

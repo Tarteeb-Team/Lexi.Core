@@ -10,7 +10,7 @@ namespace Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions
     public class FeedbackDependencyException : Xeption
     {
         public FeedbackDependencyException(Xeption innerException)
-            :base("Feedback dependency error occured, contact support",
+            : base("Feedback dependency error occured, contact support",
                  innerException)
         { }
     }

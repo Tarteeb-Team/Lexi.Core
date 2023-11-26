@@ -3,8 +3,8 @@
 // Powering True Leadership
 //=================================
 
-using System;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace Lexi.Core.Api.Brokers.Loggings
 {

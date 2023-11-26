@@ -3,12 +3,12 @@
 // Powering True Leadership
 //=================================
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.Storages;
 using Lexi.Core.Api.Models.Foundations.Users;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Lexi.Core.Api.Services.Foundations.Users
 {
@@ -25,7 +25,7 @@ namespace Lexi.Core.Api.Services.Foundations.Users
             this.loggingBroker = loggingBroker;
         }
         public ValueTask<User> AddUserAsync(User user) =>
-        TryCatch( async () =>
+        TryCatch(async () =>
         {
             ValidateUserOnAdd(user);
 

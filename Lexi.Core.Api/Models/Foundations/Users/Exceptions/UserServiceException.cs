@@ -1,5 +1,4 @@
-﻿using System;
-using Xeptions;
+﻿using Xeptions;
 
 namespace Lexi.Core.Api.Models.Foundations.Users.Exceptions
 {

@@ -1,4 +1,4 @@
-﻿//=================================
+//=================================
 // Copyright (c) Tarteeb LLC.
 // Powering True Leadership
 //=================================
@@ -37,7 +37,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
 
             //when
 
-            ValueTask<SpeechModel> addSpeechTask = 
+            ValueTask<SpeechModel> addSpeechTask =
                 this.speechService.AddSpechesAsync(randomSpeech);
 
             var actualSpeechDependencyValidationException =
@@ -126,7 +126,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
 
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogCritical(It.Is(SameExceptionAs(expectedSpeechServiceException))),
-                    Times.Once); 
+                    Times.Once);
         }
     }
 }

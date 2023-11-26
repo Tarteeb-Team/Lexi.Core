@@ -3,14 +3,13 @@
 // Powering True Leadership
 //=================================
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions;
 using Microsoft.Data.SqlClient;
 using Moq;
+using System;
+using System.Linq;
 using Xunit;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks

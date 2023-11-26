@@ -30,7 +30,7 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
 
         private void ValidateStorageSpeechExists(Speech maybeSpeech, Guid id)
         {
-            if(maybeSpeech is null)
+            if (maybeSpeech is null)
             {
                 throw new NotFoundSpeechException(id);
             }
@@ -52,12 +52,12 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
 
             Condition = System.String.IsNullOrWhiteSpace(text),
             Message = "Text is required"
-        }; 
+        };
         private static dynamic IsInvalid(User user) => new
         {
             Condition = user == null,
             Message = "User is required"
-        }; 
+        };
         private static dynamic IsInvalid(Feedback feedback) => new
         {
             Condition = feedback == null,

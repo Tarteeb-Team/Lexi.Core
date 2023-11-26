@@ -1,5 +1,5 @@
-﻿using System;
-using Lexi.Core.Api.Models.Foundations.Speeches;
+﻿using Lexi.Core.Api.Models.Foundations.Speeches;
+using System;
 
 namespace Lexi.Core.Api.Models.Foundations.Feedbacks
 {

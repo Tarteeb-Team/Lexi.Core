@@ -3,13 +3,13 @@
 // Powering True Leadership
 //=================================
 
-using System;
-using System.Linq.Expressions;
 using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.Storages;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Services.Foundations.Users;
 using Moq;
+using System;
+using System.Linq.Expressions;
 using Tynamix.ObjectFiller;
 using Xeptions;
 
@@ -34,7 +34,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.NewFolder.Users
            new MnemonicString().GetValue();
         private static User CreateRandomUser() =>
             CreateAccountFiller().Create();
-    
+
         private static Filler<User> CreateAccountFiller()
         {
             var filler = new Filler<User>();
