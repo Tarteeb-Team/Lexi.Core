@@ -4,9 +4,6 @@
 //=================================
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Lexi.Core.Api.Models.Foundations.Speeches.Exceptions;
@@ -26,13 +23,13 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
             var invalidSpeechException = new InvalidSpeechException();
 
             invalidSpeechException.AddData(
-                key: nameof(SpeechModel.Id), 
+                key: nameof(SpeechModel.Id),
                 values: "Id is required");
 
-            var expectedSpeechValidationException = 
+            var expectedSpeechValidationException =
                     new SpeechValidationException(invalidSpeechException);
             //when
-            ValueTask<SpeechModel> retrieveSpeechByIdTask = 
+            ValueTask<SpeechModel> retrieveSpeechByIdTask =
                     this.speechService.RetrieveSpeechesByIdAsync(invalidSpeechId);
 
             SpeechValidationException actualSpeechValidationException =
@@ -44,6 +41,44 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
             this.loggingBrokerMock.Verify(broker =>
             broker.LogError(It.Is(SameExceptionAs(
                 expectedSpeechValidationException))), Times.Once);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldThhrowNotFoundExceptionOnRetrieveByIdifSpeechNotFoundAndLogItAsync()
+        {
+            //given
+            Guid sameId = Guid.NewGuid();
+            SpeechModel noSpeech = null;
+
+            var notFoundSpeechException = 
+                    new NotFoundSpeechException(sameId);
+
+            var expectedSpeechValidationException = 
+                new SpeechValidationException(notFoundSpeechException);
+
+            this.storageBrokerMock.Setup(broker =>
+                 broker.SelectSpeechByIdAsync(It.IsAny<Guid>())).ReturnsAsync(noSpeech);
+
+            //when
+
+            ValueTask<SpeechModel> retrieveSpeechTask = 
+                    this.speechService.RetrieveSpeechesByIdAsync(sameId);
+
+            SpeechValidationException actualSpeechValidationException =
+                await Assert.ThrowsAsync<SpeechValidationException>(retrieveSpeechTask.AsTask);
+
+            //then
+
+            actualSpeechValidationException.Should().BeEquivalentTo(expectedSpeechValidationException);
+
+            this.storageBrokerMock.Verify(broker =>
+                 broker.SelectSpeechByIdAsync(It.IsAny<Guid>()), Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+            broker.LogError(It.Is(SameExceptionAs(expectedSpeechValidationException))), Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
