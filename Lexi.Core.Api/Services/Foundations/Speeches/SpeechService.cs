@@ -40,9 +40,12 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
         TryCatch(async () =>
         {
             ValidateSpeechId(id);
-            return await this.storageBroker.SelectSpeechByIdAsync(id);
-        });
 
+            Speech maybeSpeech = await storageBroker.SelectSpeechByIdAsync(id);
+            ValidateStorageSpeechExists(maybeSpeech, id);
+
+            return maybeSpeech;
+        });
         public async ValueTask<Speech> RemoveSpeechAsync(Speech speech)
         {
             return await this.storageBroker.DeleteSpeechAsync(speech);

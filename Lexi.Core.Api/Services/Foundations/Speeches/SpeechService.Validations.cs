@@ -7,6 +7,7 @@ using System;
 using System.Data;
 using System.Reflection.Metadata;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
+using Lexi.Core.Api.Models.Foundations.Speeches;
 using Lexi.Core.Api.Models.Foundations.Speeches.Exceptions;
 using Lexi.Core.Api.Models.Foundations.Users;
 using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
@@ -25,6 +26,14 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
                 (Rule: IsInvalid(speech.UserId), Parameter: nameof(SpeechModel.UserId)),
                 (Rule: IsInvalid(speech.User), Parameter: nameof(SpeechModel.User)),
                 (Rule: IsInvalid(speech.Feedbacks), Parameter: nameof(SpeechModel.Feedbacks)));
+        }
+
+        private void ValidateStorageSpeechExists(Speech maybeSpeech, Guid id)
+        {
+            if(maybeSpeech is null)
+            {
+                throw new NotFoundSpeechException(id);
+            }
         }
 
         private void ValidateSpeechId(Guid id)
