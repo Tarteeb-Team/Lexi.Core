@@ -66,7 +66,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
                     new FailedSpeechServiceException(serviceException);
 
             var expectedspeechServiceException = new 
-                    FailedSpeechServiceException(failedSpeechServiceException);
+                    SpeechServiceException(failedSpeechServiceException);
 
             this.storageBrokerMock.Setup(broker => 
                  broker.SelectSpeechByIdAsync(It.IsAny<Guid>())).ThrowsAsync(serviceException);
@@ -74,11 +74,11 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
             ValueTask<SpeechModel> retrieveSpeechByIdTask =
                  this.speechService.RetrieveSpeechesByIdAsync(someId);
 
-            FailedSpeechServiceException actualFailedSpeechServiceException =
-                await Assert.ThrowsAsync<FailedSpeechServiceException>(
+            SpeechServiceException actualSpeechServiceException =
+                await Assert.ThrowsAsync<SpeechServiceException>(
                     retrieveSpeechByIdTask.AsTask);
             //then
-            actualFailedSpeechServiceException.
+            actualSpeechServiceException.
                 Should().
                 BeEquivalentTo(expectedspeechServiceException);
 

@@ -86,7 +86,7 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
         private SpeechServiceException CreateAndLogServiceException(Xeption exception)
         {
             var speechServiceException = new SpeechServiceException(exception);
-            this.loggingBroker.LogError(speechServiceException);
+            this.loggingBroker.LogCritical(speechServiceException);
 
             return speechServiceException;
         }
