@@ -27,6 +27,11 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
                 (Rule: IsInvalid(speech.Feedbacks), Parameter: nameof(SpeechModel.Feedbacks)));
         }
 
+        private void ValidateSpeechId(Guid id)
+        {
+            Validate(
+                (Rule: IsInvalid(id), Parameter: nameof(SpeechModel.Id)));
+        }
         private static dynamic IsInvalid(Guid id) => new
         {
             Condition = id == Guid.Empty,

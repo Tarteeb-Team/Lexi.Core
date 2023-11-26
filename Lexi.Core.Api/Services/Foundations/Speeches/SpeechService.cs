@@ -39,6 +39,7 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
         public ValueTask<Speech> RetrieveSpeechesByIdAsync(Guid id) =>
         TryCatch(async () =>
         {
+            ValidateSpeechId(id);
             return await this.storageBroker.SelectSpeechByIdAsync(id);
         });
 
