@@ -9,8 +9,6 @@ using Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions;
 using Microsoft.Data.SqlClient;
 using Moq;
 using System;
-using System.Security.Cryptography.Xml;
-using System.Security.Policy;
 using System.Threading.Tasks;
 using Xunit;
 

@@ -31,12 +31,12 @@ namespace Lexi.Core.Api.Controllers
         {
             formFile = Request.Form.Files[0];
 
-            using(MemoryStream memoryStream = new MemoryStream())
+            using (MemoryStream memoryStream = new MemoryStream())
             {
                 formFile.CopyTo(memoryStream);
                 memoryStream.Position = 0;
 
-                ResponseCognitive responseCognitive = 
+                ResponseCognitive responseCognitive =
                     await this.orchestrationService.GetOggFile(memoryStream);
 
                 return responseCognitive;

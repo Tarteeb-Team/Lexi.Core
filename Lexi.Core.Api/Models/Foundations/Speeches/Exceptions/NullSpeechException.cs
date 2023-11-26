@@ -11,6 +11,6 @@ namespace Lexi.Core.Api.Models.Foundations.Speeches.Exceptions
     {
         public NullSpeechException()
             : base(message: "Speech is Null")
-        {  }
+        { }
     }
 }

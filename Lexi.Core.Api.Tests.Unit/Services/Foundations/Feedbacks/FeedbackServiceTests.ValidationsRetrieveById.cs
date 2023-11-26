@@ -61,7 +61,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
             var notFoundFeedbackException =
                 new NotFoundFeedbackException(someFeedbackId);
 
-            var expectedFeedbackValidationException = 
+            var expectedFeedbackValidationException =
                 new FeedbackValidationException(notFoundFeedbackException);
 
             this.storageBrokerMock.Setup(broker =>
@@ -83,7 +83,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
             this.storageBrokerMock.Verify(broker =>
                 broker.SelectFeedbackByIdAsync(someFeedbackId), Times.Once);
 
-            this.loggingBrokerMock.Verify(broker => 
+            this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(
                     expectedFeedbackValidationException))), Times.Once);
 

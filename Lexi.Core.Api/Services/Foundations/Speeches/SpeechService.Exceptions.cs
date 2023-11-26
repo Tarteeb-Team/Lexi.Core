@@ -3,13 +3,13 @@
 // Powering True Leadership
 //=================================
 
+using EFxceptions.Models.Exceptions;
+using Lexi.Core.Api.Models.Foundations.Speeches.Exceptions;
+using Microsoft.Data.SqlClient;
+using System;
 using System.Threading.Tasks;
 using Xeptions;
 using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
-using Lexi.Core.Api.Models.Foundations.Speeches.Exceptions;
-using EFxceptions.Models.Exceptions;
-using Microsoft.Data.SqlClient;
-using System;
 
 
 namespace Lexi.Core.Api.Services.Foundations.Speeches
@@ -28,7 +28,7 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
             {
                 throw CreateAndLogValidationException(nullSpeechException);
             }
-            catch(InvalidSpeechException invalidSpeechException)
+            catch (InvalidSpeechException invalidSpeechException)
             {
                 throw CreateAndLogValidationException(invalidSpeechException);
             }

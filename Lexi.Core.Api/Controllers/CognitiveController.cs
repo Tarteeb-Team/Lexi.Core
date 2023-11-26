@@ -3,11 +3,11 @@
 // Powering True Leadership
 //=================================
 
-using System.Threading.Tasks;
 using Lexi.Core.Api.Models.ObjcetModels;
 using Lexi.Core.Api.Services.Orchestrations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Lexi.Core.Api.Controllers
 {

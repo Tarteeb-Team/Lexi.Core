@@ -3,7 +3,6 @@
 // Powering True Leadership
 //=================================
 
-using System;
 using Xeptions;
 
 namespace Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions
@@ -11,7 +10,7 @@ namespace Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions
     public class FeedbackValidationException : Xeption
     {
         public FeedbackValidationException(Xeption xeption)
-            :base(message: "Feedback validation error occurred, fix the error and try again.")
+            : base(message: "Feedback validation error occurred, fix the error and try again.")
         { }
     }
 }

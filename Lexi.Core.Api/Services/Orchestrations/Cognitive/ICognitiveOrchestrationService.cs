@@ -3,9 +3,9 @@
 // Powering True Leadership
 //=================================
 
+using Lexi.Core.Api.Models.ObjcetModels;
 using System.IO;
 using System.Threading.Tasks;
-using Lexi.Core.Api.Models.ObjcetModels;
 
 namespace Lexi.Core.Api.Services.Orchestrations.Cognitive
 {

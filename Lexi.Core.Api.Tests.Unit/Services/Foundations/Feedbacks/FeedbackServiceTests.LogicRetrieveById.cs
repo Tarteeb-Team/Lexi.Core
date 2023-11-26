@@ -30,7 +30,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
                     .ReturnsAsync(persistedFeedback);
 
             //when
-            Feedback actualFeedback = 
+            Feedback actualFeedback =
                 await this.feedbackService.RetrieveFeedbackByIdAsync(inputFeedbackId);
 
             //then

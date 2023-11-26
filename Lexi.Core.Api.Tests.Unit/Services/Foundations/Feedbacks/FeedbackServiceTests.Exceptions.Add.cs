@@ -3,14 +3,14 @@
 // Powering True Leadership
 //=================================
 
-using System;
-using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
 using FluentAssertions;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions;
 using Microsoft.Data.SqlClient;
 using Moq;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
@@ -37,7 +37,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
                 this.feedbackService.AddFeedbackAsync(someFeedback);
 
             FeedbackDependencyException feedbackDependencyException =
-                await Assert.ThrowsAsync<FeedbackDependencyException>(()  =>
+                await Assert.ThrowsAsync<FeedbackDependencyException>(() =>
                     addFeedbackTask.AsTask());
 
             feedbackDependencyException.Should().BeEquivalentTo(expectedFeedbackDependencyException);

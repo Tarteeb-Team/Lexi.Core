@@ -6,16 +6,15 @@
 using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.Storages;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
-using Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions;
 using Lexi.Core.Api.Services.Foundations.Feedbacks;
+using Microsoft.Data.SqlClient;
 using Moq;
-using System.Linq.Expressions;
 using System;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Runtime.Serialization;
 using Tynamix.ObjectFiller;
 using Xeptions;
-using Microsoft.Data.SqlClient;
-using System.Runtime.Serialization;
-using System.Linq;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
 {
@@ -30,7 +29,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
             this.storageBrokerMock = new Mock<IStorageBroker>();
             this.loggingBrokerMock = new Mock<ILoggingBroker>();
 
-            this.feedbackService = 
+            this.feedbackService =
                 new FeedbackService(
                     storageBroker: this.storageBrokerMock.Object,
                     loggingBroker: this.loggingBrokerMock.Object);

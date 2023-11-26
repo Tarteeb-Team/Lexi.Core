@@ -6,8 +6,6 @@
 using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.Storages;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
-using Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions;
-using Microsoft.Data.SqlClient;
 using System;
 using System.Linq;
 using System.Threading.Tasks;

@@ -3,11 +3,11 @@
 // Powering True Leadership
 //=================================
 
+using Lexi.Core.Api.Models.Foundations.Speeches;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Lexi.Core.Api.Models.Foundations.Speeches;
-using Microsoft.EntityFrameworkCore;
 
 namespace Lexi.Core.Api.Brokers.Storages
 {

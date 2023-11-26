@@ -3,9 +3,9 @@
 // Powering True Leadership
 //=================================
 
+using Lexi.Core.Api.Brokers.Cognitives;
 using System.IO;
 using System.Threading.Tasks;
-using Lexi.Core.Api.Brokers.Cognitives;
 
 namespace Lexi.Core.Api.Services.Cognitives
 {

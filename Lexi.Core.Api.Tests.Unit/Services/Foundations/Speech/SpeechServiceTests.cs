@@ -3,17 +3,17 @@
 // Powering True Leadership
 //=================================
 
-using Moq;
-using Tynamix.ObjectFiller;
 using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.Storages;
 using Lexi.Core.Api.Services.Foundations.Speeches;
-using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
-using System.Linq.Expressions;
-using Xeptions;
 using Microsoft.Data.SqlClient;
-using System.Runtime.Serialization;
+using Moq;
 using System;
+using System.Linq.Expressions;
+using System.Runtime.Serialization;
+using Tynamix.ObjectFiller;
+using Xeptions;
+using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
 {

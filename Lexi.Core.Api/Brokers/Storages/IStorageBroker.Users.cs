@@ -3,10 +3,10 @@
 // Powering True Leadership
 //=================================
 
+using Lexi.Core.Api.Models.Foundations.Users;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Lexi.Core.Api.Models.Foundations.Users;
 
 namespace Lexi.Core.Api.Brokers.Storages
 {

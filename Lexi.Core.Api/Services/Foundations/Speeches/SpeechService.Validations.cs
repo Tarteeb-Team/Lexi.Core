@@ -3,12 +3,10 @@
 // Powering True Leadership
 //=================================
 
-using System;
-using System.Data;
-using System.Reflection.Metadata;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Lexi.Core.Api.Models.Foundations.Speeches.Exceptions;
 using Lexi.Core.Api.Models.Foundations.Users;
+using System;
 using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
 
 namespace Lexi.Core.Api.Services.Foundations.Speeches
@@ -38,12 +36,12 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
 
             Condition = System.String.IsNullOrWhiteSpace(text),
             Message = "Text is required"
-        }; 
+        };
         private static dynamic IsInvalid(User user) => new
         {
             Condition = user == null,
             Message = "User is required"
-        }; 
+        };
         private static dynamic IsInvalid(Feedback feedback) => new
         {
             Condition = feedback == null,

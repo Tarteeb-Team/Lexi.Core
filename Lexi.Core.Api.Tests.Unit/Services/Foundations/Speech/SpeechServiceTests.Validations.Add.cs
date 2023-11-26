@@ -3,10 +3,10 @@
 // Powering True Leadership
 //=================================
 
-using System.Threading.Tasks;
 using FluentAssertions;
 using Lexi.Core.Api.Models.Foundations.Speeches.Exceptions;
 using Moq;
+using System.Threading.Tasks;
 using Xunit;
 using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
@@ -19,7 +19,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
             //given
             SpeechModel NoSpeech = null;
             var nullSpeechException = new NullSpeechException();
-            var excpectedSpeechValidationException = 
+            var excpectedSpeechValidationException =
                     new SpeechValidationException(nullSpeechException);
             //when
             ValueTask<SpeechModel> addSpeechTask = this.speechService.AddSpechesAsync(NoSpeech);
