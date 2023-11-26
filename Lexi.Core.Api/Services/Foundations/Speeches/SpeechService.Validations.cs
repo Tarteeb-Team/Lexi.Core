@@ -4,6 +4,7 @@
 //=================================
 
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
+using Lexi.Core.Api.Models.Foundations.Speeches;
 using Lexi.Core.Api.Models.Foundations.Speeches.Exceptions;
 using Lexi.Core.Api.Models.Foundations.Users;
 using System;
@@ -25,6 +26,19 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
                 (Rule: IsInvalid(speech.Feedbacks), Parameter: nameof(SpeechModel.Feedbacks)));
         }
 
+        private void ValidateStorageSpeechExists(Speech maybeSpeech, Guid id)
+        {
+            if(maybeSpeech is null)
+            {
+                throw new NotFoundSpeechException(id);
+            }
+        }
+
+        private void ValidateSpeechId(Guid id)
+        {
+            Validate(
+                (Rule: IsInvalid(id), Parameter: nameof(SpeechModel.Id)));
+        }
         private static dynamic IsInvalid(Guid id) => new
         {
             Condition = id == Guid.Empty,
