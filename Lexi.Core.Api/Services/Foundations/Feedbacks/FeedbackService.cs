@@ -44,6 +44,10 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
         {
             ValidateFeedbackId(feedbackId);
 
+            var maybeFeedback = await this.storageBroker.SelectFeedbackByIdAsync(feedbackId);
+
+            ValidateStorageFeedback(maybeFeedback, feedbackId);
+
             return await storageBroker.SelectFeedbackByIdAsync(feedbackId);
         });
 
