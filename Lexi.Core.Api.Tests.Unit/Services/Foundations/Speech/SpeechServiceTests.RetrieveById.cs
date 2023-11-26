@@ -4,9 +4,6 @@
 //=================================
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Lexi.Core.Api.Models.Foundations.Speeches.Exceptions;
@@ -20,16 +17,16 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
     public partial class SpeechServiceTests
     {
         [Fact]
-        public async Task ShouldThrowCriticalDependencyExceptionOnRetrieveByIdIfSqlErrorOccursAndLogItAsync()
+        public async Task ShouldThrowCriticalDependencyExceptionOnRetrieveByIdAsyncIfSqlErrorOccursAndLogItAsync()
         {
             //given
             Guid someId = Guid.NewGuid();
             SqlException sqlException = GetSqlError();
 
-            var failedSpeechStorageException = 
+            var failedSpeechStorageException =
                     new FailedSpeechStorageException(sqlException);
 
-            SpeechDependencyException expectedSpeechDependencyException = 
+            SpeechDependencyException expectedSpeechDependencyException =
                     new SpeechDependencyException(failedSpeechStorageException);
 
             this.storageBrokerMock.Setup(broker =>
@@ -53,6 +50,44 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
             this.loggingBrokerMock.Verify(broker =>
             broker.LogCritical(It.Is(SameExceptionAs(
                 expectedSpeechDependencyException))), Times.Once);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldThrowServiceExceptionOnRetrieveByIdAsyncIfServiceErrorOccursAndLogItAsync()
+        {
+            //given
+            Guid someId = Guid.NewGuid();
+            Exception serviceException = new Exception();
+
+            var failedSpeechServiceException = 
+                    new FailedSpeechServiceException(serviceException);
+
+            var expectedspeechServiceException = new 
+                    FailedSpeechServiceException(failedSpeechServiceException);
+
+            this.storageBrokerMock.Setup(broker => 
+                 broker.SelectSpeechByIdAsync(It.IsAny<Guid>())).ThrowsAsync(serviceException);
+            //when
+            ValueTask<SpeechModel> retrieveSpeechByIdTask =
+                 this.speechService.RetrieveSpeechesByIdAsync(someId);
+
+            FailedSpeechServiceException actualFailedSpeechServiceException =
+                await Assert.ThrowsAsync<FailedSpeechServiceException>(
+                    retrieveSpeechByIdTask.AsTask);
+            //then
+            actualFailedSpeechServiceException.
+                Should().
+                BeEquivalentTo(expectedspeechServiceException);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectSpeechByIdAsync(It.IsAny<Guid>()), Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogCritical(It.Is(SameExceptionAs(
+                expectedspeechServiceException))), Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
