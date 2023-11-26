@@ -51,7 +51,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
         private Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException) =>
             actualException => actualException.SameExceptionAs(expectedException);
 
-        private SqlException GetSqlError() =>
+        private static SqlException GetSqlError() =>
             (SqlException)FormatterServices.GetUninitializedObject(typeof(SqlException));
 
         private string GetRandomString() =>
