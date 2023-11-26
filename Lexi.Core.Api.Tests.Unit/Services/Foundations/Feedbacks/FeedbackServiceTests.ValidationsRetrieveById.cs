@@ -50,5 +50,45 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task ShoudThrowValidationExceptionOnRetriveByIdIfFeedbackNotFoundAndLogItAsync()
+        {
+            //given
+            Guid someFeedbackId = Guid.NewGuid();
+            Feedback Invalidfeedback = null;
+
+            var notFoundFeedbackException =
+                new NotFoundFeedbackException(someFeedbackId);
+
+            var expectedFeedbackValidationException = 
+                new FeedbackValidationException(notFoundFeedbackException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectFeedbackByIdAsync(
+                    It.IsAny<Guid>())).ReturnsAsync(Invalidfeedback);
+
+            //when
+            ValueTask<Feedback> retrieveFeedbackByIdTask =
+                this.feedbackService.RetrieveFeedbackByIdAsync(someFeedbackId);
+
+            var actualFeedbackValidationException =
+                await Assert.ThrowsAsync<FeedbackValidationException>(
+                    retrieveFeedbackByIdTask.AsTask);
+
+            //then
+            actualFeedbackValidationException
+                .Should().BeEquivalentTo(expectedFeedbackValidationException);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectFeedbackByIdAsync(someFeedbackId), Times.Once);
+
+            this.loggingBrokerMock.Verify(broker => 
+                broker.LogError(It.Is(SameExceptionAs(
+                    expectedFeedbackValidationException))), Times.Once);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
