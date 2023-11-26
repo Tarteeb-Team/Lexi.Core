@@ -37,12 +37,12 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
             {
                 throw CreateAndLogValidationException(notFoundFeedbackException);
             }
-            catch (SqlException sqlException)
-            {
-                var failedFeedbackStorageException = new FailedFeedbackStorageException(sqlException);
+            //catch (SqlException sqlException)
+            //{
+            //    var failedFeedbackStorageException = new FailedFeedbackStorageException(sqlException);
 
-                throw CreateAndLogCriticalDepenedencyException(failedFeedbackStorageException);
-            }
+            //    throw CreateAndLogCriticalDepenedencyException(failedFeedbackStorageException);
+            //}
             catch (DuplicateKeyException duplicateKeyException)
             {
                 AlreadyExistValidationException alreadyExistValidationException =
