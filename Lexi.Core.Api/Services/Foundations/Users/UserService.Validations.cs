@@ -5,6 +5,7 @@
 
 using System;
 using System.Data;
+using System.Reflection.Metadata;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Models.Foundations.Users.Exceptions;
 
@@ -20,7 +21,11 @@ namespace Lexi.Core.Api.Services.Foundations.Users
                 (Rule: IsInvalid(user.Id), Parameter: nameof(User.Id)),
                 (Rule: IsInvalid(user.Name), Parameter: nameof(User.Name)));
         }
-
+        private void ValidateUserId(Guid id)
+        {
+            Validate(
+                (Rule: IsInvalid(id), Parameter: nameof(User.Id)));
+        } 
         private static void ValidateUserNotNull(User user)
         {
             if (user == null)
