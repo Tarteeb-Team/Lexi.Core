@@ -41,7 +41,7 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
 
         public async ValueTask<Feedback> RetrieveFeedbackByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await storageBroker.SelectFeedbackByIdAsync(id);
         }
 
         public async ValueTask<Feedback> RemoveFeedbackAsync(Feedback feedback)
