@@ -50,12 +50,12 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
 
                 throw CreateAndLogDependencyValidationException(alreadyExistValidationException);
             }
-            //catch (Exception exception)
-            //{
-            //    var feedbackServiceException = new FailedFeedbackServiceException(exception);
+            catch (Exception exception)
+            {
+                var feedbackServiceException = new FailedFeedbackServiceException(exception);
 
-            //    throw CreateAndLogServiceException(feedbackServiceException);
-            //}
+                throw CreateAndLogServiceException(feedbackServiceException);
+            }
         }
 
         private IQueryable<Feedback> TryCatch(ReturningFeedbacksFunction returningFeedbacksFunction)
