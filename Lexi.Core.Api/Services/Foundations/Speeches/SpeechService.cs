@@ -36,10 +36,11 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
             return this.storageBroker.SelectAllSpeeches();
         }
 
-        public async ValueTask<Speech> RetrieveSpeechesByIdAsync(Guid id)
+        public ValueTask<Speech> RetrieveSpeechesByIdAsync(Guid id) =>
+        TryCatch(async () =>
         {
             return await this.storageBroker.SelectSpeechByIdAsync(id);
-        }
+        });
 
         public async ValueTask<Speech> RemoveSpeechAsync(Speech speech)
         {
