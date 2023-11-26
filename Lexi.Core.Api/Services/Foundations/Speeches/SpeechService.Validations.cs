@@ -3,11 +3,13 @@
 // Powering True Leadership
 //=================================
 
+using System;
+using System.Data;
+using System.Reflection.Metadata;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Lexi.Core.Api.Models.Foundations.Speeches;
 using Lexi.Core.Api.Models.Foundations.Speeches.Exceptions;
 using Lexi.Core.Api.Models.Foundations.Users;
-using System;
 using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
 
 namespace Lexi.Core.Api.Services.Foundations.Speeches
@@ -28,7 +30,7 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
 
         private void ValidateStorageSpeechExists(Speech maybeSpeech, Guid id)
         {
-            if(maybeSpeech is null)
+            if (maybeSpeech is null)
             {
                 throw new NotFoundSpeechException(id);
             }

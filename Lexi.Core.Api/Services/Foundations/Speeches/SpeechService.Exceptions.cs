@@ -28,11 +28,11 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
             {
                 throw CreateAndLogValidationException(nullSpeechException);
             }
-            catch(NotFoundSpeechException notFoundSpeechException)
+            catch (NotFoundSpeechException notFoundSpeechException)
             {
                 throw CreateAndLogValidationException(notFoundSpeechException);
             }
-            catch(InvalidSpeechException invalidSpeechException)
+            catch (InvalidSpeechException invalidSpeechException)
             {
                 throw CreateAndLogValidationException(invalidSpeechException);
             }

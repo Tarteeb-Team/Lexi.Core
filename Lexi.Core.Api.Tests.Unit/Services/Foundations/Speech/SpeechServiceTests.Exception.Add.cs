@@ -3,13 +3,13 @@
 // Powering True Leadership
 //=================================
 
+using System;
+using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
 using FluentAssertions;
 using Lexi.Core.Api.Models.Foundations.Speeches.Exceptions;
 using Microsoft.Data.SqlClient;
 using Moq;
-using System;
-using System.Threading.Tasks;
 using Xunit;
 using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
 
@@ -125,7 +125,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
                     Times.Once);
 
             this.loggingBrokerMock.Verify(broker =>
-                broker.LogError(It.Is(SameExceptionAs(expectedSpeechServiceException))),
+                broker.LogCritical(It.Is(SameExceptionAs(expectedSpeechServiceException))),
                     Times.Once);
         }
     }
