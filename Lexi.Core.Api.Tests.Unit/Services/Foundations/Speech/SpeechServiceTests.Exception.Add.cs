@@ -3,95 +3,130 @@
 // Powering True Leadership
 //=================================
 
+using EFxceptions.Models.Exceptions;
 using FluentAssertions;
-using Lexi.Core.Api.Models.Foundations.Feedbacks;
-using Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions;
+using Lexi.Core.Api.Models.Foundations.Speeches.Exceptions;
 using Microsoft.Data.SqlClient;
 using Moq;
 using System;
 using System.Threading.Tasks;
 using Xunit;
+using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
 
-namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
+namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
 {
-    public partial class FeedbackServiceTests
+    public partial class SpeechServiceTests
     {
         [Fact]
-        public async Task ShouldThrowCriticalDependencyExceptionOnRetrieveByIdIfSqlErrorOccursAndLogItAsync()
+        public async Task ShouldThrowDependencyValidationExceptionOnAddIfDuplicateKeyErrorOccursAndLogItAsync()
         {
             //given
-            Guid someFeedbackId = Guid.NewGuid();
-            SqlException sqlException = GetSqlError();
+            string someMessage = GetRandomString();
+            SpeechModel randomSpeech = CreateRandomSpeech();
 
-            var failedFeedbackStorageException =
-                new FailedFeedbackStorageException(sqlException);
+            var duplicateKeyException = new DuplicateKeyException(someMessage);
 
-            var expectedFeedbackDependencyException =
-                new FeedbackDependencyException(failedFeedbackStorageException);
+            var alreadyExistsSpeechException =
+                new AlreadyExistValidationException(duplicateKeyException);
+
+            var expectedSpeechDependencyValidationException =
+                new SpeechDependencyValidationException(alreadyExistsSpeechException);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectFeedbackByIdAsync(It.IsAny<Guid>()))
-                    .ThrowsAsync(sqlException);
+                broker.InsertSpeechAsync(randomSpeech)).ThrowsAsync(duplicateKeyException);
+
             //when
-            ValueTask<Feedback> retrieveFeedbackById =
-                this.feedbackService.RetrieveFeedbackByIdAsync(someFeedbackId);
 
-            FeedbackDependencyException actualFeedbackDependencyException =
-                await Assert.ThrowsAsync<FeedbackDependencyException>(
-                    retrieveFeedbackById.AsTask);
+            ValueTask<SpeechModel> addSpeechTask =
+                this.speechService.AddSpechesAsync(randomSpeech);
 
+            var actualSpeechDependencyValidationException =
+                await Assert.ThrowsAsync<SpeechDependencyValidationException>(addSpeechTask.AsTask);
             //then
-            actualFeedbackDependencyException
-                .Should().BeEquivalentTo(expectedFeedbackDependencyException);
+
+            actualSpeechDependencyValidationException.
+                Should().
+                BeEquivalentTo(expectedSpeechDependencyValidationException);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectFeedbackByIdAsync(someFeedbackId), Times.Once());
+                 broker.InsertSpeechAsync(randomSpeech), Times.Once);
 
             this.loggingBrokerMock.Verify(broker =>
-                broker.LogCritical(It.Is(SameExceptionAs(
-                    expectedFeedbackDependencyException))), Times.Once());
+              broker.LogError(It.Is(SameExceptionAs(
+                  expectedSpeechDependencyValidationException))), Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
         }
 
         [Fact]
-        public async Task ShouldThrowServiceExceptionOnRetrieveByIdAsyncIfServiceErrorOccursAndLogItAsync()
+        public async Task ShouldThrowCriticalDependencyExceptiononAddIfSqlErrorOccursAndLogItAsync()
         {
             //given
-            Guid someFeedbackId = Guid.NewGuid();
-            Exception serverException = new Exception();
+            SpeechModel randomSpeech = CreateRandomSpeech();
+            SqlException sqlException = GetSqlError();
+            var failedSpeechStorageException = new FailedSpeechStorageException(sqlException);
 
-            var failedFeedbackServiceException =
-                new FailedFeedbackServiceException(serverException);
-
-            var expectedFeedbackServiceException =
-                new FeedbackServiceException(failedFeedbackServiceException);
+            var expectedSpeechDependencyExcpetion =
+                new SpeechDependencyException(failedSpeechStorageException);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectFeedbackByIdAsync(It.IsAny<Guid>()))
-                .ThrowsAsync(serverException);
+            broker.InsertSpeechAsync(randomSpeech))
+                .ThrowsAsync(sqlException);
 
             //when
-            ValueTask<Feedback> retrieveFeedbackById =
-                this.feedbackService.RetrieveFeedbackByIdAsync(someFeedbackId);
-
-            FeedbackServiceException actualFeedbackServiceException =
-                await Assert.ThrowsAsync<FeedbackServiceException>(retrieveFeedbackById.AsTask);
+            ValueTask<SpeechModel> addSpeechTask =
+                this.speechService.AddSpechesAsync(randomSpeech);
 
             //then
-            actualFeedbackServiceException
-                .Should().BeEquivalentTo(expectedFeedbackServiceException);
+            await Assert.ThrowsAsync<SpeechDependencyException>(() =>
+                addSpeechTask.AsTask());
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectFeedbackByIdAsync(someFeedbackId), Times.Once());
+                broker.InsertSpeechAsync(randomSpeech),
+                    Times.Once());
 
             this.loggingBrokerMock.Verify(broker =>
-                broker.LogError(It.Is(SameExceptionAs(
-                    expectedFeedbackServiceException))), Times.Once);
+                broker.LogCritical(It.Is(SameExceptionAs(
+                    expectedSpeechDependencyExcpetion))),
+                        Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldThrowServiceExceptionOnAddIfServiceErrorOccursAndLogItAsync()
+        {
+            //given
+            SpeechModel randomSpeech = CreateRandomSpeech();
+            var serviceException = new Exception();
+
+            var failedSpeechServiceException =
+                new FailedSpeechServiceException(serviceException);
+
+            var expectedSpeechServiceException =
+                new SpeechServiceException(failedSpeechServiceException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.InsertSpeechAsync(randomSpeech))
+                .ThrowsAsync(serviceException);
+
+            //when
+            ValueTask<SpeechModel> addSpeechTask =
+                this.speechService.AddSpechesAsync(randomSpeech);
+
+            //then
+            await Assert.ThrowsAsync<SpeechServiceException>(() =>
+                addSpeechTask.AsTask());
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertSpeechAsync(randomSpeech),
+                    Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedSpeechServiceException))),
+                    Times.Once);
         }
     }
 }
