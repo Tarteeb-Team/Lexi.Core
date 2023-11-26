@@ -41,9 +41,10 @@ namespace Lexi.Core.Api.Services.Foundations.Users
 
         public async ValueTask<User> RetrieveUserByIdAsync(Guid userId)
         {
-            User persistedUser = await this.storageBroker.SelectUserByIdAsync(userId);
+           // User persistedUser = await this.storageBroker.SelectUserByIdAsync(userId);
 
-            return persistedUser;
+           // return persistedUser;
+           throw new NotImplementedException();
         }
         public IQueryable<User> RetrieveAllUsers()
         {

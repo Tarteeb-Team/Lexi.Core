@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Sdk;
 
-namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.NewFolder.Users
+namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Users
 {
     public partial class UserServiceTests
     {
