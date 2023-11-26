@@ -37,7 +37,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
             actualFeedback.Should().BeEquivalentTo(expectedFeedback);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectFeedbackByIdAsync(inputFeedbackId), Times.Exactly(2));
+                broker.SelectFeedbackByIdAsync(inputFeedbackId), Times.Once());
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
