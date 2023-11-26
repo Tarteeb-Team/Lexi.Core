@@ -28,6 +28,10 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
             {
                 throw CreateAndLogValidationException(nullSpeechException);
             }
+            catch(NotFoundSpeechException notFoundSpeechException)
+            {
+                throw CreateAndLogValidationException(notFoundSpeechException);
+            }
             catch(InvalidSpeechException invalidSpeechException)
             {
                 throw CreateAndLogValidationException(invalidSpeechException);
@@ -86,7 +90,7 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
         private SpeechServiceException CreateAndLogServiceException(Xeption exception)
         {
             var speechServiceException = new SpeechServiceException(exception);
-            this.loggingBroker.LogError(speechServiceException);
+            this.loggingBroker.LogCritical(speechServiceException);
 
             return speechServiceException;
         }
