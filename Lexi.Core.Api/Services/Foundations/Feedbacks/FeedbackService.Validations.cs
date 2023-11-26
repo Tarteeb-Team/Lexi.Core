@@ -25,6 +25,9 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
             Message = "Id is required"
         };
 
+        private static void ValidateFeedbackId(Guid feedbackId) =>
+            Validate((Rule: IsInvalid(feedbackId), Parameter: nameof(Feedback.Id)));
+
         private void ValidateFeedbackNotNull(Feedback feedback)
         {
             if (feedback == null)

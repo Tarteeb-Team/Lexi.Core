@@ -26,7 +26,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
                 key: nameof(Feedback.Id),
                 values: "Id is required");
 
-            var expectedFeedbackValidationException = 
+            var expectedFeedbackValidationException =
                 new FeedbackValidationException(invalidFeedbackException);
 
             //when
@@ -42,7 +42,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
 
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(
-                    expectedFeedbackValidationException))),Times.Once());
+                    expectedFeedbackValidationException))), Times.Once());
 
             this.storageBrokerMock.Verify(broker =>
             broker.SelectFeedbackByIdAsync(It.IsAny<Guid>()), Times.Never());
