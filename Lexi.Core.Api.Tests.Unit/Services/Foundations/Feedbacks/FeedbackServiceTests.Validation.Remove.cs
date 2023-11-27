@@ -3,12 +3,12 @@
 // Powering True Leadership
 //=================================
 
-using System;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions;
 using Moq;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
@@ -51,19 +51,19 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
         [Theory]
         [InlineData(null)]
         [InlineData(default)]
-        public async Task ShouldThrowValidationExceptionOnRemoveIfFeedbackIsInvalidAndLogItAsync(Guid id)
+        public async Task ShouldThrowValidationExceptionOnRemoveIfFeedbackIsInvalidAndLogItAsync(Guid invalidId)
         {
             //given
             Feedback invalidFeedback = new Feedback
             {
-                Id = id
+                Id = invalidId
             };
 
             var invalidFeedbackException = new InvalidFeedbackException();
 
             invalidFeedbackException.AddData(
                 key: nameof(Feedback.Id),
-                values:"Id id required");
+                values: "Id id required");
 
             var expectedFeedbackValidationException =
                 new FeedbackValidationException(invalidFeedbackException);
