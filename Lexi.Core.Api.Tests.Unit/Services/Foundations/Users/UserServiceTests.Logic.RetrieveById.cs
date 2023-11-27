@@ -7,6 +7,7 @@ using FluentAssertions;
 using Force.DeepCloner;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Moq;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -15,29 +16,29 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Users
     public partial class UserServiceTests
     {
         [Fact]
-        public async Task ShouldAddUserAsync()
+        public async Task ShouldRetrieveUserByIdAsync()
         {
-            // given
+            //given
+            Guid randomUserId = Guid.NewGuid();
+            Guid inputUserId = randomUserId;
             User randomUser = CreateRandomUser();
-            User inputUser = randomUser;
-            User persistedUser = inputUser;
+            User persistedUser = randomUser;
             User expectedUser = persistedUser.DeepClone();
 
             this.storageBrokerMock.Setup(broker =>
-                broker.InsertUserAsync(inputUser))
+                broker.SelectUserByIdAsync(inputUserId))
                 .ReturnsAsync(expectedUser);
 
-            // when
-            User actualAccount =
-                await this.userService
-                    .AddUserAsync(inputUser);
+            //when
+            User actualUser =
+                  await this.userService
+                      .RetrieveUserByIdAsync(inputUserId);
 
-            // then
-            actualAccount.Should()
-                .BeEquivalentTo(expectedUser);
+            //then
+            actualUser.Should().BeEquivalentTo(expectedUser);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.InsertUserAsync(inputUser),
+                broker.SelectUserByIdAsync(inputUserId),
                     Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();

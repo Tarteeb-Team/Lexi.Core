@@ -6,6 +6,7 @@
 using EFxceptions.Models.Exceptions;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Models.Foundations.Users.Exceptions;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
@@ -38,12 +39,22 @@ namespace Lexi.Core.Api.Services.Foundations.Users
 
                 throw CreateAndALogDependencyValidationException(alreadyExistsUserException);
             }
+            catch (NotFoundUserException notFoundUserException)
+            {
+                throw CreateAndLogValidationException(notFoundUserException);
+            }
             catch (DbUpdateConcurrencyException dbUpdateConcurrencyException)
             {
                 var lockedUserException =
                    new LockedUserException(dbUpdateConcurrencyException);
 
                 throw CreateAndLogDependencyException(lockedUserException);
+            }
+            catch (SqlException sqlException)
+            {
+                var failedUserStorageException = new FailedUserStorageException(sqlException);
+
+                throw CreateAndLogCriticalDependencyException(failedUserStorageException);
             }
             catch (DbUpdateException dbUpdateException)
             {
@@ -90,6 +101,13 @@ namespace Lexi.Core.Api.Services.Foundations.Users
             this.loggingBroker.LogError(userValidationException);
 
             return userValidationException;
+        }
+        private UserDependencyException CreateAndLogCriticalDependencyException(Xeption exception)
+        {
+            var userDependencyException = new UserDependencyException(exception);
+            this.loggingBroker.LogCritical(userDependencyException);
+
+            return userDependencyException;
         }
     }
 }

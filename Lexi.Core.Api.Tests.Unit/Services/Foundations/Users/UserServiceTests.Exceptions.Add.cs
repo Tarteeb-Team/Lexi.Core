@@ -13,7 +13,7 @@ using System;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.NewFolder.Users
+namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Users
 {
     public partial class UserServiceTests
     {

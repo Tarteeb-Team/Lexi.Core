@@ -5,6 +5,7 @@
 
 using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.Storages;
+using Lexi.Core.Api.Models.Foundations.Speeches;
 using Lexi.Core.Api.Models.Foundations.Users;
 using System;
 using System.Linq;
@@ -39,12 +40,14 @@ namespace Lexi.Core.Api.Services.Foundations.Users
             return modifiedUser;
         }
 
-        public async ValueTask<User> RetrieveUserByIdAsync(Guid userId)
+        public  ValueTask<User> RetrieveUserByIdAsync(Guid userId) =>
+            TryCatch(async () =>
         {
-            User persistedUser = await this.storageBroker.SelectUserByIdAsync(userId);
-
-            return persistedUser;
-        }
+            ValidateUserId(userId);
+            User maybeUser = await storageBroker.SelectUserByIdAsync(userId);
+            ValidateStorageUser(maybeUser,userId);
+            return maybeUser;
+        });
         public IQueryable<User> RetrieveAllUsers()
         {
             return this.storageBroker.SelectAllUsers();
