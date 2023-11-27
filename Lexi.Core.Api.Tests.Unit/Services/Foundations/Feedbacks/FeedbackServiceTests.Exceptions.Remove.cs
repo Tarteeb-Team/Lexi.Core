@@ -59,5 +59,46 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task ShouldThrowDependencyExceptionOnRemoveWhenSqlExceptionOccursAndLogItAsync()
+        {
+            // given
+            Guid someLocationId = Guid.NewGuid();
+            SqlException sqlException = GetSqlError();
+
+            var failedFeedbackStorageException =
+                new FailedFeedbackStorageException(sqlException);
+
+            var expectedFeedbackDependencyException =
+                new FeedbackDependencyException(failedFeedbackStorageException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectFeedbackByIdAsync(It.IsAny<Guid>()))
+                    .ThrowsAsync(sqlException);
+            // when
+            ValueTask<Feedback> deleteFeedbackTask =
+                this.feedbackService.RemoveFeedbackAsync(someLocationId);
+
+            FeedbackDependencyException actualFeedbackDependencyException =
+                await Assert.ThrowsAsync<FeedbackDependencyException>(
+                    deleteFeedbackTask.AsTask);
+
+            // then
+            actualFeedbackDependencyException.Should().BeEquivalentTo(
+                expectedFeedbackDependencyException);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectFeedbackByIdAsync(It.IsAny<Guid>()),
+                    Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogCritical(It.Is(SameExceptionAs(
+                    expectedFeedbackDependencyException))),
+                        Times.Once);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
