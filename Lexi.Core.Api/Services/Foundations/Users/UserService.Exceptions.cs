@@ -31,6 +31,11 @@ namespace Lexi.Core.Api.Services.Foundations.Users
                 var failedUserStorageException = new FailedUserStorageException(sqlExeption);
                 throw CreateAndLogCriticalDependencyException(failedUserStorageException);
             }
+            catch (Exception exception) 
+            {
+                var failedUserServiceException = new FailedUserServiceException(exception);
+                throw CreateAndLogServiceException(failedUserServiceException);
+            }
         }
             private async ValueTask<User> TryCatch(ReturningUserFunction returningUserFunction)
         {

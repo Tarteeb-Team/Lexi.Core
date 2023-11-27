@@ -14,6 +14,7 @@ using System;
 using System.Linq.Expressions;
 using Tynamix.ObjectFiller;
 using Xeptions;
+using System.Linq;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Users
 {
