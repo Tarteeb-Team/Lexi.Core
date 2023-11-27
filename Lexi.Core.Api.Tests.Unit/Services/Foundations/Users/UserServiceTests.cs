@@ -5,10 +5,12 @@
 
 using System;
 using System.Linq.Expressions;
+using System.Runtime.Serialization;
 using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.Storages;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Services.Foundations.Users;
+using Microsoft.Data.SqlClient;
 using Moq;
 using Tynamix.ObjectFiller;
 using Xeptions;
@@ -34,7 +36,10 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Users
            new MnemonicString().GetValue();
         private static User CreateRandomUser() =>
             CreateAccountFiller().Create();
-    
+        private SqlException CreateSqlException() =>
+           (SqlException)FormatterServices.
+            GetUninitializedObject(typeof(SqlException));
+
         private static Filler<User> CreateAccountFiller()
         {
             var filler = new Filler<User>();
