@@ -49,8 +49,7 @@ namespace Lexi.Core.Api.Services.Foundations.Users
             return maybeUser;
         });
         public IQueryable<User> RetrieveAllUsers()=>
-        throw new NotImplementedException();
-            //TryCatch(()=> this.storageBroker.SelectAllUsers());
+            TryCatch(()=> this.storageBroker.SelectAllUsers());
        
         public async ValueTask<User> DeleteUserAsync(User user)
         {
