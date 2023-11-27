@@ -39,13 +39,13 @@ namespace Lexi.Core.Api.Services.Foundations.Users
             return modifiedUser;
         }
 
-        public async ValueTask<User> RetrieveUserByIdAsync(Guid userId)
+        public  ValueTask<User> RetrieveUserByIdAsync(Guid userId) =>
+            TryCatch(async () =>
         {
-           
+            ValidateUserId(userId);
             User persistedUser = await this.storageBroker.SelectUserByIdAsync(userId);
-
             return persistedUser;
-        }
+        });
         public IQueryable<User> RetrieveAllUsers()
         {
             return this.storageBroker.SelectAllUsers();

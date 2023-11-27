@@ -18,15 +18,15 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Users
         [Fact]
         public async Task ShouldThrowValidationExceptionOnRetrieveByIdIfIdIsInvalidAndLogItAsync()
         {
-            var invalidUserId = Guid.Empty;
+            Guid invalidUserId = Guid.Empty;
             var invalidUserException = new InvalidUserException();
 
             invalidUserException.AddData(
                 key: nameof(User.Id),
                 values: "Id is required");
 
-            var expectedUserValidationException = new
-                UserValidationException(invalidUserException);
+            var expectedUserValidationException = 
+                new UserValidationException(invalidUserException);
 
             //when
             ValueTask<User> retrieveUserByIdTask =
@@ -44,7 +44,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Users
                     SameExceptionAs(expectedUserValidationException))), Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectUserByIdAsync(It.IsAny<Guid>()), Times.Never);
+               broker.SelectUserByIdAsync(It.IsAny<Guid>()), Times.Never);
 
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
