@@ -9,6 +9,7 @@ using Lexi.Core.Api.Models.Foundations.Users.Exceptions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xeptions;
 
@@ -17,8 +18,21 @@ namespace Lexi.Core.Api.Services.Foundations.Users
     public partial class UserService
     {
         private delegate ValueTask<User> ReturningUserFunction();
+        private delegate IQueryable<User> ReturningUsersFunction();
 
-        private async ValueTask<User> TryCatch(ReturningUserFunction returningUserFunction)
+        private IQueryable<User> TryCatch(ReturningUsersFunction returningusersFunction)
+        {
+            try
+            {
+                return returningusersFunction();
+            }
+            catch (SqlException sqlExeption) 
+            {
+                var failedUserStorageException = new FailedUserStorageException(sqlExeption);
+                throw CreateAndLogCriticalDependencyException(failedUserStorageException);
+            }
+        }
+            private async ValueTask<User> TryCatch(ReturningUserFunction returningUserFunction)
         {
             try
             {
