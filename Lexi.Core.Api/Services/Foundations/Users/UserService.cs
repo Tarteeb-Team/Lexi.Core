@@ -48,10 +48,11 @@ namespace Lexi.Core.Api.Services.Foundations.Users
             ValidateStorageUser(maybeUser,userId);
             return maybeUser;
         });
-        public IQueryable<User> RetrieveAllUsers()
+        public IQueryable<User> RetrieveAllUsers() =>
+        TryCatch(() =>
         {
             return this.storageBroker.SelectAllUsers();
-        }
+        });
 
         public  ValueTask<User> RemoveUserAsync(Guid userId) =>
         TryCatch(async () =>
