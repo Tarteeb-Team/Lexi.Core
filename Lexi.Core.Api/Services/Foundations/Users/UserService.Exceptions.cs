@@ -54,8 +54,7 @@ namespace Lexi.Core.Api.Services.Foundations.Users
             {
                 var failedUserStorageException = new FailedUserStorageException(sqlException);
 
-                //throw CreateAndLogCriticalDependencyException(failedUserStorageException);
-                throw sqlException;
+                throw CreateAndLogCriticalDependencyException(failedUserStorageException);
             }
             catch (DbUpdateException dbUpdateException)
             {
