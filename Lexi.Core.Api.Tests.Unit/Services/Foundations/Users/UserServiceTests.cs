@@ -14,6 +14,8 @@ using System;
 using System.Linq.Expressions;
 using Tynamix.ObjectFiller;
 using Xeptions;
+using System.Linq;
+using Lexi.Core.Api.Models.Foundations.Feedbacks;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Users
 {
@@ -36,6 +38,8 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Users
            new MnemonicString().GetValue();
         private static User CreateRandomUser() =>
             CreateAccountFiller().Create();
+        private IQueryable<User> CreateRandomUsers() =>
+            CreateAccountFiller().Create(5).AsQueryable();
         private SqlException CreateSqlException() =>
            (SqlException)FormatterServices.
             GetUninitializedObject(typeof(SqlException));
