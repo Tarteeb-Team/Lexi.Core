@@ -6,6 +6,7 @@
 using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.Storages;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
+using Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -51,7 +52,22 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
 
         public async ValueTask<Feedback> RemoveFeedbackAsync(Feedback feedback)
         {
-            return await this.storageBroker.DeleteFeedbackAsync(feedback);
+            try
+            {
+                if (feedback == null)
+                    throw new NullFeedbackException();
+
+                return await this.storageBroker.DeleteFeedbackAsync(feedback);
+            }
+            catch (NullFeedbackException nullFeedbackException)
+            {
+                FeedbackValidationException feedbackValidationException =
+                    new FeedbackValidationException(nullFeedbackException);
+
+                this.loggingBroker.LogError(feedbackValidationException);
+
+                throw feedbackValidationException;
+            }
         }
     }
 }
