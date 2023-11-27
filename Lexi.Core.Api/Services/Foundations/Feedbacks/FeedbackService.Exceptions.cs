@@ -7,6 +7,7 @@ using EFxceptions.Models.Exceptions;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -49,6 +50,12 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
                     new AlreadyExistValidationException(duplicateKeyException);
 
                 throw CreateAndLogDependencyValidationException(alreadyExistValidationException);
+            }
+            catch (DbUpdateConcurrencyException dbUpdateConcurrencyException)
+            {
+                var lockedFeedbackException = new LockedFeedbackException(dbUpdateConcurrencyException);
+
+                throw CreateAndLogDependencyValidationException(lockedFeedbackException);
             }
             catch (Exception exception)
             {

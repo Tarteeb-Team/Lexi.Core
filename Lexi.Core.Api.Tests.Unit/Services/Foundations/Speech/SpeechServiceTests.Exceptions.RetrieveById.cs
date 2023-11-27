@@ -3,12 +3,12 @@
 // Powering True Leadership
 //=================================
 
-using System;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Lexi.Core.Api.Models.Foundations.Speeches.Exceptions;
 using Microsoft.Data.SqlClient;
 using Moq;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
 
@@ -62,13 +62,13 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
             Guid someId = Guid.NewGuid();
             Exception serviceException = new Exception();
 
-            var failedSpeechServiceException = 
+            var failedSpeechServiceException =
                     new FailedSpeechServiceException(serviceException);
 
-            var expectedspeechServiceException = new 
+            var expectedspeechServiceException = new
                     SpeechServiceException(failedSpeechServiceException);
 
-            this.storageBrokerMock.Setup(broker => 
+            this.storageBrokerMock.Setup(broker =>
                  broker.SelectSpeechByIdAsync(It.IsAny<Guid>())).ThrowsAsync(serviceException);
             //when
             ValueTask<SpeechModel> retrieveSpeechByIdTask =

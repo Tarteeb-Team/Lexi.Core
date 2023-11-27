@@ -49,9 +49,16 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
             return maybeFeedback;
         });
 
-        public async ValueTask<Feedback> RemoveFeedbackAsync(Feedback feedback)
+        public ValueTask<Feedback> RemoveFeedbackAsync(Guid feedbackId) =>
+        TryCatch(async () =>
         {
-            return await this.storageBroker.DeleteFeedbackAsync(feedback);
-        }
+            ValidateFeedbackId(feedbackId);
+
+            var maybeFeedback = await this.storageBroker.SelectFeedbackByIdAsync(feedbackId);
+
+            ValidateStorageFeedback(maybeFeedback, feedbackId);
+
+            return await this.storageBroker.DeleteFeedbackAsync(maybeFeedback);
+        });
     }
 }

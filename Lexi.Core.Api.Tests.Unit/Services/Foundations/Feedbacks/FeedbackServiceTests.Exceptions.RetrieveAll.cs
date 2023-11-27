@@ -42,7 +42,6 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
             feedbackDependencyException.Should().BeEquivalentTo(expectedFeedbackDependencyException);
 
             //then
-
             this.storageBrokerMock.Verify(broker => broker.SelectAllFeedbacks(),
                 Times.Once());
 

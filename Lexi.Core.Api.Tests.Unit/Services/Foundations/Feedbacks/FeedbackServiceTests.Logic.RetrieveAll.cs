@@ -8,7 +8,6 @@ using Force.DeepCloner;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Moq;
 using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
@@ -16,7 +15,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
     public partial class FeedbackServiceTests
     {
         [Fact]
-        public async Task ShouldRetrieveAllFeedbacks()
+        public void ShouldRetrieveAllFeedbacks()
         {
             //given
             IQueryable<Feedback> feedbacks = CreateRandomFeedbacks();
@@ -28,9 +27,9 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
 
             //when
             this.feedbackService.RetrieveAllFeedbacks();
-            feedbacks.Should().BeEquivalentTo(expectedFeedbacks);
 
             //then
+            feedbacks.Should().BeEquivalentTo(expectedFeedbacks);
 
             this.storageBrokerMock.Verify(broker =>
                 broker.SelectAllFeedbacks(),
