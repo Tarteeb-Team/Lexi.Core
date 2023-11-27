@@ -83,7 +83,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Users
                 broker.SelectUserByIdAsync(It.IsAny<Guid>()), Times.Once);
 
             this.loggingBrokerMock.Verify(broker =>
-                broker.LogCritical(It.Is(SameExceptionAs(
+                broker.LogError(It.Is(SameExceptionAs(
                 expectedUserServiceException))), Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
