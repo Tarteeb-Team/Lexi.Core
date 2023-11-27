@@ -1,7 +1,7 @@
-﻿//=================================
-// Copyright (c) Tarteeb LLC.
-// Powering True Leadership
-//=================================
+﻿//===========================
+// Copyright (c) Tarteeb LLC
+// Manage Your Money Easy
+//===========================
 
 using FluentAssertions;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
@@ -16,79 +16,86 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
     public partial class FeedbackServiceTests
     {
         [Fact]
-        public async Task ShouldThrowValidationExceptionOnRemoveIfFeedbackIsNullAndLogItAsync()
+        public async Task ShouldThrowValidationExceptionOnRemoveIfIdIsInvalidAndLogItAsync()
         {
-            //given
-            Feedback nullFeedback = null;
-            var nullFeedbackException = new NullFeedbackException();
+            // given 
+            Guid invalidFeedbackId = Guid.Empty;
 
-            FeedbackValidationException expectedFeedbackValidationException =
-                new FeedbackValidationException(nullFeedbackException);
-
-            //when
-            ValueTask<Feedback> removeFeedbackTask =
-                this.feedbackService.RemoveFeedbackAsync(nullFeedback);
-
-            FeedbackValidationException feedbackValidationException =
-                await Assert.ThrowsAsync<FeedbackValidationException>(() =>
-                removeFeedbackTask.AsTask());
-
-            feedbackValidationException.Should().BeEquivalentTo(expectedFeedbackValidationException);
-
-            //then
-            this.loggingBrokerMock.Verify(broker =>
-                broker.LogError(It.Is(SameExceptionAs(feedbackValidationException))),
-                Times.Once());
-
-            this.storageBrokerMock.Verify(broker =>
-                broker.DeleteFeedbackAsync(It.IsAny<Feedback>()),
-                Times.Never());
-
-            this.loggingBrokerMock.VerifyNoOtherCalls();
-            this.storageBrokerMock.VerifyNoOtherCalls();
-        }
-
-        [Theory]
-        [InlineData(null)]
-        [InlineData(default)]
-        public async Task ShouldThrowValidationExceptionOnRemoveIfFeedbackIsInvalidAndLogItAsync(Guid invalidId)
-        {
-            //given
-            Feedback invalidFeedback = new Feedback
-            {
-                Id = invalidId
-            };
-
-            var invalidFeedbackException = new InvalidFeedbackException();
+            var invalidFeedbackException =
+                new InvalidFeedbackException();
 
             invalidFeedbackException.AddData(
                 key: nameof(Feedback.Id),
-                values: "Id id required");
+                values: "Id is required");
 
             var expectedFeedbackValidationException =
                 new FeedbackValidationException(invalidFeedbackException);
 
-            //when
-            ValueTask<Feedback> feedbackRemoveTask =
-                this.feedbackService.RemoveFeedbackAsync(invalidFeedback);
+            // when
+            ValueTask<Feedback> removeFeedbackById =
+                this.feedbackService.RemoveFeedbackAsync(invalidFeedbackId);
 
-            FeedbackValidationException feedbackValidationException =
-                await Assert.ThrowsAsync<FeedbackValidationException>(() =>
-                    feedbackRemoveTask.AsTask());
+            FeedbackValidationException actualFeedbackValidationException =
+                await Assert.ThrowsAsync<FeedbackValidationException>(
+                    removeFeedbackById.AsTask);
+            // then
+            actualFeedbackValidationException.Should()
+                .BeEquivalentTo(expectedFeedbackValidationException);
 
-            feedbackValidationException.Should().BeEquivalentTo(expectedFeedbackValidationException);
-
-            //then
             this.loggingBrokerMock.Verify(broker =>
-                broker.LogError(It.Is(SameExceptionAs(expectedFeedbackValidationException))),
-                Times.Once());
+                broker.LogError(It.Is(SameExceptionAs(
+                    expectedFeedbackValidationException))), Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.DeleteFeedbackAsync(It.IsAny<Feedback>()),
-                Times.Never());
+                broker.SelectFeedbackByIdAsync(It.IsAny<Guid>()), Times.Never);
 
-            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.Verify(broker =>
+            broker.DeleteFeedbackAsync(It.IsAny<Feedback>()), Times.Never);
+
             this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldThrowNotFoundExceptionOnRemoveFeedbackByIdIsNotFoundAndLogItAsync()
+        {
+            // given
+            Guid inputFeedbackId = Guid.NewGuid();
+            Feedback noFeedback = null;
+
+            var notFoundFeedbackException =
+                new NotFoundFeedbackException(inputFeedbackId);
+
+            var expectedFeedbackValidationException =
+                new FeedbackValidationException(notFoundFeedbackException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectFeedbackByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(noFeedback);
+
+            // when
+            ValueTask<Feedback> removeFeedbackById =
+                this.feedbackService.RemoveFeedbackAsync(inputFeedbackId);
+
+            var actualFeedbackValidationException =
+                await Assert.ThrowsAsync<FeedbackValidationException>(
+                    removeFeedbackById.AsTask);
+
+            // then
+            actualFeedbackValidationException.Should().BeEquivalentTo(expectedFeedbackValidationException);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectFeedbackByIdAsync(It.IsAny<Guid>()), Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(
+                    expectedFeedbackValidationException))), Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.DeleteFeedbackAsync(It.IsAny<Feedback>()), Times.Never);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
         }
     }
 }

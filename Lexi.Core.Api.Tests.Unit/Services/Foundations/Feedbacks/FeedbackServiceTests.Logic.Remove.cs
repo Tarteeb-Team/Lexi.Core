@@ -3,6 +3,7 @@
 // Powering True Leadership
 //=================================
 
+using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Force.DeepCloner;
@@ -17,24 +18,36 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
         [Fact]
         public async Task ShouldRemoveFeedbackAsync()
         {
-            //given
+            // given
+            Guid randomId = Guid.NewGuid();
+            Guid inputFeedbackId = randomId;
             Feedback randomFeedback = CreateRandomFeedback();
-            Feedback inputFeedback = randomFeedback.DeepClone();
-            Feedback deletedFeedback = randomFeedback.DeepClone();
+            Feedback storageFeedback = randomFeedback;
+            Feedback expectedInputFeedback = storageFeedback;
+            Feedback deletedFeedback = expectedInputFeedback;
+            Feedback expectedFeedback = deletedFeedback.DeepClone();
 
             this.storageBrokerMock.Setup(broker =>
-                broker.DeleteFeedbackAsync(inputFeedback))
-                .ReturnsAsync(deletedFeedback);
+                broker.SelectFeedbackByIdAsync(inputFeedbackId))
+                    .ReturnsAsync(storageFeedback);
 
-            //when
-            Feedback actualFeedback =
-                await this.feedbackService.RemoveFeedbackAsync(inputFeedback);
+            this.storageBrokerMock.Setup(broker =>
+                broker.DeleteFeedbackAsync(expectedInputFeedback))
+                    .ReturnsAsync(deletedFeedback);
 
-            actualFeedback.Should().BeEquivalentTo(deletedFeedback);
+            // when
+            Feedback actualFeedback = await this
+                .feedbackService.RemoveFeedbackAsync(randomId);
 
-            //then
+            // then 
+            actualFeedback.Should().BeEquivalentTo(expectedFeedback);
+
             this.storageBrokerMock.Verify(broker =>
-                broker.DeleteFeedbackAsync(inputFeedback),Times.Once);
+                broker.SelectFeedbackByIdAsync(inputFeedbackId), Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.DeleteFeedbackAsync(expectedInputFeedback),
+                    Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();

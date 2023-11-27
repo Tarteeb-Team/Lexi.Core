@@ -21,7 +21,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
         public async Task ShouldThrowDependencyValidationOnRemoveIfDatabaseUpdateConcurrencyErrorOccursAndLogItAsync()
         {
             // given
-            Feedback someFeedback = CreateRandomFeedback();
+            Guid someFeedbackId = Guid.NewGuid();
             var dbUpdateConcurrencyException = new DbUpdateConcurrencyException();
 
             var lockedFeedbackException =
@@ -36,7 +36,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
 
             // when
             ValueTask<Feedback> removeFeedbackById =
-                this.feedbackService.RemoveFeedbackAsync(someFeedback);
+                this.feedbackService.RemoveFeedbackAsync(someFeedbackId);
 
             var actualFeedbackDependencyValidationException =
                 await Assert.ThrowsAsync<FeedbackDependencyValidationException>(
