@@ -6,6 +6,7 @@
 using System;
 using System.Data;
 using System.Reflection.Metadata;
+using Lexi.Core.Api.Models.Foundations.Speeches;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Models.Foundations.Users.Exceptions;
 
@@ -20,6 +21,13 @@ namespace Lexi.Core.Api.Services.Foundations.Users
             Validate(
                 (Rule: IsInvalid(user.Id), Parameter: nameof(User.Id)),
                 (Rule: IsInvalid(user.Name), Parameter: nameof(User.Name)));
+        }
+        private void ValidateStorageUser(User maybeUser, Guid id)
+        {
+            if (maybeUser is null)
+            {
+                throw new NotFoundUserException(id);
+            }
         }
         private void ValidateUserId(Guid id)
         {

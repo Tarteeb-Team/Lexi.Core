@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.Storages;
+using Lexi.Core.Api.Models.Foundations.Speeches;
 using Lexi.Core.Api.Models.Foundations.Users;
 
 namespace Lexi.Core.Api.Services.Foundations.Users
@@ -43,8 +44,9 @@ namespace Lexi.Core.Api.Services.Foundations.Users
             TryCatch(async () =>
         {
             ValidateUserId(userId);
-            User persistedUser = await this.storageBroker.SelectUserByIdAsync(userId);
-            return persistedUser;
+            User maybeUser = await storageBroker.SelectUserByIdAsync(userId);
+            ValidateStorageUser(maybeUser,userId);
+            return maybeUser;
         });
         public IQueryable<User> RetrieveAllUsers()
         {

@@ -38,6 +38,10 @@ namespace Lexi.Core.Api.Services.Foundations.Users
 
                 throw CreateAndALogDependencyValidationException(alreadyExistsUserException);
             }
+            catch (NotFoundUserException notFoundUserException)
+            {
+                throw CreateAndLogValidationException(notFoundUserException);
+            }
             catch (DbUpdateConcurrencyException dbUpdateConcurrencyException)
             {
                 var lockedUserException =
