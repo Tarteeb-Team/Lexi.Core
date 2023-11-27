@@ -50,24 +50,12 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
             return maybeFeedback;
         });
 
-        public async ValueTask<Feedback> RemoveFeedbackAsync(Feedback feedback)
+        public ValueTask<Feedback> RemoveFeedbackAsync(Feedback feedback) =>
+        TryCatch(async () =>
         {
-            try
-            {
-                if (feedback == null)
-                    throw new NullFeedbackException();
+            ValidateFeedbackNotNull(feedback);
 
-                return await this.storageBroker.DeleteFeedbackAsync(feedback);
-            }
-            catch (NullFeedbackException nullFeedbackException)
-            {
-                FeedbackValidationException feedbackValidationException =
-                    new FeedbackValidationException(nullFeedbackException);
-
-                this.loggingBroker.LogError(feedbackValidationException);
-
-                throw feedbackValidationException;
-            }
-        }
+            return await this.storageBroker.InsertFeedbackAsync(feedback);
+        });
     }
 }
