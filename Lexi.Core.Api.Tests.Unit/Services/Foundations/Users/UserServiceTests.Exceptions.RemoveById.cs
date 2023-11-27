@@ -90,5 +90,38 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Users
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task ShouldThrowServiceExceptionOnRemoveIfServiceErrorOccursAndLogItAsync()
+        {
+            // given
+            Guid someId = Guid.NewGuid();
+            var serviceException = new Exception();
+            var failedUserServiceException = new FailedUserServiceException(serviceException);
+
+            var expectedUserServiceException =
+                new UserServiceException(failedUserServiceException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectUserByIdAsync(someId)).ThrowsAsync(serviceException);
+
+            // when
+            ValueTask<User> removeUserTask = this.userService.RemoveUserAsync(someId);
+
+            UserServiceException actualUserServiceException =
+                await Assert.ThrowsAsync<UserServiceException>(removeUserTask.AsTask);
+
+            // then
+            actualUserServiceException.Should().BeEquivalentTo(expectedUserServiceException);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectUserByIdAsync(It.IsAny<Guid>()), Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedUserServiceException))), Times.Once);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }

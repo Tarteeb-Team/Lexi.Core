@@ -67,7 +67,8 @@ namespace Lexi.Core.Api.Services.Foundations.Users
             {
                 var failedUserServiceException = new FailedUserServiceException(exception);
 
-                throw CreateAndLogServiceException(failedUserServiceException);
+                //throw CreateAndLogServiceException(failedUserServiceException);
+                throw exception;
             }
         }
         private UserServiceException CreateAndLogServiceException(Xeption exception)
