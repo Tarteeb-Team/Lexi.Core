@@ -59,7 +59,7 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
 
             ValidateStorageFeedback(maybeFeedback, feedbackId);
 
-            return await this.storageBroker.InsertFeedbackAsync(maybeFeedback);
+            return await this.storageBroker.DeleteFeedbackAsync(maybeFeedback);
         });
     }
 }

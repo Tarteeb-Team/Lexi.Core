@@ -4,6 +4,7 @@
 //=================================
 
 using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Force.DeepCloner;
@@ -36,14 +37,15 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
                     .ReturnsAsync(deletedFeedback);
 
             // when
-            Feedback actualFeedback = await this
-                .feedbackService.RemoveFeedbackAsync(randomId);
+            Feedback actualFeedback = await this.feedbackService
+                .RemoveFeedbackAsync(inputFeedbackId);
 
-            // then 
+            // then
             actualFeedback.Should().BeEquivalentTo(expectedFeedback);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectFeedbackByIdAsync(inputFeedbackId), Times.Once);
+                broker.SelectFeedbackByIdAsync(inputFeedbackId),
+                    Times.Once());
 
             this.storageBrokerMock.Verify(broker =>
                 broker.DeleteFeedbackAsync(expectedInputFeedback),
