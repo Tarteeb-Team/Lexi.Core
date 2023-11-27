@@ -57,10 +57,13 @@ namespace Lexi.Core.Api.Services.Foundations.Users
         TryCatch(async () =>
         {
             ValidateUserId(userId);
-            User persistedUser =
+
+            User maybeUser =
                 await this.storageBroker.SelectUserByIdAsync(userId);
 
-            return await this.storageBroker.DeleteUserAsync(persistedUser);
+            ValidateStorageUser(maybeUser,userId);
+
+            return await this.storageBroker.DeleteUserAsync(maybeUser);
         });
     }
 }
