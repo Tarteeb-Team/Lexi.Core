@@ -34,7 +34,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
 
             //then
             this.storageBrokerMock.Verify(broker =>
-            broker.DeleteFeedbackAsync(inputFeedback),Times.Once);
+                broker.DeleteFeedbackAsync(inputFeedback),Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
