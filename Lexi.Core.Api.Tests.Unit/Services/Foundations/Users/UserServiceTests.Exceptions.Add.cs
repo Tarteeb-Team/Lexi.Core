@@ -71,8 +71,8 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Users
             LockedUserException lockedUserException =
                 new LockedUserException(dbUpdateConcurrencyException);
 
-            UserDependencyException expectedUserDependencyException =
-                 new UserDependencyException(lockedUserException);
+            UserDependencyValidationException expectedUserDependencyException =
+                 new UserDependencyValidationException(lockedUserException);
 
             this.storageBrokerMock.Setup(broker =>
                 broker.InsertUserAsync(randomUser)).ThrowsAsync(dbUpdateConcurrencyException);
@@ -81,7 +81,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Users
                    this.userService.AddUserAsync(randomUser);
 
             var actualUserDependencyException =
-                await Assert.ThrowsAnyAsync<UserDependencyException>(addUserTask.AsTask);
+                await Assert.ThrowsAnyAsync<UserDependencyValidationException>(addUserTask.AsTask);
             //then
 
             actualUserDependencyException.

@@ -1,4 +1,4 @@
-﻿//=================================
+//=================================
 // Copyright (c) Tarteeb LLC.
 // Powering True Leadership
 //=================================
@@ -48,12 +48,23 @@ namespace Lexi.Core.Api.Services.Foundations.Users
             ValidateStorageUser(maybeUser,userId);
             return maybeUser;
         });
-        public IQueryable<User> RetrieveAllUsers()=>
-            TryCatch(()=> this.storageBroker.SelectAllUsers());
-       
-        public async ValueTask<User> DeleteUserAsync(User user)
+        public IQueryable<User> RetrieveAllUsers() =>
+        TryCatch(() =>
         {
-            return await this.storageBroker.DeleteUserAsync(user);
-        }
+            return this.storageBroker.SelectAllUsers();
+        });
+
+        public  ValueTask<User> RemoveUserAsync(Guid userId) =>
+        TryCatch(async () =>
+        {
+            ValidateUserId(userId);
+
+            User maybeUser =
+                await this.storageBroker.SelectUserByIdAsync(userId);
+
+            ValidateStorageUser(maybeUser,userId);
+
+            return await this.storageBroker.DeleteUserAsync(maybeUser);
+        });
     }
 }

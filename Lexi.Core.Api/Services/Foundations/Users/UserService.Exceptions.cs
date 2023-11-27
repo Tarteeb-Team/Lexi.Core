@@ -67,7 +67,7 @@ namespace Lexi.Core.Api.Services.Foundations.Users
                 var lockedUserException =
                    new LockedUserException(dbUpdateConcurrencyException);
 
-                throw CreateAndLogDependencyException(lockedUserException);
+                throw CreateAndALogDependencyValidationException(lockedUserException);
             }
             catch (SqlException sqlException)
             {
