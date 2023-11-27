@@ -8,7 +8,6 @@ using Force.DeepCloner;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Moq;
 using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks

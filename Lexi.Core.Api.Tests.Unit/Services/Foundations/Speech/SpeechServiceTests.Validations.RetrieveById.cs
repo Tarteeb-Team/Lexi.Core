@@ -3,11 +3,11 @@
 // Powering True Leadership
 //=================================
 
-using System;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Lexi.Core.Api.Models.Foundations.Speeches.Exceptions;
 using Moq;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
 
@@ -53,10 +53,10 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
             Guid sameId = Guid.NewGuid();
             SpeechModel noSpeech = null;
 
-            var notFoundSpeechException = 
+            var notFoundSpeechException =
                     new NotFoundSpeechException(sameId);
 
-            var expectedSpeechValidationException = 
+            var expectedSpeechValidationException =
                 new SpeechValidationException(notFoundSpeechException);
 
             this.storageBrokerMock.Setup(broker =>
@@ -64,7 +64,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
 
             //when
 
-            ValueTask<SpeechModel> retrieveSpeechTask = 
+            ValueTask<SpeechModel> retrieveSpeechTask =
                     this.speechService.RetrieveSpeechesByIdAsync(sameId);
 
             SpeechValidationException actualSpeechValidationException =
