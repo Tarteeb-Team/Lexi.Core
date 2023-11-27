@@ -53,7 +53,7 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
         public ValueTask<Feedback> RemoveFeedbackAsync(Feedback feedback) =>
         TryCatch(async () =>
         {
-            ValidateFeedbackNotNull(feedback);
+            VaidateFeedbackOnRemove(feedback);
 
             return await this.storageBroker.InsertFeedbackAsync(feedback);
         });

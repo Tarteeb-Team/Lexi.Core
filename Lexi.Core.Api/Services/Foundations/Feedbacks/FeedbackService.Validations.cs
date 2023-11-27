@@ -19,6 +19,14 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
                 (Rule: IsInvalid(feedback.Id), Parameter: nameof(Feedback.Id)));
         }
 
+        private void VaidateFeedbackOnRemove(Feedback feedback)
+        {
+            ValidateFeedbackNotNull(feedback);
+
+            Validate(
+                (Rule: IsInvalid(feedback.Id), Parameter: nameof(Feedback.Id)));
+        }
+
         private static dynamic IsInvalid(Guid feeedbakcId) => new
         {
             Condition = feeedbakcId == default,
