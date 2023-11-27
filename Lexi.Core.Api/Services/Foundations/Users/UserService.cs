@@ -52,9 +52,17 @@ namespace Lexi.Core.Api.Services.Foundations.Users
         {
             return this.storageBroker.SelectAllUsers();
         }
-        public async ValueTask<User> DeleteUserAsync(User user)
+
+        public ValueTask<User> RemoveUserAsync(Guid userId)
         {
-            return await this.storageBroker.DeleteUserAsync(user);
+            throw new NotImplementedException();
         }
+        //public async ValueTask<User> RemoveUserAsync(Guid userId)
+        //{
+        //    User persistedUser =
+        //        await this.storageBroker.SelectUserByIdAsync(userId);
+
+        //    return await this.storageBroker.DeleteUserAsync(persistedUser);
+        //}
     }
 }
