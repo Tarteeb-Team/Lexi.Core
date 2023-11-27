@@ -26,7 +26,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Users
 
             var duplicateKeyException =
                 new DuplicateKeyException(someMessage);
-            
+
             var userAlreadyExcistsException =
                 new UserAlreadyExistsException(duplicateKeyException);
 

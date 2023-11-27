@@ -3,11 +3,11 @@
 // Powering True Leadership
 //=================================
 
-using System.Linq;
-using System.Threading.Tasks;
 using EFxceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Lexi.Core.Api.Brokers.Storages
 {

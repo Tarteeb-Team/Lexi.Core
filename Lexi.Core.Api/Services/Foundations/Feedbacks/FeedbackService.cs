@@ -31,15 +31,23 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
             return await this.storageBroker.InsertFeedbackAsync(feedback);
         });
 
-        public IQueryable<Feedback> RetrieveAllFeedbacks()
+        public IQueryable<Feedback> RetrieveAllFeedbacks() =>
+        TryCatch(() =>
         {
             return this.storageBroker.SelectAllFeedbacks();
-        }
+        });
 
-        public async ValueTask<Feedback> RetrieveFeedbackByIdAsync(Guid id)
+        public ValueTask<Feedback> RetrieveFeedbackByIdAsync(Guid feedbackId) =>
+        TryCatch(async () =>
         {
-            return await storageBroker.SelectFeedbackByIdAsync(id);
-        }
+            ValidateFeedbackId(feedbackId);
+
+            var maybeFeedback = await this.storageBroker.SelectFeedbackByIdAsync(feedbackId);
+
+            ValidateStorageFeedback(maybeFeedback, feedbackId);
+
+            return maybeFeedback;
+        });
 
         public async ValueTask<Feedback> RemoveFeedbackAsync(Feedback feedback)
         {

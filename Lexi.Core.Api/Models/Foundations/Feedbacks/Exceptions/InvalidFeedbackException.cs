@@ -10,7 +10,7 @@ namespace Lexi.Core.Api.Models.Foundations.Feedbacks.Exceptions
     public class InvalidFeedbackException : Xeption
     {
         public InvalidFeedbackException()
-            :base(message: "Feedback is invalid.")
+            : base(message: "Feedback is invalid.")
         { }
     }
 }

@@ -3,15 +3,15 @@
 // Powering True Leadership
 //=================================
 
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using Concentus.Oggfile;
 using Concentus.Structs;
 using Microsoft.CognitiveServices.Speech;
 using Microsoft.CognitiveServices.Speech.Audio;
 using Microsoft.CognitiveServices.Speech.PronunciationAssessment;
 using NAudio.Wave;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Lexi.Core.Api.Brokers.Cognitives
 {

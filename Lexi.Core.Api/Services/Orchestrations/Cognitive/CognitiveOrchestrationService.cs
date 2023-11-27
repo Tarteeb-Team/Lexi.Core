@@ -3,11 +3,11 @@
 // Powering True Leadership
 //=================================
 
-using System.IO;
-using System.Threading.Tasks;
 using Lexi.Core.Api.Models.ObjcetModels;
 using Lexi.Core.Api.Services.Cognitives;
 using Newtonsoft.Json;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Lexi.Core.Api.Services.Orchestrations.Cognitive
 {

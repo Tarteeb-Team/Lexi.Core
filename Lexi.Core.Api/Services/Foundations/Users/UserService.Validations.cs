@@ -1,14 +1,14 @@
-﻿//=================================
+//=================================
 // Copyright (c) Tarteeb LLC.
 // Powering True Leadership
 //=================================
 
-using System;
 using System.Data;
 using System.Reflection.Metadata;
 using Lexi.Core.Api.Models.Foundations.Speeches;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Models.Foundations.Users.Exceptions;
+using System;
 
 namespace Lexi.Core.Api.Services.Foundations.Users
 {
@@ -60,7 +60,7 @@ namespace Lexi.Core.Api.Services.Foundations.Users
 
             foreach ((dynamic rule, string parameter) in validations)
             {
-                if(rule.Condition)
+                if (rule.Condition)
                 {
                     invalidUserException.UpsertDataList(
                         key: parameter,

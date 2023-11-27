@@ -12,7 +12,7 @@ using Lexi.Core.Api.Models.Foundations.Speeches;
 
 namespace Lexi.Core.Api.Services.Foundations.Speeches
 {
-    public class SpeechService : ISpeechService
+    public partial class SpeechService : ISpeechService
     {
         private readonly IStorageBroker storageBroker;
         private readonly ILoggingBroker loggingBroker;
@@ -23,21 +23,29 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
             this.loggingBroker = loggingBroker;
         }
 
-        public async ValueTask<Speech> AddSpechesAsync(Speech speech)
+        public ValueTask<Speech> AddSpechesAsync(Speech speech) =>
+        TryCatch(async () =>
         {
+            ValidateSpeechOnAdd(speech);
+
             return await this.storageBroker.InsertSpeechAsync(speech);
-        }
+        });
 
         public IQueryable<Speech> RetrieveAllSpeeches()
         {
             return this.storageBroker.SelectAllSpeeches();
         }
 
-        public async ValueTask<Speech> RetrieveSpeechesByIdAsync(Guid id)
+        public ValueTask<Speech> RetrieveSpeechesByIdAsync(Guid id) =>
+        TryCatch(async () =>
         {
-            return await this.storageBroker.SelectSpeechByIdAsync(id);
-        }
+            ValidateSpeechId(id);
 
+            Speech maybeSpeech = await storageBroker.SelectSpeechByIdAsync(id);
+            ValidateStorageSpeechExists(maybeSpeech, id);
+
+            return maybeSpeech;
+        });
         public async ValueTask<Speech> RemoveSpeechAsync(Speech speech)
         {
             return await this.storageBroker.DeleteSpeechAsync(speech);

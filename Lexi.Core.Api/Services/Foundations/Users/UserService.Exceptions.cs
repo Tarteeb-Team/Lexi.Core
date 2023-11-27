@@ -3,13 +3,13 @@
 // Powering True Leadership
 //=================================
 
-using System;
-using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Models.Foundations.Users.Exceptions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 using Xeptions;
 
 namespace Lexi.Core.Api.Services.Foundations.Users
@@ -17,7 +17,7 @@ namespace Lexi.Core.Api.Services.Foundations.Users
     public partial class UserService
     {
         private delegate ValueTask<User> ReturningUserFunction();
-        
+
         private async ValueTask<User> TryCatch(ReturningUserFunction returningUserFunction)
         {
             try
@@ -28,11 +28,11 @@ namespace Lexi.Core.Api.Services.Foundations.Users
             {
                 throw CreateAndLogValidationException(nullUserException);
             }
-            catch(InvalidUserException invalidUserException)
+            catch (InvalidUserException invalidUserException)
             {
                 throw CreateAndLogValidationException(invalidUserException);
             }
-            catch(DuplicateKeyException duplicateKeyException)
+            catch (DuplicateKeyException duplicateKeyException)
             {
                 var alreadyExistsUserException =
                     new UserAlreadyExistsException(duplicateKeyException);

@@ -26,9 +26,9 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Feedbacks
             this.storageBrokerMock.Setup(broker =>
                 broker.InsertFeedbackAsync(inputFeedback))
                     .ReturnsAsync(excpectedFeedback);
-             //when 
-             Feedback actualFeedback = 
-                await this.feedbackService.AddFeedbackAsync(inputFeedback);
+            //when 
+            Feedback actualFeedback =
+               await this.feedbackService.AddFeedbackAsync(inputFeedback);
 
             //then
             actualFeedback.Should().BeEquivalentTo(excpectedFeedback);
