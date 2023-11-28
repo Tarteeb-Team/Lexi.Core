@@ -15,7 +15,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
     public partial class SpeechServiceTests
     {
         [Fact]
-        public async Task ShouldRetrieveAllSpeeches()
+        public void ShouldRetrieveAllSpeeches()
         {
             //given
             IQueryable<SpeechModel> randomSpeeches = CreateRandomSpeeches();

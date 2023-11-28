@@ -15,7 +15,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
     public partial class SpeechServiceTests
     {
         [Fact]
-        public async Task ShoulThrowCriticalDependencyExceptionOnRetrieveAllWhenSqlExceptionOccursAndLogIt()
+        public void ShoulThrowCriticalDependencyExceptionOnRetrieveAllWhenSqlExceptionOccursAndLogIt()
         {   //given
             SqlException sqlException = GetSqlError();
 
@@ -46,6 +46,43 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
             this.loggingBrokerMock.Verify(broker =>
             broker.LogCritical(It.Is(SameExceptionAs(
                 expectedSpeechDependencyException))), Times.Once);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public void ShouldThrowCriticalServiceExceptionOnRetrieveAllWhenServiceErrorOccursAndLogIt()
+        {
+            //given
+            Exception serviceException = new Exception();
+
+            FailedSpeechServiceException failedSpeechServiceException = 
+                new FailedSpeechServiceException(serviceException);
+
+            SpeechServiceException expectedSpeechServiceException = 
+                    new SpeechServiceException(failedSpeechServiceException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectAllSpeeches()).Throws(serviceException);
+            //when
+            Action actualSpeeches = () =>
+                    this.speechService.RetrieveAllSpeeches();
+
+            SpeechServiceException actualSpeechServiceException = 
+                Assert.Throws<SpeechServiceException>(actualSpeeches);
+
+            //then
+            actualSpeechServiceException.
+                Should().
+                BeEquivalentTo(expectedSpeechServiceException);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectAllSpeeches(), Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+            broker.LogCritical(It.Is(SameExceptionAs(
+                expectedSpeechServiceException))), Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
