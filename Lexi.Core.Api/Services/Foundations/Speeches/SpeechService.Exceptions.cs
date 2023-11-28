@@ -7,6 +7,7 @@ using EFxceptions.Models.Exceptions;
 using Lexi.Core.Api.Models.Foundations.Speeches.Exceptions;
 using Microsoft.Data.SqlClient;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xeptions;
 using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
@@ -17,7 +18,22 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
     public partial class SpeechService
     {
         private delegate ValueTask<SpeechModel> ReturningSpeechFunction();
+        private delegate IQueryable<SpeechModel> ReturningSpeechesFunction();
 
+        private IQueryable<SpeechModel> TryCach(ReturningSpeechesFunction returningSpeechesFunction)
+        {
+            try
+            {
+                return returningSpeechesFunction();
+            }
+            catch (SqlException sqlException)
+            {
+                FailedSpeechServiceException failedSpeechServiceException = 
+                    new FailedSpeechServiceException(sqlException);
+            
+                throw CreateAndLogCriticalDependencyException(failedSpeechServiceException);
+            }
+        }
         private async ValueTask<SpeechModel> TryCatch(ReturningSpeechFunction returningSpeechFunction)
         {
             try
