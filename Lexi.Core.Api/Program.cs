@@ -9,6 +9,7 @@ using Lexi.Core.Api.Brokers.Storages;
 using Lexi.Core.Api.Services.Cognitives;
 using Lexi.Core.Api.Services.Foundations.Feedbacks;
 using Lexi.Core.Api.Services.Foundations.Speeches;
+using Lexi.Core.Api.Services.Foundations.Telegrams;
 using Lexi.Core.Api.Services.Orchestrations;
 using Lexi.Core.Api.Services.Orchestrations.Cognitive;
 using Lexi.Core.Api.Services.Orchestrations.Speech;
@@ -27,9 +28,14 @@ builder.Services.AddTransient<ICognitiveServices, CognitiveServices>();
 builder.Services.AddTransient<ICognitiveBroker, CognitiveBroker>();
 builder.Services.AddTransient<ICognitiveOrchestrationService, CognitiveOrchestrationService>();
 builder.Services.AddTransient<ISpeechOrchestrationService, SpeechOrchestrationService>();
+builder.Services.AddTransient<ITelegramService, TelegramService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 var app = builder.Build();
+
+
+var telegramService = new TelegramService();
+telegramService.StartListening();
 
 if (app.Environment.IsDevelopment())
 {
