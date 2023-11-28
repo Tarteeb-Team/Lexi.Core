@@ -33,7 +33,7 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
 
         public IQueryable<Speech> RetrieveAllSpeeches()
         {
-            return this.storageBroker.SelectAllSpeeches();
+            throw new NotImplementedException();
         }
 
         public ValueTask<Speech> RetrieveSpeechesByIdAsync(Guid id) =>
