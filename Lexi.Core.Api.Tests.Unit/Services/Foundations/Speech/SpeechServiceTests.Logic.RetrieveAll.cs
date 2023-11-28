@@ -3,10 +3,7 @@
 // Powering True Leadership
 //=================================
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
@@ -34,8 +31,8 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
             //then
             actualSpeeches.Should().BeEquivalentTo(expextedSpeeches);
 
-            this.storageBrokerMock.Verify(broker => 
-                broker.SelectAllSpeeches(),Times.Once);
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectAllSpeeches(), Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
