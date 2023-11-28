@@ -3,8 +3,10 @@
 // Powering True Leadership
 //=================================
 
+using Lexi.Core.Api.Brokers.TelegramBroker;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Lexi.Core.Api.Models.ObjcetModels;
+using Lexi.Core.Api.Services.Cognitives;
 using Lexi.Core.Api.Services.Orchestrations.Cognitive;
 using Lexi.Core.Api.Services.Orchestrations.Speech;
 using System;
@@ -18,21 +20,24 @@ namespace Lexi.Core.Api.Services.Orchestrations
     {
         private readonly ICognitiveOrchestrationService cognitiveOrchestrationService;
         private readonly ISpeechOrchestrationService speechOrchestrationService;
+        private readonly ITelegramBroker telegramBroker;
+        private readonly ICognitiveServices cognitiveServices;
 
-        public OrchestrationService(ICognitiveOrchestrationService cognitiveOrchestrationService,
-            ISpeechOrchestrationService speechOrchestrationService)
+        public OrchestrationService()
         {
-            this.cognitiveOrchestrationService = cognitiveOrchestrationService;
-            this.speechOrchestrationService = speechOrchestrationService;
+            this.cognitiveOrchestrationService = new CognitiveOrchestrationService(cognitiveServices);
+            //this.speechOrchestrationService = speechOrchestrationService;
+            this.telegramBroker = new TelegramBroker();
         }
 
-        public async Task<ResponseCognitive> GetOggFile(Stream stream)
+        public async Task<ResponseCognitive> GetOggFile()
         {
-            ResponseCognitive responseCognitive = await this.cognitiveOrchestrationService.GetOggFile(stream);
+            this.telegramBroker.;
+            ResponseCognitive responseCognitive = await this.cognitiveOrchestrationService.GetOggFile();
 
-            await speechOrchestrationService.MapToSpeech(responseCognitive);
-            await speechOrchestrationService.MapToFeedback(responseCognitive);
-
+            //await speechOrchestrationService.MapToSpeech(responseCognitive);
+            //await speechOrchestrationService.MapToFeedback(responseCognitive);
+            await this.telegramBroker.SendTextMessageAsync(1, responseCognitive.DisplayText);
             return responseCognitive;
         }
 

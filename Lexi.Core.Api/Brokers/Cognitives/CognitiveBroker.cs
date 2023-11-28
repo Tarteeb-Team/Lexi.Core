@@ -5,6 +5,7 @@
 
 using Concentus.Oggfile;
 using Concentus.Structs;
+using Lexi.Core.Api.Brokers.TelegramBroker;
 using Microsoft.CognitiveServices.Speech;
 using Microsoft.CognitiveServices.Speech.Audio;
 using Microsoft.CognitiveServices.Speech.PronunciationAssessment;
@@ -19,16 +20,24 @@ namespace Lexi.Core.Api.Brokers.Cognitives
     {
         string speechKey = "4c16b8cafd324366830b415ad566f667";
         string speechRegion = "centralindia";
-        string _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "audio.wav");
+        private readonly ITelegramBroker telegramBroker;
+
+        public CognitiveBroker(ITelegramBroker telegramBroker)
+        {
+            this.telegramBroker = telegramBroker;
+        }
+
         public async Task<string> GetOggFile(Stream stream)
         {
-            ReturningConvertOggToWav(stream);
+            //ReturningConvertOggToWav(stream);
             return await GetJsonString();
         }
 
 
         public async Task<string> GetJsonString()
         {
+            string _filePath = this.telegramBroker.ReturnFilePath();
+
             var speechConfig = SpeechConfig.FromSubscription(speechKey, speechRegion);
             speechConfig.SpeechRecognitionLanguage = "en-US";
 
@@ -56,29 +65,6 @@ namespace Lexi.Core.Api.Brokers.Cognitives
                 return pronunciationAssessmentResultJson;
             }
         }
-        void ReturningConvertOggToWav(Stream stream)
-        {
-            using (MemoryStream pcmStream = new MemoryStream())
-            {
-                OpusDecoder decoder = OpusDecoder.Create(48000, 1);
-                OpusOggReadStream oggIn = new OpusOggReadStream(decoder, stream);
-                while (oggIn.HasNextPacket)
-                {
-                    short[] packet = oggIn.DecodeNextPacket();
-                    if (packet != null)
-                    {
-                        for (int i = 0; i < packet.Length; i++)
-                        {
-                            var bytes = BitConverter.GetBytes(packet[i]);
-                            pcmStream.Write(bytes, 0, bytes.Length);
-                        }
-                    }
-                }
-                pcmStream.Position = 0;
-                var wavStream = new RawSourceWaveStream(pcmStream, new WaveFormat(48000, 1));
-                var sampleProvider = wavStream.ToSampleProvider();
-                WaveFileWriter.CreateWaveFile16(_filePath, sampleProvider);
-            }
-        }
+        
     }
 }

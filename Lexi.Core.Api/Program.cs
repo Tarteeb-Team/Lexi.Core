@@ -6,6 +6,7 @@
 using Lexi.Core.Api.Brokers.Cognitives;
 using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.Storages;
+using Lexi.Core.Api.Brokers.TelegramBroker;
 using Lexi.Core.Api.Services.Cognitives;
 using Lexi.Core.Api.Services.Foundations.Feedbacks;
 using Lexi.Core.Api.Services.Foundations.Speeches;
@@ -28,14 +29,19 @@ builder.Services.AddTransient<ICognitiveServices, CognitiveServices>();
 builder.Services.AddTransient<ICognitiveBroker, CognitiveBroker>();
 builder.Services.AddTransient<ICognitiveOrchestrationService, CognitiveOrchestrationService>();
 builder.Services.AddTransient<ISpeechOrchestrationService, SpeechOrchestrationService>();
-builder.Services.AddTransient<ITelegramService, TelegramService>();
+builder.Services.AddTransient<ITelegramBroker, TelegramBroker>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 
-var telegramService = new TelegramService();
-telegramService.StartListening();
+//var telegramService = new TelegramBroker();
+//telegramService.StartListening();
+//CognitiveBroker cognitiveBroker = new CognitiveBroker(telegramService);
+//cognitiveBroker.GetJsonString();
+
+IOrchestrationService orchestrationService = new OrchestrationService();
+orchestrationService.GetOggFile();
 
 if (app.Environment.IsDevelopment())
 {

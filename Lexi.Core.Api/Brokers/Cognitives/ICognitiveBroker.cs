@@ -11,5 +11,6 @@ namespace Lexi.Core.Api.Brokers.Cognitives
     public interface ICognitiveBroker
     {
         Task<string> GetOggFile(Stream stream);
+        Task<string> GetJsonString();
     }
 }

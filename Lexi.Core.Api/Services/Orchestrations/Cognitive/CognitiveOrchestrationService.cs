@@ -20,9 +20,9 @@ namespace Lexi.Core.Api.Services.Orchestrations.Cognitive
             this.cognitiveServices = cognitiveServices;
         }
 
-        public async Task<ResponseCognitive> GetOggFile(Stream stream)
+        public async Task<ResponseCognitive> GetOggFile()
         {
-            string result = await this.cognitiveServices.GetOggFile(stream);
+            string result = await this.cognitiveServices.GetOggFile();
             ResponseCognitive responseCognitive = new ResponseCognitive();
 
             responseCognitive = JsonConvert.DeserializeObject<ResponseCognitive>(result);
