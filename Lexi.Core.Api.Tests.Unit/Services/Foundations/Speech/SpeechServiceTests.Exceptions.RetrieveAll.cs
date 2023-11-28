@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//=================================
+// Copyright (c) Tarteeb LLC.
+// Powering True Leadership
+//=================================
+
+using System;
 using FluentAssertions;
 using Lexi.Core.Api.Models.Foundations.Speeches.Exceptions;
 using Microsoft.Data.SqlClient;
 using Moq;
 using Xunit;
-using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
 
 namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
 {
@@ -57,10 +57,10 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
             //given
             Exception serviceException = new Exception();
 
-            FailedSpeechServiceException failedSpeechServiceException = 
+            FailedSpeechServiceException failedSpeechServiceException =
                 new FailedSpeechServiceException(serviceException);
 
-            SpeechServiceException expectedSpeechServiceException = 
+            SpeechServiceException expectedSpeechServiceException =
                     new SpeechServiceException(failedSpeechServiceException);
 
             this.storageBrokerMock.Setup(broker =>
@@ -69,7 +69,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
             Action actualSpeeches = () =>
                     this.speechService.RetrieveAllSpeeches();
 
-            SpeechServiceException actualSpeechServiceException = 
+            SpeechServiceException actualSpeechServiceException =
                 Assert.Throws<SpeechServiceException>(actualSpeeches);
 
             //then
