@@ -33,6 +33,12 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
             
                 throw CreateAndLogCriticalDependencyException(failedSpeechServiceException);
             }
+            catch(Exception exception)
+            {
+                FailedSpeechServiceException failedSpeechServiceException =
+                    new FailedSpeechServiceException(exception);
+                throw CreateAndLogServiceException(failedSpeechServiceException);
+            }
         }
         private async ValueTask<SpeechModel> TryCatch(ReturningSpeechFunction returningSpeechFunction)
         {
