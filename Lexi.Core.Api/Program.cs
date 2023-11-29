@@ -22,6 +22,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<IStorageBroker, StorageBroker>();
+builder.Services.AddSingleton<IStorageBroker, StorageBroker>();
 builder.Services.AddTransient<ILoggingBroker, LoggingBroker>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ISpeechService, SpeechService>();
