@@ -6,10 +6,12 @@
 using Concentus.Oggfile;
 using Concentus.Structs;
 using Lexi.Core.Api.Models.Foundations.ExternalUsers;
+using Lexi.Core.Api.Services.Foundations.Users;
 using Lexi.Core.Api.Services.Orchestrations;
 using NAudio.Wave;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -19,18 +21,23 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 {
     public class TelegramBroker : ITelegramBroker
     {
+
         private TelegramBotClient botClient;
-        private static readonly AsyncLocal<long> storedTelegramId = new AsyncLocal<long>();
-        private static readonly AsyncLocal<string> storedName = new AsyncLocal<string>();
         private IOrchestrationService orchestrationService;
+        private readonly IUserService userService;
+
+        private static readonly AsyncLocal<long> storedTelegramId = new AsyncLocal<long>();
+        private static readonly AsyncLocal<int> messageId = new AsyncLocal<int>();
+        private static readonly AsyncLocal<string> storedName = new AsyncLocal<string>();
 
         public string _filePath =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "audio.wav");
 
-        public TelegramBroker(IServiceProvider serviceProvider)
+        public TelegramBroker(IServiceProvider serviceProvider, IUserService userService)
         {
             var token = "6730993098:AAGbcKM4YBFAkzav-RRoiqsuzNOySrMpeS0";
             this.botClient = new TelegramBotClient(token);
+            this.userService = userService;
         }
 
         public void StartListening()
@@ -40,24 +47,43 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
         public async Task MessageHandler(ITelegramBotClient client, Update update, CancellationToken token)
         {
-            if (update.Message.Text is not null)
+            var text = update.Message.Text;
+            var voice = update.Message.Voice;
+            var chatId = update.Message.Chat.Id;
+            if (text is not null)
             {
-                await client.SendTextMessageAsync(
-                    chatId: update.Message.Chat.Id,
-                    text: $"🎓LexiEnglishBot🎓\n\n" +
-                    $"⚠️Welcome {update.Message.Chat.FirstName}, " +
-                    $"you can test your English speaking skill.\n\n Send voice message🎙");
+                var user = this.userService
+                    .RetrieveAllUsers().FirstOrDefault(u => u.TelegramId == chatId);
+
+                if (user is null)
+                {
+                    await client.SendTextMessageAsync(
+                        chatId: chatId,
+                        text: $"🎓LexiEnglishBot🎓\n\n" +
+                        $"⚠️Welcome {update.Message.Chat.FirstName}, " +
+                        $"you can test your English speaking skill.\n\n Send voice message🎙");
+                }
+                else
+                {
+                    await client.SendTextMessageAsync(
+                       chatId: chatId,
+                       text: $"🎓LexiEnglishBot🎓\n\n" +
+                       $"Send voice message please🎙");
+                }
             }
-            else if (update.Message.Voice is not null)
+            else if (voice is not null)
             {
-                var voiceMessage = update.Message.Voice;
-                storedTelegramId.Value = update.Message.Chat.Id;
+                var loadingMessage = await client.SendTextMessageAsync(
+                       chatId: chatId,
+                       text: $"🎓LexiEnglishBot🎓\n\n" +
+                       $"Loading...");
+
+                storedTelegramId.Value = chatId;
                 storedName.Value = update.Message.Chat.FirstName;
+                messageId.Value = loadingMessage.MessageId;
 
-                // Get file information
-                var file = await client.GetFileAsync(voiceMessage.FileId);
+                var file = await client.GetFileAsync(voice.FileId);
 
-                // Download the file and get the stream
                 using (var stream = new MemoryStream())
                 {
                     await client.DownloadFileAsync(file.FilePath, stream);
@@ -91,6 +117,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
         public async Task SendTextMessageAsync(long chatId, string text)
         {
+            await botClient.DeleteMessageAsync(chatId: chatId, messageId: messageId.Value);
             await botClient.SendTextMessageAsync(chatId, text);
         }
 
