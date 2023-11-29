@@ -5,7 +5,7 @@
 
 using EFxceptions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,60 +13,75 @@ namespace Lexi.Core.Api.Brokers.Storages
 {
     public partial class StorageBroker : EFxceptionsContext, IStorageBroker
     {
-        private readonly IConfiguration configuration;
-
-        public StorageBroker(IConfiguration configuration)
+        public StorageBroker()
         {
-            this.configuration = configuration;
-            this.Database.Migrate();
-        }
-        private async ValueTask<T> InsertAsync<T>(T @object)
-        {
-            var broker = new StorageBroker(this.configuration);
-
-            broker.Entry(@object).State = EntityState.Added;
-            await broker.SaveChangesAsync();
-
-            return @object;
+            this.Database.EnsureCreated();
         }
 
-        private IQueryable<T> SelectAll<T>() where T : class
+        public async ValueTask<T> InsertAsync<T>(T @object)
         {
-            var broker = new StorageBroker(this.configuration);
+            try
+            {
+                var broker = new StorageBroker();
+                broker.Entry(@object).State = EntityState.Added;
+                await broker.SaveChangesAsync();
+
+                return @object;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        public IQueryable<T> SelectAll<T>() where T : class
+        {
+            var broker = new StorageBroker();
 
             return broker.Set<T>();
         }
 
-        private async ValueTask<T> SelectAsync<T>(params object[] objectIds) where T : class
+        public async ValueTask<T> SelectAsync<T>(params object[] objectsId) where T : class
         {
-            var broker = new StorageBroker(this.configuration);
+            var broker = new StorageBroker();
 
-            return await broker.FindAsync<T>(objectIds);
+            return await broker.FindAsync<T>(objectsId);
         }
 
-        private async ValueTask<T> UpdateAsync<T>(T @object)
+        public async ValueTask<T> UpdateAsync<T>(T @object)
         {
-            var broker = new StorageBroker(this.configuration);
+
+            var broker = new StorageBroker();
             broker.Entry(@object).State = EntityState.Modified;
             await broker.SaveChangesAsync();
 
             return @object;
         }
 
-        private async ValueTask<T> DeleteAsync<T>(T @object)
+        public async ValueTask<T> DeleteAsync<T>(T @object)
         {
-            var broker = new StorageBroker(this.configuration);
-            broker.Entry(@object).State = EntityState.Deleted;
-            await broker.SaveChangesAsync();
+            try
+            {
+                var broker = new StorageBroker();
+                broker.Entry(@object).State = EntityState.Deleted;
+                await broker.SaveChangesAsync();
 
-            return @object;
+                return @object;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString = "Data Source = LexiCore.db";
+            string connectionString = "Data source = Lexi.db";
             optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             optionsBuilder.UseSqlite(connectionString);
         }
+
+        public override void Dispose() { }
     }
 }

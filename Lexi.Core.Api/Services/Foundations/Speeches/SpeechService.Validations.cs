@@ -21,9 +21,7 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
             Validate(
                 (Rule: IsInvalid(speech.Id), Parameter: nameof(SpeechModel.Id)),
                 (Rule: IsInvalid(speech.Sentence), Parameter: nameof(SpeechModel.Sentence)),
-                (Rule: IsInvalid(speech.UserId), Parameter: nameof(SpeechModel.UserId)),
-                (Rule: IsInvalid(speech.User), Parameter: nameof(SpeechModel.User)),
-                (Rule: IsInvalid(speech.Feedbacks), Parameter: nameof(SpeechModel.Feedbacks)));
+                (Rule: IsInvalid(speech.UserId), Parameter: nameof(SpeechModel.UserId)));
         }
 
         private void ValidateStorageSpeechExists(Speech maybeSpeech, Guid id)
@@ -50,16 +48,6 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
 
             Condition = System.String.IsNullOrWhiteSpace(text),
             Message = "Text is required"
-        };
-        private static dynamic IsInvalid(User user) => new
-        {
-            Condition = user == null,
-            Message = "User is required"
-        };
-        private static dynamic IsInvalid(Feedback feedback) => new
-        {
-            Condition = feedback == null,
-            Message = "Feedback is required"
         };
 
         private void ValidateSpeechNotNull(SpeechModel speech)

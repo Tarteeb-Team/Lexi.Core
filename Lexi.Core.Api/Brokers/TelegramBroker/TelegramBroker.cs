@@ -14,18 +14,25 @@ using Concentus.Structs;
 using NAudio.Wave;
 using Lexi.Core.Api.Models.Foundations.ExternalUsers;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Lexi.Core.Api.Services.Orchestrations;
 
 namespace Lexi.Core.Api.Brokers.TelegramBroker
 {
     public class TelegramBroker : ITelegramBroker
     {
         private TelegramBotClient botClient;
-        public string _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "audio.wav");
+        private long storedTelegramId;
+        private string storedName;
+        private readonly IServiceProvider serviceProvider;
+        public string _filePath = 
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "audio.wav");
 
-        public TelegramBroker()
+        public TelegramBroker(IServiceProvider serviceProvider)
         {
             var token = "6505501647:AAEefapD-rEHaoFw6gyG-UNbI3KCCm6NxKU";
             this.botClient = new TelegramBotClient(token);
+            this.serviceProvider = serviceProvider;
         }
 
         public void StartListening()
@@ -33,11 +40,14 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             botClient.StartReceiving(MessageHandler, ErrorHandler);
         }
 
-        private async Task MessageHandler(ITelegramBotClient client, Update update, CancellationToken token)
+        public async Task MessageHandler(ITelegramBotClient client, Update update, CancellationToken token)
         {
             if (update.Message.Voice is not null)
             {
                 var voiceMessage = update.Message.Voice;
+
+                storedTelegramId = update.Message.Chat.Id;
+                storedName = update.Message.Chat.FirstName;
 
                 // Get file information
                 var file = await client.GetFileAsync(voiceMessage.FileId);
@@ -52,18 +62,23 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 }
             }
             ReturnFilePath();
-            //CreateExternalUser(update.Message.Chat.Id, update.Message.Chat.FirstName);
+
+            await CreateExternalUserAsync();
+
+            var orchestrationService = serviceProvider.GetRequiredService<IOrchestrationService>();
+
+            await orchestrationService.GenerateSpeechFeedbackForUser();
         }
 
-        public ExternalUser CreateExternalUser(long telegramId, string name)
+        public ValueTask<ExternalUser> CreateExternalUserAsync()
         {
             var externalUser = new ExternalUser();
 
-            externalUser.TelegramId = telegramId;
-            externalUser.Name = name;
+            externalUser.TelegramId = storedTelegramId;
+            externalUser.Name = storedName;
             externalUser.Id = Guid.NewGuid();
 
-            return externalUser;
+            return new ValueTask<ExternalUser>(externalUser);
         }
 
         public string ReturnFilePath()
@@ -75,7 +90,6 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         {
             await botClient.SendTextMessageAsync(chatId, text);
         }
-
 
         public void ReturningConvertOggToWav(Stream stream)
         {
@@ -101,6 +115,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 WaveFileWriter.CreateWaveFile16(_filePath, sampleProvider);
             }
         }
+
         static async Task ErrorHandler(ITelegramBotClient client, Exception exception, CancellationToken token)
         {
         }

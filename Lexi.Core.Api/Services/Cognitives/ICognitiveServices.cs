@@ -10,6 +10,6 @@ namespace Lexi.Core.Api.Services.Cognitives
 {
     public interface ICognitiveServices
     {
-        Task<string> GetOggFile();
+        Task<string> GetJsonString();
     }
 }

@@ -27,13 +27,6 @@ namespace Lexi.Core.Api.Brokers.Cognitives
             this.telegramBroker = telegramBroker;
         }
 
-        public async Task<string> GetOggFile(Stream stream)
-        {
-            //ReturningConvertOggToWav(stream);
-            return await GetJsonString();
-        }
-
-
         public async Task<string> GetJsonString()
         {
             string _filePath = this.telegramBroker.ReturnFilePath();
@@ -50,6 +43,8 @@ namespace Lexi.Core.Api.Brokers.Cognitives
             pronunciationAssessmentConfig.EnableContentAssessmentWithTopic("greeting");
 
             using var audioConfig = AudioConfig.FromWavFileInput(_filePath);
+
+            // Creating a SpeechRecognizer using SpeechConfig and AudioConfig
             using (var speechRecognizer = new SpeechRecognizer(speechConfig, audioConfig))
             {
                 pronunciationAssessmentConfig.ApplyTo(speechRecognizer);
@@ -60,7 +55,8 @@ namespace Lexi.Core.Api.Brokers.Cognitives
                     PronunciationAssessmentResult.FromResult(speechRecognitionResult);
 
                 // The pronunciation assessment result as a JSON string
-                var pronunciationAssessmentResultJson = speechRecognitionResult.Properties.GetProperty(PropertyId.SpeechServiceResponse_JsonResult);
+                var pronunciationAssessmentResultJson = speechRecognitionResult
+                    .Properties.GetProperty(PropertyId.SpeechServiceResponse_JsonResult);
 
                 return pronunciationAssessmentResultJson;
             }

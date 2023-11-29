@@ -5,6 +5,8 @@
 
 using Lexi.Core.Api.Brokers.TelegramBroker;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
+using Lexi.Core.Api.Models.Foundations.Speeches;
+using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Models.ObjcetModels;
 using Lexi.Core.Api.Services.Cognitives;
 using Lexi.Core.Api.Services.Orchestrations.Cognitive;
@@ -12,7 +14,9 @@ using Lexi.Core.Api.Services.Orchestrations.Speech;
 using System;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
 
 namespace Lexi.Core.Api.Services.Orchestrations
 {
@@ -20,25 +24,31 @@ namespace Lexi.Core.Api.Services.Orchestrations
     {
         private readonly ICognitiveOrchestrationService cognitiveOrchestrationService;
         private readonly ISpeechOrchestrationService speechOrchestrationService;
-        private readonly ITelegramBroker telegramBroker;
-        private readonly ICognitiveServices cognitiveServices;
 
-        public OrchestrationService()
+        public OrchestrationService(ICognitiveOrchestrationService cognitiveOrchestrationService,
+            ISpeechOrchestrationService speechOrchestrationService)
         {
-            this.cognitiveOrchestrationService = new CognitiveOrchestrationService(cognitiveServices);
-            //this.speechOrchestrationService = speechOrchestrationService;
-            this.telegramBroker = new TelegramBroker();
+            this.cognitiveOrchestrationService = cognitiveOrchestrationService;
+            this.speechOrchestrationService = speechOrchestrationService;
         }
 
-        public async Task<ResponseCognitive> GetOggFile()
+        public async ValueTask GenerateSpeechFeedbackForUser()
         {
-            this.telegramBroker.;
-            ResponseCognitive responseCognitive = await this.cognitiveOrchestrationService.GetOggFile();
+            //this.cognitiveOrchestrationService.StartListening();
 
-            //await speechOrchestrationService.MapToSpeech(responseCognitive);
-            //await speechOrchestrationService.MapToFeedback(responseCognitive);
-            await this.telegramBroker.SendTextMessageAsync(1, responseCognitive.DisplayText);
-            return responseCognitive;
+            ResponseCognitive responseCognitive = 
+                await this.cognitiveOrchestrationService.GetResponseCognitive();
+
+
+            User user = await this.cognitiveOrchestrationService.AddNewUserAsync();
+
+            SpeechModel speech = await speechOrchestrationService.MapToSpeech(responseCognitive, user.Id);
+
+            Feedback feedback =
+                await this.speechOrchestrationService.MapToFeedback(responseCognitive, speech.Id);
+
+            await this.cognitiveOrchestrationService
+                .MapFeedbackToStringAndSendMessage(user.TelegramId, feedback);
         }
 
         public ValueTask<Feedback> RemoveFeedbackAsync(Feedback feedback) =>
