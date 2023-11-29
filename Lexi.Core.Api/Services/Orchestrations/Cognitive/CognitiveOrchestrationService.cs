@@ -53,8 +53,8 @@ namespace Lexi.Core.Api.Services.Orchestrations.Cognitive
             return await this.userService.AddUserAsync(user);
         }
 
-        public async ValueTask MapFeedbackToStringAndSendMessage(long telegramId, Feedback feedback) =>
-            await this.telegramService.MapFeedbackToStringAndSendMessage(telegramId, feedback);
+        public async ValueTask MapFeedbackToStringAndSendMessage(long telegramId, Feedback feedback, string sentence) =>
+            await this.telegramService.MapFeedbackToStringAndSendMessage(telegramId, feedback, sentence);
              
         private User MapToUser(ExternalUser externalUser)
         {

@@ -1,4 +1,5 @@
 ﻿using Lexi.Core.Api.Models.Foundations.ExternalUsers;
+using Lexi.Core.Api.Services.Orchestrations;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,5 +15,6 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         void ReturningConvertOggToWav(Stream stream);
         string ReturnFilePath();
         Task SendTextMessageAsync(long chatId, string text);
+        void SetOrchestrationService(IOrchestrationService orchestrationService);
     }
 }

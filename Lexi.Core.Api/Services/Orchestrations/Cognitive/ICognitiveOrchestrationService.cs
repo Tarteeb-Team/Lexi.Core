@@ -16,6 +16,6 @@ namespace Lexi.Core.Api.Services.Orchestrations.Cognitive
         void StartListening();
         ValueTask<ResponseCognitive> GetResponseCognitive();
         ValueTask<User> AddNewUserAsync();
-        ValueTask MapFeedbackToStringAndSendMessage(long telegramId, Feedback feedback);
+        ValueTask MapFeedbackToStringAndSendMessage(long telegramId, Feedback feedback, string sentence);
     }
 }

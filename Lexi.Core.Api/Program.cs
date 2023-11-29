@@ -16,7 +16,6 @@ using Lexi.Core.Api.Services.Foundations.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Добавляем сервисы
 builder.Services.AddControllers();
 builder.Services.AddDbContext<IStorageBroker, StorageBroker>();
 builder.Services.AddTransient<ILoggingBroker, LoggingBroker>();
@@ -39,16 +38,14 @@ var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
 
 using (var scope = scopeFactory.CreateScope())
 {
-    var teelgramSErvice = scope.ServiceProvider.GetRequiredService <ITelegramService>();
-
-    teelgramSErvice.StartListening();
-
+    var telegramService = scope.ServiceProvider.GetRequiredService<ITelegramBroker>();
     var orchestrationService = scope.ServiceProvider.GetRequiredService<IOrchestrationService>();
 
-    await orchestrationService.GenerateSpeechFeedbackForUser();
+    telegramService.StartListening();
+
+    telegramService.SetOrchestrationService(orchestrationService);
+
 }
-
-
 
 if (app.Environment.IsDevelopment())
 {

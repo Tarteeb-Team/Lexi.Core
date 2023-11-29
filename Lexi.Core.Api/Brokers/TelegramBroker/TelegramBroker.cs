@@ -3,19 +3,17 @@
 // Powering True Leadership
 //=================================
 
-using System.Threading.Tasks;
-using System.Threading;
-using System;
-using Telegram.Bot;
-using Telegram.Bot.Types;
-using System.IO;
 using Concentus.Oggfile;
 using Concentus.Structs;
-using NAudio.Wave;
 using Lexi.Core.Api.Models.Foundations.ExternalUsers;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Lexi.Core.Api.Services.Orchestrations;
+using NAudio.Wave;
+using System;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using Telegram.Bot;
+using Telegram.Bot.Types;
 
 namespace Lexi.Core.Api.Brokers.TelegramBroker
 {
@@ -24,15 +22,15 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         private TelegramBotClient botClient;
         private long storedTelegramId;
         private string storedName;
-        private readonly IServiceProvider serviceProvider;
-        public string _filePath = 
+        private IOrchestrationService orchestrationService;
+
+        public string _filePath =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "audio.wav");
 
         public TelegramBroker(IServiceProvider serviceProvider)
         {
             var token = "6505501647:AAEefapD-rEHaoFw6gyG-UNbI3KCCm6NxKU";
             this.botClient = new TelegramBotClient(token);
-            this.serviceProvider = serviceProvider;
         }
 
         public void StartListening()
@@ -65,9 +63,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
             await CreateExternalUserAsync();
 
-            var orchestrationService = serviceProvider.GetRequiredService<IOrchestrationService>();
-
-            await orchestrationService.GenerateSpeechFeedbackForUser();
+            SetOrchestrationService(orchestrationService);
         }
 
         public ValueTask<ExternalUser> CreateExternalUserAsync()
@@ -114,6 +110,12 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 var sampleProvider = wavStream.ToSampleProvider();
                 WaveFileWriter.CreateWaveFile16(_filePath, sampleProvider);
             }
+        }
+        public void SetOrchestrationService(IOrchestrationService orchestrationService)
+        {
+            this.orchestrationService = orchestrationService;
+
+            this.orchestrationService.GenerateSpeechFeedbackForUser();
         }
 
         static async Task ErrorHandler(ITelegramBotClient client, Exception exception, CancellationToken token)

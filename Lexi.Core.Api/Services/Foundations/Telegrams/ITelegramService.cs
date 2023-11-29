@@ -12,7 +12,7 @@ namespace Lexi.Core.Api.Services.Foundations.Telegrams
     public interface ITelegramService
     {
         ValueTask<ExternalUser> GetExternalUserAsync();
-        ValueTask MapFeedbackToStringAndSendMessage(long telegramId, Feedback feedback);
+        ValueTask MapFeedbackToStringAndSendMessage(long telegramId, Feedback feedback, string sentence);
         void StartListening();
     }
 }
