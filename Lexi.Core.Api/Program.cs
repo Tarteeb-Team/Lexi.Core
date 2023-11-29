@@ -1,3 +1,8 @@
+//=================================
+// Copyright (c) Tarteeb LLC.
+// Powering True Leadership
+//=================================
+
 using Lexi.Core.Api.Brokers.Cognitives;
 using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.Storages;

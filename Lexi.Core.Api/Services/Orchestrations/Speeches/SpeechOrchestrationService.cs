@@ -7,6 +7,7 @@ using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Lexi.Core.Api.Models.ObjcetModels;
 using Lexi.Core.Api.Services.Foundations.Feedbacks;
 using Lexi.Core.Api.Services.Foundations.Speeches;
+using Microsoft.Identity.Client;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -54,15 +55,27 @@ namespace Lexi.Core.Api.Services.Orchestrations.Speech
 
         public async ValueTask<SpeechModel> MapToSpeech(ResponseCognitive responseCognitive, Guid userId)
         {
-            SpeechModel speech = new SpeechModel()
-            {
-                Id = Guid.NewGuid(),
-                Sentence = responseCognitive.DisplayText,
-                UserId = userId
-            };
+            var expectedSpeech = this.speechService
+                .RetrieveAllSpeeches().FirstOrDefault(s => s.UserId == userId);
 
-            _speechId = speech.Id;
-            return await speechService.AddSpechesAsync(speech);
+            if (expectedSpeech is not null)
+            {
+                expectedSpeech.Sentence = responseCognitive.DisplayText;
+
+                return await speechService.AddSpechesAsync(expectedSpeech);
+            }
+            else
+            {
+                SpeechModel speech = new SpeechModel()
+                {
+                    Id = Guid.NewGuid(),
+                    Sentence = responseCognitive.DisplayText,
+                    UserId = userId
+                };
+
+                _speechId = speech.Id;
+                return await speechService.AddSpechesAsync(speech);
+            }
         }
 
         public IQueryable<SpeechModel> RetrieveAllSpeeches() =>

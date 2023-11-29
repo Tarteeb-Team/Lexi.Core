@@ -12,6 +12,7 @@ using Lexi.Core.Api.Services.Foundations.Telegrams;
 using Lexi.Core.Api.Services.Foundations.Users;
 using Newtonsoft.Json;
 using System;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -49,31 +50,34 @@ namespace Lexi.Core.Api.Services.Orchestrations.Cognitive
         {
             ExternalUser externalUser = await this.telegramService.GetExternalUserAsync();
 
-            User user =  MapToUser(externalUser);
+            User user =  await MapToUser(externalUser);
 
-            return await this.userService.AddUserAsync(user);
+            return user;
         }
 
         public async ValueTask MapFeedbackToStringAndSendMessage(long telegramId, Feedback feedback, string sentence) =>
             await this.telegramService.MapFeedbackToStringAndSendMessage(telegramId, feedback, sentence);
              
-        private User MapToUser(ExternalUser externalUser)
+        private async ValueTask<User> MapToUser(ExternalUser externalUser)
         {
             var user = this.userService
-                .RetrieveAllUsers().FirstOrDefault(u => u.TelegramId == externalUser.TelegramId);   
+                .RetrieveAllUsers().FirstOrDefault(u => u.TelegramId == externalUser.TelegramId);
 
-            if(user is not null)
+            if (user is not null)
             {
                 return user;
             }
             else
             {
-                return new User
+                User newUser = new User
                 {
                     Id = externalUser.Id,
                     Name = externalUser.Name,
                     TelegramId = externalUser.TelegramId
                 };
+
+                return await this.userService.AddUserAsync(newUser);
+
             }
         }
     }
