@@ -31,10 +31,8 @@ namespace Lexi.Core.Api.Services.Foundations.Speeches
             return await this.storageBroker.InsertSpeechAsync(speech);
         });
 
-        public IQueryable<Speech> RetrieveAllSpeeches()
-        {
-            return this.storageBroker.SelectAllSpeeches();
-        }
+        public IQueryable<Speech> RetrieveAllSpeeches() =>
+             TryCach(this.storageBroker.SelectAllSpeeches);
 
         public ValueTask<Speech> RetrieveSpeechesByIdAsync(Guid id) =>
         TryCatch(async () =>
