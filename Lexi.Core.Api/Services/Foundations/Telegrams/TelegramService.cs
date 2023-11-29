@@ -26,12 +26,14 @@ namespace Lexi.Core.Api.Services.Foundations.Telegrams
         public async ValueTask MapFeedbackToStringAndSendMessage(
             long telegramId, Feedback feedback, string sentence)
         {
-            string readyFeedback = $"Your sentence: {sentence}\n\n " +
-                $"Result:\n Accuracy: {feedback.Accuracy}\n" +
-                $"Fluency: {feedback.Fluency}\n" +
-                $"Prosody: {feedback.Prosody}\n" +
-                $"Complenteness: {feedback.Complenteness}\n" +
-                $"Pronunciation: {feedback.Pronunciation}";
+            string readyFeedback = $"🎓LexiEnglishBot🎓\n\n" +
+        $"📝 Your sentence: {sentence}\n\n" +
+        $"✅ Result:\n\n" +
+        $"🤩 Accuracy: {feedback.Accuracy}\n" +
+        $"🤓 Fluency: {feedback.Fluency}\n" +
+        $"😎 Prosody: {feedback.Prosody}\n" +
+        $"🥸 Complateness: {feedback.Complenteness}\n" +
+        $"🥳 Pronunciation: {feedback.Pronunciation} \n\n Keep going";
 
             await this.telegramBroker.SendTextMessageAsync(telegramId, readyFeedback);
         }

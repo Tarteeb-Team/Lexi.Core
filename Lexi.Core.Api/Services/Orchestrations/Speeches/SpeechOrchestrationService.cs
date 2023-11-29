@@ -55,27 +55,15 @@ namespace Lexi.Core.Api.Services.Orchestrations.Speech
 
         public async ValueTask<SpeechModel> MapToSpeech(ResponseCognitive responseCognitive, Guid userId)
         {
-            var expectedSpeech = this.speechService
-                .RetrieveAllSpeeches().FirstOrDefault(s => s.UserId == userId);
-
-            if (expectedSpeech is not null)
+            SpeechModel speech = new SpeechModel()
             {
-                expectedSpeech.Sentence = responseCognitive.DisplayText;
+                Id = Guid.NewGuid(),
+                Sentence = responseCognitive.DisplayText,
+                UserId = userId
+            };
 
-                return await speechService.AddSpechesAsync(expectedSpeech);
-            }
-            else
-            {
-                SpeechModel speech = new SpeechModel()
-                {
-                    Id = Guid.NewGuid(),
-                    Sentence = responseCognitive.DisplayText,
-                    UserId = userId
-                };
-
-                _speechId = speech.Id;
-                return await speechService.AddSpechesAsync(speech);
-            }
+            _speechId = speech.Id;
+            return await speechService.AddSpechesAsync(speech);
         }
 
         public IQueryable<SpeechModel> RetrieveAllSpeeches() =>

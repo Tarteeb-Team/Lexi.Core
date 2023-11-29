@@ -20,8 +20,8 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
     public class TelegramBroker : ITelegramBroker
     {
         private TelegramBotClient botClient;
-        private long storedTelegramId;
-        private string storedName;
+        private static readonly AsyncLocal<long> storedTelegramId = new AsyncLocal<long>();
+        private static readonly AsyncLocal<string> storedName = new AsyncLocal<string>();
         private IOrchestrationService orchestrationService;
 
         public string _filePath =
@@ -29,7 +29,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
         public TelegramBroker(IServiceProvider serviceProvider)
         {
-            var token = "6505501647:AAEefapD-rEHaoFw6gyG-UNbI3KCCm6NxKU";
+            var token = "6730993098:AAGbcKM4YBFAkzav-RRoiqsuzNOySrMpeS0";
             this.botClient = new TelegramBotClient(token);
         }
 
@@ -40,12 +40,19 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
         public async Task MessageHandler(ITelegramBotClient client, Update update, CancellationToken token)
         {
-            if (update.Message.Voice is not null)
+            if (update.Message.Text is not null)
+            {
+                await client.SendTextMessageAsync(
+                    chatId: update.Message.Chat.Id,
+                    text: $"🎓LexiEnglishBot🎓\n\n" +
+                    $"⚠️Welcome {update.Message.Chat.FirstName}, " +
+                    $"you can test your English speaking skill.\n\n Send voice message🎙");
+            }
+            else if (update.Message.Voice is not null)
             {
                 var voiceMessage = update.Message.Voice;
-
-                storedTelegramId = update.Message.Chat.Id;
-                storedName = update.Message.Chat.FirstName;
+                storedTelegramId.Value = update.Message.Chat.Id;
+                storedName.Value = update.Message.Chat.FirstName;
 
                 // Get file information
                 var file = await client.GetFileAsync(voiceMessage.FileId);
@@ -70,8 +77,8 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         {
             var externalUser = new ExternalUser();
 
-            externalUser.TelegramId = storedTelegramId;
-            externalUser.Name = storedName;
+            externalUser.TelegramId = storedTelegramId.Value;
+            externalUser.Name = storedName.Value;
             externalUser.Id = Guid.NewGuid();
 
             return new ValueTask<ExternalUser>(externalUser);
