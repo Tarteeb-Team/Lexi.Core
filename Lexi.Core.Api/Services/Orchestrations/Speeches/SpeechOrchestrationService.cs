@@ -7,6 +7,7 @@ using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Lexi.Core.Api.Models.ObjcetModels;
 using Lexi.Core.Api.Services.Foundations.Feedbacks;
 using Lexi.Core.Api.Services.Foundations.Speeches;
+using Microsoft.Identity.Client;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,7 +37,7 @@ namespace Lexi.Core.Api.Services.Orchestrations.Speech
         public ValueTask<Feedback> RetrieveFeedbackByIdAsync(Guid id) =>
             this.feedbackService.RetrieveFeedbackByIdAsync(id);
 
-        public async Task MapToFeedback(ResponseCognitive responseCognitive)
+        public async ValueTask<Feedback> MapToFeedback(ResponseCognitive responseCognitive, Guid speechId)
         {
             Feedback feedback = new Feedback()
             {
@@ -46,23 +47,23 @@ namespace Lexi.Core.Api.Services.Orchestrations.Speech
                 Fluency = responseCognitive.NBest[0].PronunciationAssessment.FluencyScore,
                 Prosody = responseCognitive.NBest[0].PronunciationAssessment.ProsodyScore,
                 Pronunciation = responseCognitive.NBest[0].PronunciationAssessment.PronScore,
-                SpeechId = _speechId
+                SpeechId = speechId
             };
 
-            await this.feedbackService.AddFeedbackAsync(feedback);
+            return await this.feedbackService.AddFeedbackAsync(feedback);
         }
 
-        public async Task MapToSpeech(ResponseCognitive responseCognitive)
+        public async ValueTask<SpeechModel> MapToSpeech(ResponseCognitive responseCognitive, Guid userId)
         {
             SpeechModel speech = new SpeechModel()
             {
                 Id = Guid.NewGuid(),
                 Sentence = responseCognitive.DisplayText,
-                UserId = new Guid("FF333594-0F6A-4EC4-AAAC-008A57AED5D3")
+                UserId = userId
             };
 
             _speechId = speech.Id;
-            await speechService.AddSpechesAsync(speech);
+            return await speechService.AddSpechesAsync(speech);
         }
 
         public IQueryable<SpeechModel> RetrieveAllSpeeches() =>

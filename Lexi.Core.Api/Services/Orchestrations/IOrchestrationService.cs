@@ -15,8 +15,7 @@ namespace Lexi.Core.Api.Services.Orchestrations
 {
     public interface IOrchestrationService
     {
-        Task<ResponseCognitive> GetOggFile(Stream stream);
-
+        ValueTask GenerateSpeechFeedbackForUser();
         IQueryable<Feedback> RetrieveAllFeedbacks();
         ValueTask<Feedback> RetrieveFeedbackByIdAsync(Guid id);
         ValueTask<Feedback> RemoveFeedbackAsync(Feedback feedback);

@@ -4,13 +4,15 @@
 //=================================
 
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
+using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Models.ObjcetModels;
+using Lexi.Core.Api.Services.Foundations.Telegrams;
 using Lexi.Core.Api.Services.Orchestrations.Cognitive;
 using Lexi.Core.Api.Services.Orchestrations.Speech;
 using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
 
 namespace Lexi.Core.Api.Services.Orchestrations
 {
@@ -18,22 +20,31 @@ namespace Lexi.Core.Api.Services.Orchestrations
     {
         private readonly ICognitiveOrchestrationService cognitiveOrchestrationService;
         private readonly ISpeechOrchestrationService speechOrchestrationService;
+        private readonly ITelegramService telegramService;
 
         public OrchestrationService(ICognitiveOrchestrationService cognitiveOrchestrationService,
-            ISpeechOrchestrationService speechOrchestrationService)
+            ISpeechOrchestrationService speechOrchestrationService,
+            ITelegramService telegramService)
         {
             this.cognitiveOrchestrationService = cognitiveOrchestrationService;
             this.speechOrchestrationService = speechOrchestrationService;
+            this.telegramService = telegramService;
         }
 
-        public async Task<ResponseCognitive> GetOggFile(Stream stream)
+        public async ValueTask GenerateSpeechFeedbackForUser()
         {
-            ResponseCognitive responseCognitive = await this.cognitiveOrchestrationService.GetOggFile(stream);
+            ResponseCognitive responseCognitive =
+                await this.cognitiveOrchestrationService.GetResponseCognitive();
 
-            await speechOrchestrationService.MapToSpeech(responseCognitive);
-            await speechOrchestrationService.MapToFeedback(responseCognitive);
+            User user = await this.cognitiveOrchestrationService.AddNewUserAsync();
 
-            return responseCognitive;
+            SpeechModel speech = await speechOrchestrationService.MapToSpeech(responseCognitive, user.Id);
+
+            Feedback feedback =
+                await this.speechOrchestrationService.MapToFeedback(responseCognitive, speech.Id);
+
+            await this.cognitiveOrchestrationService
+                .MapFeedbackToStringAndSendMessage(user.TelegramId, feedback, speech.Sentence);
         }
 
         public ValueTask<Feedback> RemoveFeedbackAsync(Feedback feedback) =>

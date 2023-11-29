@@ -14,8 +14,8 @@ namespace Lexi.Core.Api.Services.Orchestrations.Speech
 {
     public interface ISpeechOrchestrationService
     {
-        Task MapToFeedback(ResponseCognitive responseCognitive);
-        Task MapToSpeech(ResponseCognitive responseCognitive);
+        ValueTask<Feedback> MapToFeedback(ResponseCognitive responseCognitive, Guid speechId);
+        ValueTask<SpeechModel> MapToSpeech(ResponseCognitive responseCognitive, Guid userId);
         IQueryable<Feedback> RetrieveAllFeedbacks();
         ValueTask<Feedback> RetrieveFeedbackByIdAsync(Guid id);
         ValueTask<Feedback> RemoveFeedbackAsync(Feedback feedback);

@@ -1,4 +1,9 @@
-﻿using Lexi.Core.Api.Models.Foundations.Speeches;
+﻿//=================================
+// Copyright (c) Tarteeb LLC.
+// Powering True Leadership
+//=================================
+
+using Lexi.Core.Api.Models.Foundations.Speeches;
 using System;
 
 namespace Lexi.Core.Api.Models.Foundations.Feedbacks
@@ -13,6 +18,5 @@ namespace Lexi.Core.Api.Models.Foundations.Feedbacks
         public decimal Pronunciation { get; set; }
         public Guid SpeechId { get; set; }
         public Speech Speech { get; set; }
-        public Guid ParentId { get; set; }
     }
 }

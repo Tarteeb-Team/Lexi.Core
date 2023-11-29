@@ -9,6 +9,5 @@ namespace Lexi.Core.Api.Models.ObjcetModels
     {
         public string Word { get; set; }
         public PronunciationAssessment_ PronunciationAssessment { get; set; }
-
     }
 }
