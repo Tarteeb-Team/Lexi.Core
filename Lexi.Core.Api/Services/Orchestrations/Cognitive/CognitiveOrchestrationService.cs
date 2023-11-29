@@ -12,6 +12,7 @@ using Lexi.Core.Api.Services.Foundations.Telegrams;
 using Lexi.Core.Api.Services.Foundations.Users;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Lexi.Core.Api.Services.Orchestrations.Cognitive
@@ -58,12 +59,22 @@ namespace Lexi.Core.Api.Services.Orchestrations.Cognitive
              
         private User MapToUser(ExternalUser externalUser)
         {
-            return new User
+            var user = this.userService
+                .RetrieveAllUsers().FirstOrDefault(u => u.TelegramId == externalUser.TelegramId);   
+
+            if(user is not null)
             {
-                Id = externalUser.Id,
-                Name = externalUser.Name,
-                TelegramId = externalUser.TelegramId
-            };
+                return user;
+            }
+            else
+            {
+                return new User
+                {
+                    Id = externalUser.Id,
+                    Name = externalUser.Name,
+                    TelegramId = externalUser.TelegramId
+                };
+            }
         }
     }
 }
