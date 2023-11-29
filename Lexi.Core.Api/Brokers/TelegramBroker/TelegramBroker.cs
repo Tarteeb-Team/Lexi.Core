@@ -31,6 +31,9 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         private static readonly AsyncLocal<long> storedTelegramId = new AsyncLocal<long>();
         private static readonly AsyncLocal<int> messageId = new AsyncLocal<int>();
         private static readonly AsyncLocal<string> storedName = new AsyncLocal<string>();
+        private string filePath;
+
+
 
         public string _filePath =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "audio.wav");
@@ -40,8 +43,9 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             var token = "6866377621:AAFXOtQF6A4sP_L7tqn4C2DLqHqMie8KQ5k";
             this.botClient = new TelegramBotClient(token);
             this.userService = userService;
-            _hostingEnvironment = hostingEnvironment;
+            this._hostingEnvironment = hostingEnvironment;
         }
+
 
         public void StartListening()
         {
@@ -110,11 +114,6 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             return new ValueTask<ExternalUser>(externalUser);
         }
 
-        public string ReturnFilePath()
-        {
-            return _filePath;
-        }
-
         public async Task SendTextMessageAsync(long chatId, string text)
         {
             await botClient.DeleteMessageAsync(chatId: chatId, messageId: messageId.Value);
@@ -124,7 +123,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         public void ReturningConvertOggToWav(Stream stream)
         {
             string fileName = "output.wav";
-            string filePath = Path.Combine(this._hostingEnvironment.WebRootPath, fileName);
+            filePath = Path.Combine(this._hostingEnvironment.WebRootPath, fileName);
 
             using (MemoryStream pcmStream = new MemoryStream())
             {
@@ -147,9 +146,13 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 var wavStream = new RawSourceWaveStream(pcmStream, new WaveFormat(48000, 1));
                 var sampleProvider = wavStream.ToSampleProvider();
 
-                // Save the WAV file to the wwwroot directory
                 WaveFileWriter.CreateWaveFile16(filePath, sampleProvider);
             }
+        }
+
+        public string ReturnFilePath()
+        {
+            return filePath;
         }
 
         public void SetOrchestrationService(IOrchestrationService orchestrationService)
