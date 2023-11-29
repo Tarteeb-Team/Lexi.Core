@@ -10,14 +10,13 @@ using Lexi.Core.Api.Brokers.TelegramBroker;
 using Lexi.Core.Api.Services.Cognitives;
 using Lexi.Core.Api.Services.Foundations.Feedbacks;
 using Lexi.Core.Api.Services.Foundations.Speeches;
-using Lexi.Core.Api.Services.Orchestrations.Cognitive;
-using Lexi.Core.Api.Services.Orchestrations.Speech;
-using Lexi.Core.Api.Services.Orchestrations;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Lexi.Core.Api.Services.Foundations.Telegrams;
 using Lexi.Core.Api.Services.Foundations.Users;
+using Lexi.Core.Api.Services.Orchestrations;
+using Lexi.Core.Api.Services.Orchestrations.Cognitive;
+using Lexi.Core.Api.Services.Orchestrations.Speech;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 

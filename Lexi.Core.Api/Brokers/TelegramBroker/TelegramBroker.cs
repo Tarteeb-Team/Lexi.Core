@@ -145,6 +145,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 WaveFileWriter.CreateWaveFile16(_filePath, sampleProvider);
             }
         }
+
         public void SetOrchestrationService(IOrchestrationService orchestrationService)
         {
             this.orchestrationService = orchestrationService;
