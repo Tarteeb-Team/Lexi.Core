@@ -44,8 +44,9 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             this.botClient = new TelegramBotClient(token);
             this.userService = userService;
             this._hostingEnvironment = hostingEnvironment;
+            string fileName = "output.wav";
+            filePath = Path.Combine(this._hostingEnvironment.WebRootPath, fileName);
         }
-
 
         public void StartListening()
         {
@@ -122,9 +123,6 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
         public void ReturningConvertOggToWav(Stream stream)
         {
-            string fileName = "output.wav";
-            filePath = Path.Combine(this._hostingEnvironment.WebRootPath, fileName);
-
             using (MemoryStream pcmStream = new MemoryStream())
             {
                 OpusDecoder decoder = OpusDecoder.Create(48000, 1);
@@ -134,9 +132,9 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                     short[] packet = oggIn.DecodeNextPacket();
                     if (packet != null)
                     {
-                        for (int i = 0; i < packet.Length; i++)
+                        foreach (short sample in packet)
                         {
-                            var bytes = BitConverter.GetBytes(packet[i]);
+                            var bytes = BitConverter.GetBytes(sample);
                             pcmStream.Write(bytes, 0, bytes.Length);
                         }
                     }
