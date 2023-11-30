@@ -42,23 +42,31 @@ namespace Lexi.Core.Api.Brokers.Cognitives
             pronunciationAssessmentConfig.EnableProsodyAssessment();
             pronunciationAssessmentConfig.EnableContentAssessmentWithTopic("greeting");
 
-            using var audioConfig = AudioConfig.FromWavFileInput(_filePath);
-
-            // Creating a SpeechRecognizer using SpeechConfig and AudioConfig
-            using (var speechRecognizer = new SpeechRecognizer(speechConfig, audioConfig))
+            try
             {
-                pronunciationAssessmentConfig.ApplyTo(speechRecognizer);
-                var speechRecognitionResult = await speechRecognizer.RecognizeOnceAsync();
+                using var audioConfig = AudioConfig.FromWavFileOutput(_filePath);
 
-                // The pronunciation assessment result as a Speech SDK object
-                var pronunciationAssessmentResult =
-                    PronunciationAssessmentResult.FromResult(speechRecognitionResult);
+                // Creating a SpeechRecognizer using SpeechConfig and AudioConfig
+                using (var speechRecognizer = new SpeechRecognizer(speechConfig, audioConfig))
+                {
+                    pronunciationAssessmentConfig.ApplyTo(speechRecognizer);
+                    var speechRecognitionResult = await speechRecognizer.RecognizeOnceAsync();
 
-                // The pronunciation assessment result as a JSON string
-                var pronunciationAssessmentResultJson = speechRecognitionResult
-                    .Properties.GetProperty(PropertyId.SpeechServiceResponse_JsonResult);
+                    // The pronunciation assessment result as a Speech SDK object
+                    var pronunciationAssessmentResult =
+                        PronunciationAssessmentResult.FromResult(speechRecognitionResult);
 
-                return pronunciationAssessmentResultJson;
+                    // The pronunciation assessment result as a JSON string
+                    var pronunciationAssessmentResultJson = speechRecognitionResult
+                        .Properties.GetProperty(PropertyId.SpeechServiceResponse_JsonResult);
+
+                    return pronunciationAssessmentResultJson;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
             }
         }
         

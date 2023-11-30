@@ -3,6 +3,7 @@
 // Powering True Leadership
 //=================================
 
+using Azure.Core;
 using Concentus.Oggfile;
 using Concentus.Structs;
 using Lexi.Core.Api.Models.Foundations.ExternalUsers;
@@ -13,10 +14,14 @@ using NAudio.Wave;
 using System;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
+using Telegram.Bot.Requests.Abstractions;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace Lexi.Core.Api.Brokers.TelegramBroker
 {
@@ -35,12 +40,12 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
 
 
-        public string _filePath =
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "audio.wav");
+        //public string _filePath { get; set; } =
+        //    Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "audio.wav");
 
         public TelegramBroker(IServiceProvider serviceProvider, IUserService userService, IWebHostEnvironment hostingEnvironment)
         {
-            var token = "6866377621:AAFXOtQF6A4sP_L7tqn4C2DLqHqMie8KQ5k";
+            var token = "6778362040:AAG7McOhfZjr8HfiFb0oPM_a2qsizii4PJo";
             this.botClient = new TelegramBotClient(token);
             this.userService = userService;
             this._hostingEnvironment = hostingEnvironment;
@@ -54,6 +59,8 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
         public async Task MessageHandler(ITelegramBotClient client, Update update, CancellationToken token)
         {
+            
+                //return;
             if (update.Message.Text is not null)
             {
                 var user = this.userService
@@ -75,7 +82,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                        $"Send voice message please🎙");
                 }
             }
-            else if (update.Message.Voice is not null)
+            if (update.Message.Type == MessageType.Voice)
             {
                 var loadingMessage = await client.SendTextMessageAsync(
                        chatId: update.Message.Chat.Id,
@@ -122,8 +129,9 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
         public void ReturningConvertOggToWav(Stream stream)
         {
+
+
             string fileName = "output.wav";
-            filePath = Path.Combine(this._hostingEnvironment.WebRootPath, fileName);
 
             using (MemoryStream pcmStream = new MemoryStream())
             {
@@ -143,16 +151,37 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 }
 
                 pcmStream.Position = 0;
-                var wavStream = new RawSourceWaveStream(pcmStream, new WaveFormat(48000, 1));
-                var sampleProvider = wavStream.ToSampleProvider();
 
-                WaveFileWriter.CreateWaveFile16(filePath, sampleProvider);
+                using (WaveFileWriter writer = new WaveFileWriter(fileName, new WaveFormat(48000, 1)))
+                {
+                    byte[] buffer = new byte[pcmStream.Length];
+                    pcmStream.Read(buffer, 0, buffer.Length);
+                    writer.Write(buffer, 0, buffer.Length);
+                }
+            }
+
+            using (WebClient client = new WebClient())
+            {
+                client.Credentials = new NetworkCredential("xchangertest", "NikonD40+");
+                client.UploadFile("ftp://files.000webhost.com/" + fileName, fileName);
             }
         }
 
         public string ReturnFilePath()
         {
-            return filePath;
+            string ftpServerUrl = "ftp://xchangertest@files.000webhost.com";
+            string username = "xchangertest";
+            string password = "NikonD40+";
+            string remoteFilePath = "/output.wav";
+            string localFilePath = Path.Combine(_hostingEnvironment.WebRootPath, "output.wav");
+
+            using (WebClient client = new WebClient())
+            {
+                client.Credentials = new NetworkCredential(username, password);
+                client.DownloadFile($"{ftpServerUrl}{remoteFilePath}", localFilePath);
+            }
+
+            return localFilePath;
         }
 
         public void SetOrchestrationService(IOrchestrationService orchestrationService)
