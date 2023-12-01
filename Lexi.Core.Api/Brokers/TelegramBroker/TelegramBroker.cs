@@ -10,6 +10,7 @@ using Lexi.Core.Api.Models.Foundations.ExternalUsers;
 using Lexi.Core.Api.Services.Foundations.Users;
 using Lexi.Core.Api.Services.Orchestrations;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.CognitiveServices.Speech.Audio;
 using NAudio.Wave;
 using System;
 using System.IO;
@@ -103,7 +104,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                     ReturningConvertOggToWav(stream);
                 }
             }
-            ReturnFilePath();
+            ReturnMemoryStream();
 
             await CreateExternalUserAsync();
 
@@ -167,21 +168,37 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             }
         }
 
-        public string ReturnFilePath()
+        public MemoryStream ReturnMemoryStream()
         {
             string ftpServerUrl = "ftp://xchangertest@files.000webhost.com";
             string username = "xchangertest";
             string password = "NikonD40+";
             string remoteFilePath = "/output.wav";
-            string localFilePath = Path.Combine(_hostingEnvironment.WebRootPath, "output.wav");
+            //string localFilePath = Path.Combine(_hostingEnvironment.WebRootPath, "output.wav");
 
-            using (WebClient client = new WebClient())
+            //using (WebClient client = new WebClient())
+            //{
+            //    client.Credentials = new NetworkCredential(username, password);
+            //    client.DownloadFile($"{ftpServerUrl}{remoteFilePath}", localFilePath);
+            //}
+
+            //return localFilePath;
+
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create($"{ftpServerUrl}{remoteFilePath}");
+            request.Method = WebRequestMethods.Ftp.DownloadFile;
+            request.Credentials = new NetworkCredential(username, password);
+
+            MemoryStream audioStream = new MemoryStream();
+
+            using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
             {
-                client.Credentials = new NetworkCredential(username, password);
-                client.DownloadFile($"{ftpServerUrl}{remoteFilePath}", localFilePath);
+                using (Stream ftpStream = response.GetResponseStream())
+                {
+                    ftpStream.CopyTo(audioStream);
+                }
             }
-
-            return localFilePath;
+            audioStream.Position = 0;
+            return audioStream;
         }
 
         public void SetOrchestrationService(IOrchestrationService orchestrationService)

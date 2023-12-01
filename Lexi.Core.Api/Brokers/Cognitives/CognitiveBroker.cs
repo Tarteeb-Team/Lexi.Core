@@ -12,6 +12,7 @@ using Microsoft.CognitiveServices.Speech.PronunciationAssessment;
 using NAudio.Wave;
 using System;
 using System.IO;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace Lexi.Core.Api.Brokers.Cognitives
@@ -29,7 +30,7 @@ namespace Lexi.Core.Api.Brokers.Cognitives
 
         public async Task<string> GetJsonString()
         {
-            string _filePath = this.telegramBroker.ReturnFilePath();
+            var mStream = this.telegramBroker.ReturnMemoryStream();
 
             var speechConfig = SpeechConfig.FromSubscription(speechKey, speechRegion);
             speechConfig.SpeechRecognitionLanguage = "en-US";
@@ -44,7 +45,14 @@ namespace Lexi.Core.Api.Brokers.Cognitives
 
             try
             {
-                using var audioConfig = AudioConfig.FromWavFileOutput(_filePath);
+
+                var format = AudioStreamFormat.GetWaveFormatPCM(
+                     samplesPerSecond: 44100, bitsPerSample: 16, channels: 2);
+
+                var callback = new AudioInputCallback(mStream);
+
+                using var audioConfig = AudioConfig.FromStreamInput(callback, format);
+
 
                 // Creating a SpeechRecognizer using SpeechConfig and AudioConfig
                 using (var speechRecognizer = new SpeechRecognizer(speechConfig, audioConfig))
@@ -70,5 +78,31 @@ namespace Lexi.Core.Api.Brokers.Cognitives
             }
         }
         
+    }
+
+    internal class AudioInputCallback : PullAudioInputStreamCallback
+    {
+        private MemoryStream mStream;
+
+        public AudioInputCallback(MemoryStream mStream)
+        {
+            this.mStream = mStream;
+        }
+
+        public override int Read(byte[] dataBuffer, uint size)
+        {
+            return this.Read(dataBuffer, 0, dataBuffer.Length);
+        }
+
+        private int Read(byte[] buffer, int offset, int count)
+        {
+            return mStream.Read(buffer, offset, count);
+        }
+
+        public override void Close()
+        {
+            mStream.Close();
+            base.Close();
+        }
     }
 }
