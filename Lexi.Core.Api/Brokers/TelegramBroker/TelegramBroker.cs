@@ -40,7 +40,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
         public TelegramBroker(IServiceProvider serviceProvider, IUserService userService, IWebHostEnvironment hostingEnvironment)
         {
-            var token = "6866377621:AAFXOtQF6A4sP_L7tqn4C2DLqHqMie8KQ5k";
+            var token = "6778362040:AAG7McOhfZjr8HfiFb0oPM_a2qsizii4PJo";
             this.botClient = new TelegramBotClient(token);
             this.userService = userService;
             this._hostingEnvironment = hostingEnvironment;
@@ -54,6 +54,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
         public async Task MessageHandler(ITelegramBotClient client, Update update, CancellationToken token)
         {
+           // return;
             if (update.Message.Text is not null)
             {
                 var user = this.userService
@@ -123,7 +124,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         public void ReturningConvertOggToWav(Stream stream)
         {
             string fileName = "output.wav";
-            filePath = Path.Combine(this._hostingEnvironment.WebRootPath, fileName);
+            filePath = Path.Combine(Environment.CurrentDirectory, fileName);
 
             using (MemoryStream pcmStream = new MemoryStream())
             {
