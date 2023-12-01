@@ -22,6 +22,22 @@ namespace Lexi.Core.Api.Services.Foundations.Users
                 (Rule: IsInvalid(user.Id), Parameter: nameof(User.Id)),
                 (Rule: IsInvalid(user.Name), Parameter: nameof(User.Name)));
         }
+        private void ValidateUserModify(User user)
+        {
+            ValidateUserNotNull(user);
+
+            Validate(
+                (Rule: IsInvalid(user.Id), Parameter: nameof(User.Id)),
+                (Rule: IsInvalid(user.Name), Parameter: nameof(User.Name)));
+        }
+        private void ValidateAgainstStorageUserOnModify(User user, User storageUser)
+        {
+            ValidateStorageUser(user, storageUser.Id);
+
+            Validate(
+               (Rule: IsInvalid(user.Id), Parameter: nameof(User.Id)),
+                (Rule: IsInvalid(user.Name), Parameter: nameof(User.Name)));
+        }
         private void ValidateStorageUser(User maybeUser, Guid id)
         {
             if (maybeUser is null)
