@@ -63,7 +63,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         public async Task MessageHandler(ITelegramBotClient client, Update update, CancellationToken token)
         {
             
-           //  return;
+             //return;
             if (update.Message.Text is not null)
             {
                 var user = this.userService
@@ -160,7 +160,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                     }
                 }
 
-                string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../", "../","../");
+                string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../", "../", "../", "../");
                 string _fileName = "data"; // Specify the desired file name
 
                 byte[] fileBytes = _bytes.ToArray(); // Replace this with the actual byte array of your file
@@ -206,7 +206,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             //request.Method = WebRequestMethods.Ftp.DownloadFile;
             //request.Credentials = new NetworkCredential(username, password);
 
-            string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../", "../","../", "data");
+            string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../", "../","../", "../", "data");
 
             byte[] audioBytes = System.IO.File.ReadAllBytes(folderPath);
 
