@@ -98,10 +98,11 @@ namespace Lexi.Core.Api.Services.Foundations.Users
         }
         private UserServiceException CreateAndLogServiceException(Xeption exception)
         {
-            var userServiceException = new UserServiceException(exception);
-            this.loggingBroker.LogError(userServiceException);
+            throw new NotImplementedException();
+            //var userServiceException = new UserServiceException(exception);
+            //this.loggingBroker.LogError(userServiceException);
 
-            return userServiceException;
+            //return userServiceException;
         }
         private UserDependencyException CreateAndLogDependencyException(Xeption exception)
         {

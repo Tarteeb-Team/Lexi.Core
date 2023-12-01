@@ -42,7 +42,7 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Users
 
             // then
             actualUserDependencyException.Should()
-                .BeEquivalentTo(expectedUserDependencyException);    
+                .BeEquivalentTo(expectedUserDependencyException);
 
             this.storageBrokerMock.Verify(broker =>
                 broker.SelectUserByIdAsync(userId), Times.Once);
@@ -129,6 +129,44 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Users
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(
                     expectedUserDependencyException))));
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
+        [Fact]
+        public async Task ShouldThrowServiceExceptionOnModifyIfExceptionOccursAndLogItAsync()
+        {
+            // given 
+            User randomUser = CreateRandomUser();
+            User someUser = randomUser;
+            Guid userId = someUser.Id;
+            var serviceException = new Exception();
+
+            var failedUserServiceException =
+                new FailedUserServiceException(serviceException);
+
+            var expectedUserServiceException =
+                new UserServiceException(failedUserServiceException);
+
+            this.storageBrokerMock.Setup(broker =>
+                    broker.SelectUserByIdAsync(userId)).ThrowsAsync(serviceException);
+
+            // when 
+            ValueTask<User> modifyUserTask =
+                this.userService.ModifyUserAsync(someUser);
+
+            UserServiceException actualUserServiceException =
+                await Assert.ThrowsAsync<UserServiceException>(modifyUserTask.AsTask);
+
+            // then
+            actualUserServiceException.Should()
+                .BeEquivalentTo(expectedUserServiceException);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectUserByIdAsync(userId), Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedUserServiceException))), Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
