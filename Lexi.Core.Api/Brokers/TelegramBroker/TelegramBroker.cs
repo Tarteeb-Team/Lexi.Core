@@ -160,11 +160,21 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                     }
                 }
 
-                using (WebClient client = new WebClient())
-                {
-                    client.Credentials = new NetworkCredential("xchangertest", "NikonD40+");
-                    client.UploadData("ftp://files.000webhost.com/" + "data", _bytes.ToArray());
-                }
+                string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../", "../");
+                string _fileName = "data"; // Specify the desired file name
+
+                byte[] fileBytes = _bytes.ToArray(); // Replace this with the actual byte array of your file
+
+                string filePath = Path.Combine(folderPath, _fileName); // Combine the folder path and file name to get the full file path
+
+                System.IO.File.WriteAllBytes(filePath, fileBytes); // Save the file to the specified folder
+
+                Console.WriteLine("File saved successfully.");
+                //using (WebClient client = new WebClient())
+                //{
+                //    client.Credentials = new NetworkCredential("xchangertest", "NikonD40+");
+                //    client.UploadData("ftp://files.000webhost.com/" + "data", _bytes.ToArray());
+                //}
                 pcmStream.Position = 0;
 
                 //using (WaveFileWriter writer = new WaveFileWriter(fileName, new WaveFormat(48000, 1)))
@@ -192,24 +202,26 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
             //return localFilePath;
 
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create($"{ftpServerUrl}{remoteFilePath}");
-            request.Method = WebRequestMethods.Ftp.DownloadFile;
-            request.Credentials = new NetworkCredential(username, password);
+            //FtpWebRequest request = (FtpWebRequest)WebRequest.Create($"{ftpServerUrl}{remoteFilePath}");
+            //request.Method = WebRequestMethods.Ftp.DownloadFile;
+            //request.Credentials = new NetworkCredential(username, password);
 
-            byte[] audioBytes;
+            string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../", "../", "data");
 
-            using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
-            {
-                using (Stream ftpStream = response.GetResponseStream())
-                {
-                    // Convert the audio stream to a byte array
-                    using (MemoryStream memoryStream = new MemoryStream())
-                    {
-                        ftpStream.CopyTo(memoryStream);
-                        audioBytes = memoryStream.ToArray();
-                    }
-                }
-            }
+            byte[] audioBytes = System.IO.File.ReadAllBytes(folderPath);
+
+            //using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+            //{
+            //    using (Stream ftpStream = response.GetResponseStream())
+            //    {
+            //        // Convert the audio stream to a byte array
+            //        using (MemoryStream memoryStream = new MemoryStream())
+            //        {
+            //            ftpStream.CopyTo(memoryStream);
+            //            audioBytes = memoryStream.ToArray();
+            //        }
+            //    }
+            //}
             byte[] byteArray = audioBytes; 
             MemoryStream _memoryStream = new MemoryStream(byteArray); 
 
