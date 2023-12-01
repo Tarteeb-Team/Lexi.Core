@@ -105,13 +105,12 @@ namespace Lexi.Core.Api.Services.Foundations.Users
         }
         private UserDependencyException CreateAndLogDependencyException(Xeption exception)
         {
-            throw new NotImplementedException();
-            //UserDependencyException userDependencyException =
-            //    new UserDependencyException(exception);
+            UserDependencyException userDependencyException =
+                new UserDependencyException(exception);
 
-            //this.loggingBroker.LogError(userDependencyException);
+            this.loggingBroker.LogError(userDependencyException);
 
-            //return userDependencyException;
+            return userDependencyException;
         }
         private UserDependencyValidationException CreateAndALogDependencyValidationException(Xeption exception)
         {
