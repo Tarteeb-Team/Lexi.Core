@@ -5,6 +5,7 @@
 
 using Concentus.Oggfile;
 using Concentus.Structs;
+using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.TelegramBroker;
 using Microsoft.CognitiveServices.Speech;
 using Microsoft.CognitiveServices.Speech.Audio;
@@ -22,10 +23,12 @@ namespace Lexi.Core.Api.Brokers.Cognitives
         string speechKey = "4c16b8cafd324366830b415ad566f667";
         string speechRegion = "centralindia";
         private readonly ITelegramBroker telegramBroker;
+        private readonly LoggingBroker loggingBroker;
 
-        public CognitiveBroker(ITelegramBroker telegramBroker)
+        public CognitiveBroker(ITelegramBroker telegramBroker, LoggingBroker loggingBroker)
         {
             this.telegramBroker = telegramBroker;
+            this.loggingBroker = loggingBroker;
         }
 
         public async Task<string> GetJsonString()
@@ -73,8 +76,9 @@ namespace Lexi.Core.Api.Brokers.Cognitives
             }
             catch (Exception ex)
             {
-
-                throw;
+                
+                loggingBroker.LogError(ex);
+                return "error";
             }
         }
         
