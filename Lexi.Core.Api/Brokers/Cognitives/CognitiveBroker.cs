@@ -30,7 +30,7 @@ namespace Lexi.Core.Api.Brokers.Cognitives
 
         public async Task<string> GetJsonString()
         {
-            var mStream = this.telegramBroker.ReturnMemoryStream();
+            MemoryStream memoryStream = this.telegramBroker.ReturnFilePath();
 
             var speechConfig = SpeechConfig.FromSubscription(speechKey, speechRegion);
             speechConfig.SpeechRecognitionLanguage = "en-US";
@@ -49,7 +49,7 @@ namespace Lexi.Core.Api.Brokers.Cognitives
                 var format = AudioStreamFormat.GetWaveFormatPCM(
                      samplesPerSecond: 44100, bitsPerSample: 16, channels: 2);
 
-                var callback = new AudioInputCallback(mStream);
+                var callback = new AudioInputCallback(memoryStream);
 
                 using var audioConfig = AudioConfig.FromStreamInput(callback, format);
 

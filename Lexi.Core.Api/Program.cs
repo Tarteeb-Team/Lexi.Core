@@ -32,8 +32,8 @@ builder.Services.AddTransient<ICognitiveServices, CognitiveServices>();
 builder.Services.AddTransient<ICognitiveBroker, CognitiveBroker>();
 builder.Services.AddScoped<ICognitiveOrchestrationService, CognitiveOrchestrationService>();
 builder.Services.AddTransient<ISpeechOrchestrationService, SpeechOrchestrationService>();
-builder.Services.AddScoped<ITelegramBroker, TelegramBroker>();
-builder.Services.AddScoped<ITelegramService, TelegramService>();
+builder.Services.AddSingleton<ITelegramBroker, TelegramBroker>();
+builder.Services.AddSingleton<ITelegramService, TelegramService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

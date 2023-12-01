@@ -12,7 +12,9 @@ using Lexi.Core.Api.Services.Orchestrations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.CognitiveServices.Speech.Audio;
 using NAudio.Wave;
+using NAudio.Wave.Compression;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -61,7 +63,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         public async Task MessageHandler(ITelegramBotClient client, Update update, CancellationToken token)
         {
             
-                //return;
+             //return;
             if (update.Message.Text is not null)
             {
                 var user = this.userService
@@ -104,7 +106,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                     ReturningConvertOggToWav(stream);
                 }
             }
-            ReturnMemoryStream();
+            ReturnFilePath();
 
             await CreateExternalUserAsync();
 
@@ -138,6 +140,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             {
                 OpusDecoder decoder = OpusDecoder.Create(48000, 1);
                 OpusOggReadStream oggIn = new OpusOggReadStream(decoder, stream);
+                List<byte> _bytes = new List<byte>();
                 while (oggIn.HasNextPacket)
                 {
                     short[] packet = oggIn.DecodeNextPacket();
@@ -146,34 +149,39 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                         for (int i = 0; i < packet.Length; i++)
                         {
                             var bytes = BitConverter.GetBytes(packet[i]);
+
+                            foreach (byte b in bytes)
+                            {
+                                _bytes.Add(b);
+                            }
+
                             pcmStream.Write(bytes, 0, bytes.Length);
                         }
                     }
                 }
 
+                using (WebClient client = new WebClient())
+                {
+                    client.Credentials = new NetworkCredential("xchangertest", "NikonD40+");
+                    client.UploadData("ftp://files.000webhost.com/" + "data", _bytes.ToArray());
+                }
                 pcmStream.Position = 0;
 
-                using (WaveFileWriter writer = new WaveFileWriter(fileName, new WaveFormat(48000, 1)))
-                {
-                    byte[] buffer = new byte[pcmStream.Length];
-                    pcmStream.Read(buffer, 0, buffer.Length);
-                    writer.Write(buffer, 0, buffer.Length);
-                }
-            }
-
-            using (WebClient client = new WebClient())
-            {
-                client.Credentials = new NetworkCredential("xchangertest", "NikonD40+");
-                client.UploadFile("ftp://files.000webhost.com/" + fileName, fileName);
+                //using (WaveFileWriter writer = new WaveFileWriter(fileName, new WaveFormat(48000, 1)))
+                //{
+                //    byte[] buffer = new byte[pcmStream.Length];
+                //    pcmStream.Read(buffer, 0, buffer.Length);
+                //    writer.Write(buffer, 0, buffer.Length);
+                //}
             }
         }
 
-        public MemoryStream ReturnMemoryStream()
+        public MemoryStream ReturnFilePath()
         {
             string ftpServerUrl = "ftp://xchangertest@files.000webhost.com";
             string username = "xchangertest";
             string password = "NikonD40+";
-            string remoteFilePath = "/output.wav";
+            string remoteFilePath = "/data";
             //string localFilePath = Path.Combine(_hostingEnvironment.WebRootPath, "output.wav");
 
             //using (WebClient client = new WebClient())
@@ -188,17 +196,24 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             request.Method = WebRequestMethods.Ftp.DownloadFile;
             request.Credentials = new NetworkCredential(username, password);
 
-            MemoryStream audioStream = new MemoryStream();
+            byte[] audioBytes;
 
             using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
             {
                 using (Stream ftpStream = response.GetResponseStream())
                 {
-                    ftpStream.CopyTo(audioStream);
+                    // Convert the audio stream to a byte array
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        ftpStream.CopyTo(memoryStream);
+                        audioBytes = memoryStream.ToArray();
+                    }
                 }
             }
-            audioStream.Position = 0;
-            return audioStream;
+            byte[] byteArray = audioBytes; 
+            MemoryStream _memoryStream = new MemoryStream(byteArray); 
+
+            return _memoryStream; 
         }
 
         public void SetOrchestrationService(IOrchestrationService orchestrationService)
@@ -211,5 +226,6 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         static async Task ErrorHandler(ITelegramBotClient client, Exception exception, CancellationToken token)
         {
         }
+
     }
 }
