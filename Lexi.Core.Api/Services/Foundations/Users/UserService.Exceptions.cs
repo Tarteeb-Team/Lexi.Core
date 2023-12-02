@@ -123,10 +123,11 @@ namespace Lexi.Core.Api.Services.Foundations.Users
 
         private UserValidationException CreateAndLogValidationException(Xeption exception)
         {
-            var userValidationException = new UserValidationException(exception);
-            this.loggingBroker.LogError(userValidationException);
+            throw new NotImplementedException();
+            //var userValidationException = new UserValidationException(exception);
+            //this.loggingBroker.LogError(userValidationException);
 
-            return userValidationException;
+            //return userValidationException;
         }
     }
 }
