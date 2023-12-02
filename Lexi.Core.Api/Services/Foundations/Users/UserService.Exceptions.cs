@@ -89,6 +89,13 @@ namespace Lexi.Core.Api.Services.Foundations.Users
                 throw CreateAndLogServiceException(failedUserServiceException);
             }
         }
+        private UserDependencyException CreateAndLogCriticalDependencyException(Xeption exception)
+        {
+            var userDependencyException = new UserDependencyException(exception);
+            this.loggingBroker.LogCritical(userDependencyException);
+
+            return userDependencyException;
+        }
         private UserServiceException CreateAndLogServiceException(Xeption exception)
         {
             var userServiceException = new UserServiceException(exception);
@@ -120,13 +127,6 @@ namespace Lexi.Core.Api.Services.Foundations.Users
             this.loggingBroker.LogError(userValidationException);
 
             return userValidationException;
-        }
-        private UserDependencyException CreateAndLogCriticalDependencyException(Xeption exception)
-        {
-            var userDependencyException = new UserDependencyException(exception);
-            this.loggingBroker.LogCritical(userDependencyException);
-
-            return userDependencyException;
         }
     }
 }
