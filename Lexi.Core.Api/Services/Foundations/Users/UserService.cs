@@ -38,7 +38,7 @@ namespace Lexi.Core.Api.Services.Foundations.Users
         {
             ValidateUserModify(user);
             User maybeUser = await storageBroker.SelectUserByIdAsync(user.Id);
-            ValidateAgainstStorageUserOnModify(user,maybeUser);
+            ValidateAgainstStorageUserOnModify(maybeUser,user);
             User modifiedUser = await this.storageBroker.UpdateUserAsync(user);
             return modifiedUser;
         });
