@@ -111,8 +111,8 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Users
             var lockedUserException =
                 new LockedUserException(databaseUpdateConcurrencyException);
 
-            var expectedUserDependencyException =
-                new UserDependencyException(lockedUserException);
+            var expectedUserDependencyValidationException =
+                 new UserDependencyValidationException(lockedUserException);
 
             this.storageBrokerMock.Setup(broker =>
                     broker.SelectUserByIdAsync(userId)).ThrowsAsync(databaseUpdateConcurrencyException);
@@ -121,19 +121,19 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Users
             ValueTask<User> modifyUserTask =
                 this.userService.ModifyUserAsync(someUser);
 
-            UserDependencyException actualUserDependencyException =
-                await Assert.ThrowsAsync<UserDependencyException>(modifyUserTask.AsTask);
+            UserDependencyValidationException actualUserDependencyException =
+                await Assert.ThrowsAsync<UserDependencyValidationException>(modifyUserTask.AsTask);
 
             // then
             actualUserDependencyException.Should()
-                .BeEquivalentTo(expectedUserDependencyException);
+                .BeEquivalentTo(expectedUserDependencyValidationException);
 
             this.storageBrokerMock.Verify(broker =>
                 broker.SelectUserByIdAsync(userId), Times.Once);
 
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(
-                    expectedUserDependencyException))));
+                    expectedUserDependencyValidationException))));
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
