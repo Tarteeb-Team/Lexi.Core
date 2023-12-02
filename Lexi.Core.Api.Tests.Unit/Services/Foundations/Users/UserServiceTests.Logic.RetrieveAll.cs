@@ -1,4 +1,9 @@
-﻿using FluentAssertions;
+﻿//=================================
+// Copyright (c) Tarteeb LLC.
+// Powering True Leadership
+//=================================
+
+using FluentAssertions;
 using Force.DeepCloner;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Moq;

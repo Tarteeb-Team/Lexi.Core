@@ -1,4 +1,9 @@
-﻿using FluentAssertions;
+﻿//=================================
+// Copyright (c) Tarteeb LLC.
+// Powering True Leadership
+//=================================
+
+using FluentAssertions;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Models.Foundations.Users.Exceptions;
 using Microsoft.Data.SqlClient;
