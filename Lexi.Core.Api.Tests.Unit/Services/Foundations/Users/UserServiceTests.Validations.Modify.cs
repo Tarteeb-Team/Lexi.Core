@@ -1,4 +1,9 @@
-﻿using FluentAssertions;
+﻿//=================================
+// Copyright (c) Tarteeb LLC.
+// Powering True Leadership
+//=================================
+
+using FluentAssertions;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Models.Foundations.Users.Exceptions;
 using Moq;
@@ -92,6 +97,48 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Users
 
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
+        }
+        [Fact]
+        public async Task ShouldThrowValidationExceptionOnModifyIfUserDoesNotExistAndLogItAsync()
+        {
+            // given
+            User randomUser = CreateRandomUser();
+            User nonExistUser = randomUser;
+            User nullUser = null;
+
+            var notFoundUserException =
+                new NotFoundUserException(nonExistUser.Id);
+
+            var expectedUserValidationException =
+                new UserValidationException(notFoundUserException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectUserByIdAsync(nonExistUser.Id))
+                    .ReturnsAsync(nullUser);
+
+            // when
+            ValueTask<User> modifyUserTask =
+                this.userService.ModifyUserAsync(nonExistUser);
+
+            UserValidationException actualUserValidationException =
+                await Assert.ThrowsAsync<UserValidationException>
+                    (modifyUserTask.AsTask);
+
+            // then
+            actualUserValidationException.Should().BeEquivalentTo(expectedUserValidationException);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectUserByIdAsync(nonExistUser.Id), Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(
+                    expectedUserValidationException))), Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.UpdateUserAsync(nonExistUser), Times.Never);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
         }
     }
 }
