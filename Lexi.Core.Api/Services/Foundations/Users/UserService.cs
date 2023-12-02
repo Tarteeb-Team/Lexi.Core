@@ -34,15 +34,14 @@ namespace Lexi.Core.Api.Services.Foundations.Users
         });
 
         public  ValueTask<User> ModifyUserAsync(User user) =>
-            throw new NotImplementedException();
-        //    TryCatch(async () =>
-        //{
-        //    ValidateUserModify(user);
-        //    User maybeUser = await storageBroker.SelectUserByIdAsync(user.Id);
-        //    ValidateAgainstStorageUserOnModify(user,maybeUser);
-        //    User modifiedUser = await this.storageBroker.UpdateUserAsync(user);
-        //    return modifiedUser;
-        //});
+            TryCatch(async () =>
+        {
+            ValidateUserModify(user);
+            User maybeUser = await storageBroker.SelectUserByIdAsync(user.Id);
+            ValidateAgainstStorageUserOnModify(user,maybeUser);
+            User modifiedUser = await this.storageBroker.UpdateUserAsync(user);
+            return modifiedUser;
+        });
 
         public  ValueTask<User> RetrieveUserByIdAsync(Guid userId) =>
             TryCatch(async () =>
