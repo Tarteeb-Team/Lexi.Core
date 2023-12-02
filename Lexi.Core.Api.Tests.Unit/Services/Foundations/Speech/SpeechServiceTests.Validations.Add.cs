@@ -66,14 +66,6 @@ namespace Lexi.Core.Api.Tests.Unit.Services.Foundations.Speech
                 key: nameof(SpeechModel.UserId),
                 values: "Id is required");
 
-            invalidSpeechException.AddData(
-                key: nameof(SpeechModel.User),
-                values: "User is required");
-
-            invalidSpeechException.AddData(
-                key: nameof(SpeechModel.Feedbacks),
-                values: "Feedback is required");
-
             var expectedSpeechValidationException =
                 new SpeechValidationException(invalidSpeechException);
 
