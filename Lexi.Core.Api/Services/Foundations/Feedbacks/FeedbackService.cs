@@ -23,12 +23,13 @@ namespace Lexi.Core.Api.Services.Foundations.Feedbacks
             this.loggingBroker = loggingBroker;
         }
 
-        public async ValueTask<Feedback> AddFeedbackAsync(Feedback feedback)
+        public ValueTask<Feedback> AddFeedbackAsync(Feedback feedback) =>
+        TryCatch(async () =>
         {
             VaidateFeedbackOnAdd(feedback);
 
             return await this.storageBroker.InsertFeedbackAsync(feedback);
-        }
+        });
 
         public IQueryable<Feedback> RetrieveAllFeedbacks() =>
         TryCatch(() =>
