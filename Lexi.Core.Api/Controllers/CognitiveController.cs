@@ -1,7 +1,7 @@
-﻿//=================================
-// Copyright (c) Tarteeb LLC.
-// Powering True Leadership
-//=================================
+﻿////=================================
+//// Copyright (c) Tarteeb LLC.
+//// Powering True Leadership
+////=================================
 
 //using Lexi.Core.Api.Models.ObjcetModels;
 //using Lexi.Core.Api.Services.Orchestrations;
