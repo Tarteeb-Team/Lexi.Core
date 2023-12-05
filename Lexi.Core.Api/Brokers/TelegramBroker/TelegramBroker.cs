@@ -102,6 +102,10 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                     ReturningConvertOggToWav(stream, update.Message.Chat.Id);
                 }
             }
+            else
+            {
+                return;
+            }
 
             await CreateExternalUserAsync();
 
