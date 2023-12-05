@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /Lexi.Core.Api/LexiCore.db-wal
 /Lexi.Core.Api/LexiCore.db-shm
+/Lexi.Core.Api/appsettings.Development.json
