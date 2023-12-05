@@ -32,11 +32,8 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         private static readonly AsyncLocal<int> messageId = new AsyncLocal<int>();
         private static readonly AsyncLocal<string> storedName = new AsyncLocal<string>();
         private string filePath;
+        private string userPath;
 
-
-
-        public string _filePath =
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "audio.wav");
 
         public TelegramBroker(IServiceProvider serviceProvider, IUserService userService, IWebHostEnvironment hostingEnvironment)
         {
@@ -44,8 +41,8 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             this.botClient = new TelegramBotClient(token);
             this.userService = userService;
             this._hostingEnvironment = hostingEnvironment;
-            string fileName = "output.wav";
-            filePath = Path.Combine(this._hostingEnvironment.WebRootPath, fileName);
+            filePath = Path.Combine(this._hostingEnvironment.WebRootPath, "outputWavs/");
+            userPath = null;
         }
 
         public void StartListening()
@@ -94,10 +91,9 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                     await client.DownloadFileAsync(file.FilePath, stream);
                     stream.Position = 0;
 
-                    ReturningConvertOggToWav(stream);
+                    ReturningConvertOggToWav(stream,update.Message.Chat.Id);
                 }
             }
-            ReturnFilePath();
 
             await CreateExternalUserAsync();
 
@@ -121,7 +117,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             await botClient.SendTextMessageAsync(chatId, text);
         }
 
-        public void ReturningConvertOggToWav(Stream stream)
+        public void ReturningConvertOggToWav(Stream stream, long userId)
         {
             using (MemoryStream pcmStream = new MemoryStream())
             {
@@ -143,14 +139,15 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 pcmStream.Position = 0;
                 var wavStream = new RawSourceWaveStream(pcmStream, new WaveFormat(48000, 1));
                 var sampleProvider = wavStream.ToSampleProvider();
+                userPath = filePath + userId.ToString()+".wav";
 
-                WaveFileWriter.CreateWaveFile16(filePath, sampleProvider);
+                WaveFileWriter.CreateWaveFile16(userPath, sampleProvider);
             }
         }
 
         public string ReturnFilePath()
         {
-            return filePath;
+            return userPath;
         }
 
         public void SetOrchestrationService(IOrchestrationService orchestrationService)
