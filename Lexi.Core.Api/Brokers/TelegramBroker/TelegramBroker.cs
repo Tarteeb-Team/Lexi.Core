@@ -52,6 +52,14 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
         public async Task MessageHandler(ITelegramBotClient client, Update update, CancellationToken token)
         {
+            if(update == null)
+            {
+                return;
+            }
+            if(update.Message == null)
+            {
+                return;
+            }
             if (update.Message.Text is not null)
             {
                 var user = this.userService
