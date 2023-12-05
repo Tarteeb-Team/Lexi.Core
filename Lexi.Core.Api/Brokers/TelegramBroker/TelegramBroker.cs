@@ -9,7 +9,6 @@ using Lexi.Core.Api.Models.Foundations.ExternalUsers;
 using Lexi.Core.Api.Services.Foundations.Users;
 using Lexi.Core.Api.Services.Orchestrations;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using NAudio.Wave;
 using System;
 using System.IO;
@@ -28,7 +27,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         private IOrchestrationService orchestrationService;
         private readonly IUserService userService;
         private readonly IWebHostEnvironment _hostingEnvironment;
-        private readonly IConfiguration configuration;
+
         private static readonly AsyncLocal<long> storedTelegramId = new AsyncLocal<long>();
         private static readonly AsyncLocal<int> messageId = new AsyncLocal<int>();
         private static readonly AsyncLocal<string> storedName = new AsyncLocal<string>();
@@ -36,10 +35,9 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         private string userPath;
 
 
-        public TelegramBroker(IServiceProvider serviceProvider, IUserService userService, IWebHostEnvironment hostingEnvironment, IConfiguration configuration)
+        public TelegramBroker(IServiceProvider serviceProvider, IUserService userService, IWebHostEnvironment hostingEnvironment)
         {
-            this.configuration = configuration;
-            var token = configuration["BotConfiguration:BotToken"];
+            var token = "6866377621:AAFXOtQF6A4sP_L7tqn4C2DLqHqMie8KQ5k";
             this.botClient = new TelegramBotClient(token);
             this.userService = userService;
             this._hostingEnvironment = hostingEnvironment;

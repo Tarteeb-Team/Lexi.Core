@@ -9,7 +9,6 @@ using Lexi.Core.Api.Brokers.TelegramBroker;
 using Microsoft.CognitiveServices.Speech;
 using Microsoft.CognitiveServices.Speech.Audio;
 using Microsoft.CognitiveServices.Speech.PronunciationAssessment;
-using Microsoft.Extensions.Configuration;
 using NAudio.Wave;
 using System;
 using System.IO;
@@ -19,17 +18,13 @@ namespace Lexi.Core.Api.Brokers.Cognitives
 {
     public class CognitiveBroker : ICognitiveBroker
     {
-        string speechKey;
-        string speechRegion;
+        string speechKey = "4c16b8cafd324366830b415ad566f667";
+        string speechRegion = "centralindia";
         private readonly ITelegramBroker telegramBroker;
-        private readonly IConfiguration configuration;
 
-        public CognitiveBroker(ITelegramBroker telegramBroker, IConfiguration configuration)
+        public CognitiveBroker(ITelegramBroker telegramBroker)
         {
             this.telegramBroker = telegramBroker;
-            this.configuration = configuration;
-            speechKey = configuration["SpeechConfiguration:SpeechKey"];
-            speechRegion = configuration["SpeechConfiguration:SpeechAria"];
         }
 
         public async Task<string> GetJsonString()
