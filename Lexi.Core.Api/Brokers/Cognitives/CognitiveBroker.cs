@@ -61,6 +61,6 @@ namespace Lexi.Core.Api.Brokers.Cognitives
                 return pronunciationAssessmentResultJson;
             }
         }
-        
+
     }
 }
