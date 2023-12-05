@@ -12,7 +12,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
     {
         ValueTask<ExternalUser> CreateExternalUserAsync();
         void StartListening();
-        void ReturningConvertOggToWav(Stream stream);
+        void ReturningConvertOggToWav(Stream stream,long userId);
         string ReturnFilePath();
         Task SendTextMessageAsync(long chatId, string text);
         void SetOrchestrationService(IOrchestrationService orchestrationService);
