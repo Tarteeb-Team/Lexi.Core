@@ -104,6 +104,10 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             }
             else
             {
+                await client.SendTextMessageAsync(
+                      chatId: update.Message.Chat.Id,
+                      text: $"🎓LexiEnglishBot🎓\n\n" +
+                      $"Send voice message please🎙");
                 return;
             }
 
