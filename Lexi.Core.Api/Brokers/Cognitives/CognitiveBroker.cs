@@ -18,8 +18,8 @@ namespace Lexi.Core.Api.Brokers.Cognitives
 {
     public class CognitiveBroker : ICognitiveBroker
     {
-        string speechKey = "4c16b8cafd324366830b415ad566f667";
-        string speechRegion = "centralindia";
+        string speechKey = "d66971f56fcc40f7a25c85ed75a728a9";
+        string speechRegion = "eastus";
         private readonly ITelegramBroker telegramBroker;
 
         public CognitiveBroker(ITelegramBroker telegramBroker)
