@@ -83,13 +83,13 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                     return;
                 }
 
-                using var httpClient = new HttpClient();
+                //using var httpClient = new HttpClient();
 
-                HttpResponseMessage httpResponseMessage = await httpClient.GetAsync(
-                    "https://lexicoreapi20240505233145.azurewebsites.net/api/Feedback",
-                    token);
+                //HttpResponseMessage httpResponseMessage = await httpClient.GetAsync(
+                //    "https://lexicoreapi20240505233145.azurewebsites.net/api/Feedback",
+                //    token);
 
-                Console.WriteLine(httpResponseMessage.StatusCode);
+                //Console.WriteLine(httpResponseMessage.StatusCode);
 
                 var user = this.userService
                      .RetrieveAllUsers().FirstOrDefault(u => u.TelegramId == update.Message.Chat.Id);
