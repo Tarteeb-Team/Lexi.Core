@@ -17,6 +17,7 @@ namespace Lexi.Core.Api.Models.Foundations.Users
         public string Level { get; set; } = "A1";
         public State State { get; set; }
         public string Name { get; set; }
+        public string? ImprovedSpeech { get; set; }
         public decimal? Overall { get; set; }
         public List<Speech> Speeches { get; set; }
     }

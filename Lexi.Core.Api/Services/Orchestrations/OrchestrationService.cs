@@ -14,6 +14,7 @@ using Lexi.Core.Api.Services.Orchestrations.Cognitive;
 using Lexi.Core.Api.Services.Orchestrations.Speech;
 using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using SpeechModel = Lexi.Core.Api.Models.Foundations.Speeches.Speech;
 
@@ -60,6 +61,9 @@ namespace Lexi.Core.Api.Services.Orchestrations
             string promt = $"Improve this text and change the words to {user.Level} level and return me. (only improved version!)";
 
             var improvedSpeech = await this.openAIService.AnalizeRequestAsync(speech.Sentence, promt);
+
+            user.ImprovedSpeech = improvedSpeech;
+            await this.userService.ModifyUserAsync(user);
 
             await this.handleSpeechService.CreateAndSaveSpeechAudioAsync(improvedSpeech, $"{user.TelegramId}");
 
