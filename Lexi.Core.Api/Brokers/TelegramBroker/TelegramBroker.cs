@@ -5,7 +5,9 @@
 
 using Concentus.Oggfile;
 using Concentus.Structs;
+using Lexi.Core.Api.Brokers.Storages;
 using Lexi.Core.Api.Models.Foundations.ExternalUsers;
+using Lexi.Core.Api.Models.Foundations.Reviews;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Services.Foundations.ImproveSpeech;
 using Lexi.Core.Api.Services.Foundations.Users;
@@ -35,6 +37,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         private IOrchestrationService orchestrationService;
         private readonly IUserService userService;
         private readonly IOpenAIService openAIService;
+        private readonly IStorageBroker storageBroker;
         private readonly IWebHostEnvironment _hostingEnvironment;
 
         private static readonly AsyncLocal<long> storedTelegramId = new AsyncLocal<long>();
@@ -49,7 +52,8 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             IServiceProvider serviceProvider,
             IUserService userService,
             IWebHostEnvironment hostingEnvironment,
-            IOpenAIService openAIService)
+            IOpenAIService openAIService,
+            IStorageBroker storageBroker)
         {
             var token = "6866377621:AAFXOtQF6A4sP_L7tqn4C2DLqHqMie8KQ5k";
             this.botClient = new TelegramBotClient(token);
@@ -58,6 +62,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             filePath = Path.Combine(this._hostingEnvironment.WebRootPath, "outputWavs/");
             userPath = null;
             this.openAIService = openAIService;
+            this.storageBroker = storageBroker;
         }
 
         public void StartListening()
@@ -78,13 +83,13 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                     return;
                 }
 
-                using var httpClient = new HttpClient();
+                //using var httpClient = new HttpClient();
 
-                HttpResponseMessage httpResponseMessage = await httpClient.GetAsync(
-                    "https://lexicoreapi20240505203612.azurewebsites.net/api/Feedback",
-                    token);
+                //HttpResponseMessage httpResponseMessage = await httpClient.GetAsync(
+                //    "https://lexicoreapi20240505203612.azurewebsites.net/api/Feedback",
+                //    token);
 
-                Console.WriteLine(httpResponseMessage.StatusCode);
+                //Console.WriteLine(httpResponseMessage.StatusCode);
 
                 var user = this.userService
                      .RetrieveAllUsers().FirstOrDefault(u => u.TelegramId == update.Message.Chat.Id);
@@ -266,6 +271,74 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
                             return;
                         }
+                        else if (user.State is State.Active && update.Message.Text is "Feedback 📝")
+                        {
+                            await client.SendTextMessageAsync(
+                               chatId: update.Message.Chat.Id,
+                               replyMarkup: FeedbackMarkup(),
+                               text: $"Choose 👇🏼");
+
+                            user.State = State.Feedback;
+                            await this.userService.ModifyUserAsync(user);
+
+                            return;
+                        }
+                        else if (user.State is State.Feedback && update.Message.Text is "Leave a review 📝")
+                        {
+                            await client.SendTextMessageAsync(
+                               chatId: update.Message.Chat.Id,
+                               replyMarkup: new ReplyKeyboardRemove(),
+                               text: $"Leave a review as text ✏️");
+
+                            user.State = State.LeaveReview;
+                            await this.userService.ModifyUserAsync(user);
+
+                            return;
+                        }
+                        else if (user.State is State.LeaveReview)
+                        {
+                            await client.SendTextMessageAsync(
+                               chatId: update.Message.Chat.Id,
+                               replyMarkup: MenuMarkup(),
+                               text: $"Thanks 😊");
+
+                            var review = new Review
+                            {
+                                Id = Guid.NewGuid(),
+                                Text = update.Message.Text,
+                                TelegramId = user.TelegramId,
+                                TelegramUserName = user.Name
+                            };
+
+                            await this.storageBroker.InsertReviewAsync(review);
+
+                            user.State = State.Active;
+                            await this.userService.ModifyUserAsync(user);
+
+                            return;
+                        }
+                        else if (user.State is State.Feedback && update.Message.Text is "View other reviews 🤯")
+                        {
+                            var reviews = this.storageBroker.SelectAllReviews();
+                            var stringBuilder = new StringBuilder();
+                            stringBuilder.Append("All reviews ✨\n\n");
+                            int count = 1;
+
+                            foreach (var review in reviews)
+                                stringBuilder.Append($"{count}. {review.TelegramUserName}: {review.Text}\n");
+
+                            stringBuilder.Append("\nAll reviews ✨");
+
+                            await client.SendTextMessageAsync(
+                               chatId: update.Message.Chat.Id,
+                               replyMarkup: MenuMarkup(),
+                               text: stringBuilder.ToString());
+
+                            user.State = State.Active;
+                            await this.userService.ModifyUserAsync(user);
+
+                            return;
+                        }
                         else if (user.State is State.Me && update.Message.Text is "Change English level \U0001f92f")
                         {
                             await client.SendTextMessageAsync(
@@ -411,6 +484,25 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 ResizeKeyboard = true
             };
         }
+        private static ReplyKeyboardMarkup FeedbackMarkup()
+        {
+            var keyboardButtons = new List<KeyboardButton[]>
+            {
+                new KeyboardButton[]
+                {
+                    new KeyboardButton("Leave a review 📝")
+                },
+                new KeyboardButton[]
+                {
+                    new KeyboardButton("View other reviews 🤯"),
+                }
+            };
+
+            return new ReplyKeyboardMarkup(keyboardButtons)
+            {
+                ResizeKeyboard = true
+            };
+        }
 
         private static ReplyKeyboardMarkup MenuMarkup()
         {
@@ -422,7 +514,8 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 },
                 new KeyboardButton[]
                 {
-                    new KeyboardButton("Me 👤")
+                    new KeyboardButton("Me 👤"),
+                    new KeyboardButton("Feedback 📝")
                 }
             };
 
