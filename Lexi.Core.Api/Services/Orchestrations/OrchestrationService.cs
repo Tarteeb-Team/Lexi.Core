@@ -3,6 +3,7 @@
 // Powering True Leadership
 //=================================
 
+using aisha_ai.Services.Foundations.HandleSpeeches;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Models.ObjcetModels;
@@ -20,15 +21,15 @@ namespace Lexi.Core.Api.Services.Orchestrations
     {
         private readonly ICognitiveOrchestrationService cognitiveOrchestrationService;
         private readonly ISpeechOrchestrationService speechOrchestrationService;
-        private readonly ITelegramService telegramService;
+        private readonly IHandleSpeechService handleSpeechService;
 
         public OrchestrationService(ICognitiveOrchestrationService cognitiveOrchestrationService,
             ISpeechOrchestrationService speechOrchestrationService,
-            ITelegramService telegramService)
+            IHandleSpeechService handleSpeechService)
         {
             this.cognitiveOrchestrationService = cognitiveOrchestrationService;
             this.speechOrchestrationService = speechOrchestrationService;
-            this.telegramService = telegramService;
+            this.handleSpeechService = handleSpeechService;
         }
 
         public async ValueTask GenerateSpeechFeedbackForUser()
@@ -40,11 +41,14 @@ namespace Lexi.Core.Api.Services.Orchestrations
 
             SpeechModel speech = await speechOrchestrationService.MapToSpeech(responseCognitive, user.Id);
 
+            await this.handleSpeechService.CreateAndSaveSpeechAudioAsync(speech.Sentence, $"{user.TelegramId}");
+
             Feedback feedback =
                 await this.speechOrchestrationService.MapToFeedback(responseCognitive, speech.Id);
 
             await this.cognitiveOrchestrationService
                 .MapFeedbackToStringAndSendMessage(user.TelegramId, feedback, speech.Sentence);
+
         }
 
         public ValueTask<Feedback> RemoveFeedbackAsync(Feedback feedback) =>

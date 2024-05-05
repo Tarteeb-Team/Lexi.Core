@@ -73,7 +73,8 @@ namespace Lexi.Core.Api.Services.Orchestrations.Cognitive
                 {
                     Id = externalUser.Id,
                     Name = externalUser.Name,
-                    TelegramId = externalUser.TelegramId
+                    TelegramId = externalUser.TelegramId,
+                    TelegramName = externalUser.TelegramName
                 };
 
                 return await this.userService.AddUserAsync(newUser);

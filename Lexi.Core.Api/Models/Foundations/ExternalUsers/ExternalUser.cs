@@ -11,6 +11,7 @@ namespace Lexi.Core.Api.Models.Foundations.ExternalUsers
     {
         public Guid Id { get; set; }
         public long TelegramId { get; set; }
+        public string? TelegramName { get; set; }
         public string Name { get; set; }
     }
 }

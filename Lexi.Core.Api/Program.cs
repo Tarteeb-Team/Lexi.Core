@@ -3,8 +3,10 @@
 // Powering True Leadership
 //=================================
 
+using aisha_ai.Services.Foundations.HandleSpeeches;
 using Lexi.Core.Api.Brokers.Cognitives;
 using Lexi.Core.Api.Brokers.Loggings;
+using Lexi.Core.Api.Brokers.Speeches;
 using Lexi.Core.Api.Brokers.Storages;
 using Lexi.Core.Api.Brokers.TelegramBroker;
 using Lexi.Core.Api.Services.Cognitives;
@@ -24,6 +26,8 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<IStorageBroker, StorageBroker>();
 builder.Services.AddSingleton<IStorageBroker, StorageBroker>();
 builder.Services.AddTransient<ILoggingBroker, LoggingBroker>();
+builder.Services.AddTransient<ISpeechBroker, SpeechBroker>();
+builder.Services.AddTransient<IHandleSpeechService, HandleSpeechService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ISpeechService, SpeechService>();
 builder.Services.AddTransient<IFeedbackService, FeedbackService>();
