@@ -13,6 +13,8 @@ using NAudio.Wave;
 using System;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -60,6 +62,15 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             {
                 return;
             }
+
+            using var httpClient = new HttpClient();
+
+            HttpResponseMessage httpResponseMessage = await httpClient.GetAsync(
+                "https://lexicoreapi20240505105801.azurewebsites.net/api/Feedback",
+                token);
+
+            Console.WriteLine(httpResponseMessage.StatusCode);
+
             if (update.Message.Text is not null)
             {
                 var user = this.userService
