@@ -14,7 +14,10 @@ namespace Lexi.Core.Api.Models.Foundations.Users
         public Guid Id { get; set; }
         public long TelegramId { get; set; }
         public string? TelegramName { get; set; }
+        public string Level { get; set; } = "A1";
+        public State State { get; set; }
         public string Name { get; set; }
+        public decimal? Overall { get; set; }
         public List<Speech> Speeches { get; set; }
     }
 }

@@ -7,7 +7,9 @@ using aisha_ai.Services.Foundations.HandleSpeeches;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Models.ObjcetModels;
+using Lexi.Core.Api.Services.Foundations.ImproveSpeech;
 using Lexi.Core.Api.Services.Foundations.Telegrams;
+using Lexi.Core.Api.Services.Foundations.Users;
 using Lexi.Core.Api.Services.Orchestrations.Cognitive;
 using Lexi.Core.Api.Services.Orchestrations.Speech;
 using System;
@@ -22,26 +24,44 @@ namespace Lexi.Core.Api.Services.Orchestrations
         private readonly ICognitiveOrchestrationService cognitiveOrchestrationService;
         private readonly ISpeechOrchestrationService speechOrchestrationService;
         private readonly IHandleSpeechService handleSpeechService;
+        private readonly IOpenAIService openAIService;
+        private readonly IUserService userService;
 
         public OrchestrationService(ICognitiveOrchestrationService cognitiveOrchestrationService,
             ISpeechOrchestrationService speechOrchestrationService,
-            IHandleSpeechService handleSpeechService)
+            IHandleSpeechService handleSpeechService,
+            IOpenAIService openAIService,
+            IUserService userService)
         {
             this.cognitiveOrchestrationService = cognitiveOrchestrationService;
             this.speechOrchestrationService = speechOrchestrationService;
             this.handleSpeechService = handleSpeechService;
+            this.openAIService = openAIService;
+            this.userService = userService;
         }
 
-        public async ValueTask GenerateSpeechFeedbackForUser()
+        public async ValueTask GenerateSpeechFeedbackForUser(long? telegramId)
         {
+            var user = this.userService.RetrieveAllUsers()
+                .FirstOrDefault(u => u.TelegramId == telegramId);
+
+            if(user is null)
+            {
+                await this.cognitiveOrchestrationService.AddNewUserAsync();
+
+                return;
+            }
+
             ResponseCognitive responseCognitive =
                 await this.cognitiveOrchestrationService.GetResponseCognitive();
 
-            User user = await this.cognitiveOrchestrationService.AddNewUserAsync();
-
             SpeechModel speech = await speechOrchestrationService.MapToSpeech(responseCognitive, user.Id);
 
-            await this.handleSpeechService.CreateAndSaveSpeechAudioAsync(speech.Sentence, $"{user.TelegramId}");
+            string promt = $"Improve this text and change the words to {user.Level} level and return me. (only improved version!)";
+
+            var improvedSpeech = await this.openAIService.AnalizeRequestAsync(speech.Sentence, promt);
+
+            await this.handleSpeechService.CreateAndSaveSpeechAudioAsync(improvedSpeech, $"{user.TelegramId}");
 
             Feedback feedback =
                 await this.speechOrchestrationService.MapToFeedback(responseCognitive, speech.Id);

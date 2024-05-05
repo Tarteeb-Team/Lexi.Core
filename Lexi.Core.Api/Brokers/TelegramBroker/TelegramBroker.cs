@@ -3,14 +3,16 @@
 // Powering True Leadership
 //=================================
 
-using aisha_ai.Services.Foundations.HandleSpeeches;
 using Concentus.Oggfile;
 using Concentus.Structs;
 using Lexi.Core.Api.Models.Foundations.ExternalUsers;
+using Lexi.Core.Api.Models.Foundations.Users;
+using Lexi.Core.Api.Services.Foundations.ImproveSpeech;
 using Lexi.Core.Api.Services.Foundations.Users;
 using Lexi.Core.Api.Services.Orchestrations;
 using Microsoft.AspNetCore.Hosting;
 using NAudio.Wave;
+using RESTFulSense.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,20 +34,22 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         private TelegramBotClient botClient;
         private IOrchestrationService orchestrationService;
         private readonly IUserService userService;
+        private readonly IOpenAIService openAIService;
         private readonly IWebHostEnvironment _hostingEnvironment;
 
         private static readonly AsyncLocal<long> storedTelegramId = new AsyncLocal<long>();
         private static readonly AsyncLocal<int> messageId = new AsyncLocal<int>();
         private static readonly AsyncLocal<string> telegramName = new AsyncLocal<string>();
         private static readonly AsyncLocal<string> storedName = new AsyncLocal<string>();
+        private static readonly AsyncLocal<string> storedLevel = new AsyncLocal<string>();
         private string filePath;
         private string userPath;
-
 
         public TelegramBroker(
             IServiceProvider serviceProvider,
             IUserService userService,
-            IWebHostEnvironment hostingEnvironment)
+            IWebHostEnvironment hostingEnvironment,
+            IOpenAIService openAIService)
         {
             var token = "6866377621:AAFXOtQF6A4sP_L7tqn4C2DLqHqMie8KQ5k";
             this.botClient = new TelegramBotClient(token);
@@ -53,6 +57,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             this._hostingEnvironment = hostingEnvironment;
             filePath = Path.Combine(this._hostingEnvironment.WebRootPath, "outputWavs/");
             userPath = null;
+            this.openAIService = openAIService;
         }
 
         public void StartListening()
@@ -62,171 +67,310 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
         public async Task MessageHandler(ITelegramBotClient client, Update update, CancellationToken token)
         {
-            if (update == null)
+            try
             {
-                return;
-            }
-            if (update.Message == null)
-            {
-                return;
-            }
-
-            using var httpClient = new HttpClient();
-
-            HttpResponseMessage httpResponseMessage = await httpClient.GetAsync(
-                "https://lexicoreapi20240505120625.azurewebsites.net/api/Feedback",
-                token);
-
-            Console.WriteLine(httpResponseMessage.StatusCode);
-
-            if (update.Message.Text is not null)
-            {
-
-                if (update.Message.Text.StartsWith("user-@"))
+                if (update == null)
                 {
-                    try
-                    {
-                        string username = update.Message.Text.Substring(6);
-
-                        var persistedUser = this.userService.RetrieveAllUsers().FirstOrDefault(u => u.TelegramName == username);
-
-                        string wwwRootPath = Environment.CurrentDirectory;
-                        string filePath = Path.Combine(wwwRootPath, "wwwroot", "outputWavs", $"{persistedUser.TelegramId}.wav");
-
-                        if (System.IO.File.Exists(filePath))
-                        {
-                            using (var fileStream = System.IO.File.OpenRead(filePath))
-                            {
-                                await botClient.SendVoiceAsync(
-                                chatId: update.Message.Chat.Id,
-                                caption: $"{persistedUser.Name} | @{persistedUser.TelegramName}",
-                                voice: InputFile.FromStream(fileStream));
-                            }
-                        }
-                        else
-                        {
-                            await client.SendTextMessageAsync(
-                                chatId: update.Message.Chat.Id,
-                                text: "Sorry, the audio file for this user does not exist.");
-                        }
-
-                        return;
-                    }
-                    catch (Exception ex)
-                    {
-                        await client.SendTextMessageAsync(
-                                chatId: 1924521160,
-                                text: $"Error: {ex.Message}");
-
-                        return;
-                    }
-
-                }
-
-                if (update.Message.Text == "/shpion")
-                {
-                    var shpionMarkup = ShpionMarkup();
-
-                    await client.SendTextMessageAsync(
-                        chatId: update.Message.Chat.Id,
-                        replyMarkup: shpionMarkup,
-                        text: $"Salom shpion.");
-
                     return;
                 }
-                else if (update.Message.Text == "Count of users")
+                if (update.Message == null)
                 {
-                    int count = 0;
-                    var allUser = this.userService.RetrieveAllUsers();
-
-                    foreach (var u in allUser)
-                    {
-                        count++;
-                    }
-
-                    await client.SendTextMessageAsync(
-                        chatId: update.Message.Chat.Id,
-                        text: $"Count: {count}");
-
                     return;
                 }
-                else if (update.Message.Text == "All users")
-                {
-                    int count = 1;
-                    var allUser = this.userService.RetrieveAllUsers();
 
-                    var stringBuilder = new StringBuilder();
+                using var httpClient = new HttpClient();
 
-                    stringBuilder.Append("All users:\n\n");
+                HttpResponseMessage httpResponseMessage = await httpClient.GetAsync(
+                    "https://lexicoreapi20240505203612.azurewebsites.net/api/Feedback",
+                    token);
 
-                    foreach (var u in allUser)
-                    {
-                        stringBuilder.Append($"{count}. {u.Name} | @{u.TelegramName}\n\n");
-                        count++;
-                    }
-
-                    stringBuilder.Append($"\nCount: {count - 1}");
-
-                    await client.SendTextMessageAsync(
-                        chatId: update.Message.Chat.Id,
-                        text: stringBuilder.ToString());
-
-                    return;
-                }
+                Console.WriteLine(httpResponseMessage.StatusCode);
 
                 var user = this.userService
-                .RetrieveAllUsers().FirstOrDefault(u => u.TelegramId == update.Message.Chat.Id);
+                     .RetrieveAllUsers().FirstOrDefault(u => u.TelegramId == update.Message.Chat.Id);
 
                 if (user is null)
                 {
                     await client.SendTextMessageAsync(
                         chatId: update.Message.Chat.Id,
+                        replyMarkup: LevelMarkup(),
                         text: $"🎓LexiEnglishBot🎓\n\n" +
                         $"⚠️Welcome {update.Message.Chat.FirstName}, " +
-                        $"you can test your English speaking skill.\n\n Send voice message🎙");
+                        $"you can test your English speaking skill.\n\n Choose your English level 🧠");
+
+                    storedTelegramId.Value = update.Message.Chat.Id;
+                    storedName.Value = update.Message.Chat.FirstName;
+                    telegramName.Value = update.Message.Chat.Username;
+
+                    await CreateExternalUserAsync();
+
+                    SetOrchestrationService(orchestrationService, update.Message.Chat.Id);
+
+                    return;
                 }
+
                 else
                 {
-                    await client.SendTextMessageAsync(
-                       chatId: update.Message.Chat.Id,
-                       text: $"🎓LexiEnglishBot🎓\n\n" +
-                       $"Send voice message please🎙");
+                    if (update.Message.Text is not null)
+                    {
+                        if (update.Message.Text.StartsWith("user-@"))
+                        {
+                            try
+                            {
+                                string username = update.Message.Text.Substring(6);
+
+                                var persistedUser = this.userService.RetrieveAllUsers().FirstOrDefault(u => u.TelegramName == username);
+
+                                string wwwRootPath = Environment.CurrentDirectory;
+                                string filePath = Path.Combine(wwwRootPath, "wwwroot", "outputWavs", $"{persistedUser.TelegramId}.wav");
+
+                                if (System.IO.File.Exists(filePath))
+                                {
+                                    using (var fileStream = System.IO.File.OpenRead(filePath))
+                                    {
+                                        await botClient.SendVoiceAsync(
+                                        chatId: update.Message.Chat.Id,
+                                        caption: $"{persistedUser.Name} | @{persistedUser.TelegramName}",
+                                        voice: InputFile.FromStream(fileStream));
+                                    }
+
+                                    return;
+                                }
+                                else
+                                {
+                                    await client.SendTextMessageAsync(
+                                        chatId: update.Message.Chat.Id,
+                                        text: "Sorry, the audio file for this user does not exist.");
+
+                                    return;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                await client.SendTextMessageAsync(
+                                        chatId: 1924521160,
+                                        text: $"Error: {ex.Message}");
+
+                                return;
+                            }
+
+                        }
+
+                        if (update.Message.Text == "/shpion")
+                        {
+                            var shpionMarkup = ShpionMarkup();
+
+                            await client.SendTextMessageAsync(
+                                chatId: update.Message.Chat.Id,
+                                replyMarkup: shpionMarkup,
+                                text: $"Salom shpion.");
+
+                            return;
+                        }
+                        else if (update.Message.Text == "Count of users")
+                        {
+                            int count = 0;
+                            var allUser = this.userService.RetrieveAllUsers();
+
+                            foreach (var u in allUser)
+                            {
+                                count++;
+                            }
+
+                            await client.SendTextMessageAsync(
+                                chatId: update.Message.Chat.Id,
+                                text: $"Count: {count}");
+
+                            return;
+                        }
+                        else if (update.Message.Text == "All users")
+                        {
+                            int count = 1;
+                            var allUser = this.userService.RetrieveAllUsers();
+
+                            var stringBuilder = new StringBuilder();
+
+                            stringBuilder.Append("All users:\n\n");
+
+                            foreach (var u in allUser)
+                            {
+                                stringBuilder.Append($"{count}. {u.Name} | @{u.TelegramName} | {u.Level}\n\n");
+                                count++;
+                            }
+
+                            stringBuilder.Append($"\nCount: {count - 1}");
+
+                            await client.SendTextMessageAsync(
+                                chatId: update.Message.Chat.Id,
+                                text: stringBuilder.ToString());
+
+                            return;
+                        }
+
+                        if (user.State is State.Level)
+                        {
+                            if (update.Message.Text is "A1 😊"
+                            || update.Message.Text is "A2 😉"
+                            || update.Message.Text is "B1 😄"
+                            || update.Message.Text is "B2 😎"
+                            || update.Message.Text is "C1 😇"
+                            || update.Message.Text is "C2 🤗")
+                            {
+                                storedLevel.Value = update.Message.Text;
+                                await client.SendTextMessageAsync(
+                                   chatId: update.Message.Chat.Id,
+                                   replyMarkup: MenuMarkup(),
+                                   text: $"Welcome {user.Name} ⚡️\n\nYour level is {update.Message.Text} ⭐️\n\nChoose 👇🏼");
+
+                                user.State = State.Active;
+                                user.Level = update.Message.Text;
+                                await this.userService.ModifyUserAsync(user);
+
+                                return;
+                            }
+                            else
+                            {
+                                await client.SendTextMessageAsync(
+                                    chatId: update.Message.Chat.Id,
+                                    text: "Please, choose your level ❗️");
+                            }
+                        }
+
+                        if (user.State is State.Active && update.Message.Text is "Test speech 🎙")
+                        {
+                            var prompt = $"Generate one IELTS part 1 random question for speaking (1 - 10000 -> give me one from 10000 common), and return it me. (return only question)";
+
+                            var question = await this.openAIService.AnalizeRequestAsync("Look!!!", prompt);
+
+                            await client.SendTextMessageAsync(
+                               chatId: update.Message.Chat.Id,
+                               replyMarkup: new ReplyKeyboardRemove(),
+                               text: $"🎓 LexiEnglishBot 🎓\r\n\r\n" +
+                               $"Try to answer the question ❓ or simply send a voice message 🎙:" +
+                               $"\r\n\r\nQuestion: {question}\n\nI will provide feedback based on your response 😁"); ;
+
+                            user.State = State.TestSpeech;
+                            await this.userService.ModifyUserAsync(user);
+
+                            return;
+                        }
+                        else if (user.State is State.Active && update.Message.Text is "Me 👤")
+                        {
+                            await client.SendTextMessageAsync(
+                               chatId: update.Message.Chat.Id,
+                               replyMarkup: OptionMarkup(),
+                               text: $"About me👤\n\nName: {user.Name}\nLevel: {user.Level}\nAverage speech result: {user.Overall}% 🧠");
+
+                            user.State = State.Me;
+                            await this.userService.ModifyUserAsync(user);
+
+                            return;
+                        }
+                        else if (user.State is State.Me && update.Message.Text is "Change English level \U0001f92f")
+                        {
+                            await client.SendTextMessageAsync(
+                               chatId: update.Message.Chat.Id,
+                               replyMarkup: OptionMarkup(),
+                               text: $"Choose 👇🏼");
+
+                            return;
+                        }
+                        else if (user.State is State.Me && update.Message.Text is "Menu 🎙")
+                        {
+                            await client.SendTextMessageAsync(
+                                   chatId: update.Message.Chat.Id,
+                                   replyMarkup: MenuMarkup(),
+                                   text: $"Choose 👇🏼");
+
+                            user.State = State.Active;
+                            await this.userService.ModifyUserAsync(user);
+
+                            return;
+                        }
+                        else if (user.State is State.Me && update.Message.Text is "Change my English level \U0001f92f")
+                        {
+                            await client.SendTextMessageAsync(
+                                   chatId: update.Message.Chat.Id,
+                                   replyMarkup: LevelMarkup(),
+                                   text: $"Choose your current English level: 👇🏼");
+
+                            user.State = State.ChangeLevel;
+                            await this.userService.ModifyUserAsync(user);
+
+                            return;
+                        }
+                        else if (user.State is State.ChangeLevel)
+                        {
+                            await client.SendTextMessageAsync(
+                                   chatId: update.Message.Chat.Id,
+                                   replyMarkup: MenuMarkup(),
+                                   text: $"Changed 👍🏼");
+
+                            user.State = State.Active;
+                            user.Level = update.Message.Text;
+                            await this.userService.ModifyUserAsync(user);
+
+                            return;
+                        }
+                    }
+
+
+                    if (update.Message.Text is "/start")
+                    {
+                        await client.SendTextMessageAsync(
+                           chatId: update.Message.Chat.Id,
+                           replyMarkup: MenuMarkup(),
+                           text: $"Choose 👇🏼");
+
+                        user.State = State.Active;
+                        await this.userService.ModifyUserAsync(user);
+
+                        return;
+                    }
+
+                    if (update.Message.Voice is not null && user.State is State.TestSpeech)
+                    {
+                        var loadingMessage = await client.SendTextMessageAsync(
+                               chatId: update.Message.Chat.Id,
+                               text: $"🎓LexiEnglishBot🎓\n\n" +
+                               $"Loading...");
+
+                        messageId.Value = loadingMessage.MessageId;
+
+                        var file = await client.GetFileAsync(update.Message.Voice.FileId);
+
+                        using (var stream = new MemoryStream())
+                        {
+                            await client.DownloadFileAsync(file.FilePath, stream);
+                            stream.Position = 0;
+
+                            ReturningConvertOggToWav(stream, update.Message.Chat.Id);
+                        }
+
+
+                        await CreateExternalUserAsync();
+
+                        SetOrchestrationService(orchestrationService, update.Message.Chat.Id);
+                    }
+                    else
+                    {
+                        await client.SendTextMessageAsync(
+                              chatId: update.Message.Chat.Id,
+                              text: $"🎓LexiEnglishBot🎓\n\n" +
+                              $"Go to the Test speech 🗣 section 🙂");
+                        return;
+                    }
                 }
             }
-            else if (update.Message.Voice is not null)
-            {
-                var loadingMessage = await client.SendTextMessageAsync(
-                       chatId: update.Message.Chat.Id,
-                       text: $"🎓LexiEnglishBot🎓\n\n" +
-                       $"Loading...");
-
-                storedTelegramId.Value = update.Message.Chat.Id;
-                storedName.Value = update.Message.Chat.FirstName;
-                telegramName.Value = update.Message.Chat.Username;
-                messageId.Value = loadingMessage.MessageId;
-
-                var file = await client.GetFileAsync(update.Message.Voice.FileId);
-
-                using (var stream = new MemoryStream())
-                {
-                    await client.DownloadFileAsync(file.FilePath, stream);
-                    stream.Position = 0;
-
-                    ReturningConvertOggToWav(stream, update.Message.Chat.Id);
-                }
-            }
-            else
+            catch (Exception ex)
             {
                 await client.SendTextMessageAsync(
-                      chatId: update.Message.Chat.Id,
-                      text: $"🎓LexiEnglishBot🎓\n\n" +
-                      $"Send voice message please🎙");
+                    chatId: 1924521160,
+                    text: $"Error: {ex.Message}");
+
                 return;
             }
-
-            await CreateExternalUserAsync();
-
-            SetOrchestrationService(orchestrationService);
+           
         }
         private static ReplyKeyboardMarkup ShpionMarkup()
         {
@@ -235,7 +379,74 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 new KeyboardButton[]
                 {
                     new KeyboardButton("All users"),
+                },
+                new KeyboardButton[]
+                {
                     new KeyboardButton("Count of users")
+                }
+            };
+
+            return new ReplyKeyboardMarkup(keyboardButtons)
+            {
+                ResizeKeyboard = true
+            };
+        }
+
+        private static ReplyKeyboardMarkup OptionMarkup()
+        {
+            var keyboardButtons = new List<KeyboardButton[]>
+            {
+                new KeyboardButton[]
+                {
+                    new KeyboardButton("Menu 🎙")
+                },
+                new KeyboardButton[]
+                {
+                    new KeyboardButton("Change my English level 🤯"),
+                }
+            };
+
+            return new ReplyKeyboardMarkup(keyboardButtons)
+            {
+                ResizeKeyboard = true
+            };
+        }
+
+        private static ReplyKeyboardMarkup MenuMarkup()
+        {
+            var keyboardButtons = new List<KeyboardButton[]>
+            {
+                new KeyboardButton[]
+                {
+                    new KeyboardButton("Test speech 🎙"),
+                },
+                new KeyboardButton[]
+                {
+                    new KeyboardButton("Me 👤")
+                }
+            };
+
+            return new ReplyKeyboardMarkup(keyboardButtons)
+            {
+                ResizeKeyboard = true
+            };
+        }
+
+        private static ReplyKeyboardMarkup LevelMarkup()
+        {
+            var keyboardButtons = new List<KeyboardButton[]>
+            {
+                new KeyboardButton[]
+                {
+                    new KeyboardButton("A1 😊"),
+                    new KeyboardButton("A2 😉"),
+                    new KeyboardButton("B1 😄"),
+                },
+                new KeyboardButton[]
+                {
+                    new KeyboardButton("B2 😎"),
+                    new KeyboardButton("C1 😇"),
+                    new KeyboardButton("C2 🤗"),
                 }
             };
 
@@ -253,6 +464,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             externalUser.TelegramId = storedTelegramId.Value;
             externalUser.Name = storedName.Value;
             externalUser.TelegramName = telegramName.Value;
+            externalUser.Level = storedLevel.Value;
             externalUser.Id = Guid.NewGuid();
 
             return new ValueTask<ExternalUser>(externalUser);
@@ -265,7 +477,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             string wwwRootPath = Environment.CurrentDirectory;
             string filePath = Path.Combine(wwwRootPath, "wwwroot", "AiVoices", $"{chatId}.wav");
 
-
+            var user = this.userService.RetrieveAllUsers().FirstOrDefault(u => u.TelegramId == chatId);
 
             if (System.IO.File.Exists(filePath))
             {
@@ -273,12 +485,17 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 {
                     await botClient.SendTextMessageAsync(
                         chatId: chatId,
+                        replyMarkup: MenuMarkup(),
                         text: text);
 
-                   await botClient.SendVoiceAsync(
-                        chatId: chatId,
-                        caption: "\n\nTry it like this 🎁",
-                        voice: InputFile.FromStream(fileStream));
+                    await botClient.SendVoiceAsync(
+                         chatId: chatId,
+                         caption: "\n\nTry it like this 🎁",
+                         voice: InputFile.FromStream(fileStream));
+
+                    user.State = State.Active;
+                    await this.userService.ModifyUserAsync(user);
+
                 }
             }
         }
@@ -316,10 +533,11 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             return userPath;
         }
 
-        public void SetOrchestrationService(IOrchestrationService orchestrationService)
+        public void SetOrchestrationService(
+            IOrchestrationService orchestrationService, long telegramId = 0)
         {
             this.orchestrationService = orchestrationService;
-            this.orchestrationService.GenerateSpeechFeedbackForUser();
+            this.orchestrationService.GenerateSpeechFeedbackForUser(telegramId);
         }
 
         static Task ErrorHandler(ITelegramBotClient client, Exception exception, CancellationToken token)

@@ -25,6 +25,7 @@
     </PackageReference>
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Standard.AI.OpenAI" Version="0.6.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <PackageReference Include="Telegram.Bot" Version="19.0.0" />
     <PackageReference Include="Xeption" Version="2.6.0" />

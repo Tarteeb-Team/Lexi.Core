@@ -28,7 +28,7 @@ namespace Lexi.Core.Api.Services.Foundations.Users
         public ValueTask<User> AddUserAsync(User user) =>
         TryCatch(async () =>
         {
-            ValidateUserOnAdd(user);
+            //ValidateUserOnAdd(user);
 
             return await this.storageBroker.InsertUserAsync(user);
         });

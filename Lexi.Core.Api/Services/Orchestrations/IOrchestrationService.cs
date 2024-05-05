@@ -4,6 +4,7 @@
 //=================================
 
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
+using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Models.ObjcetModels;
 using System;
 using System.IO;
@@ -15,7 +16,7 @@ namespace Lexi.Core.Api.Services.Orchestrations
 {
     public interface IOrchestrationService
     {
-        ValueTask GenerateSpeechFeedbackForUser();
+        ValueTask GenerateSpeechFeedbackForUser(long? telegramId);
         IQueryable<Feedback> RetrieveAllFeedbacks();
         ValueTask<Feedback> RetrieveFeedbackByIdAsync(Guid id);
         ValueTask<Feedback> RemoveFeedbackAsync(Feedback feedback);

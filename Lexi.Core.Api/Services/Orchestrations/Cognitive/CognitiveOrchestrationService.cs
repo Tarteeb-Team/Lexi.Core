@@ -74,7 +74,8 @@ namespace Lexi.Core.Api.Services.Orchestrations.Cognitive
                     Id = externalUser.Id,
                     Name = externalUser.Name,
                     TelegramId = externalUser.TelegramId,
-                    TelegramName = externalUser.TelegramName
+                    TelegramName = externalUser.TelegramName,
+                    State = State.Level
                 };
 
                 return await this.userService.AddUserAsync(newUser);
