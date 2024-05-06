@@ -13,6 +13,7 @@ using Lexi.Core.Api.Services.Foundations.ImproveSpeech;
 using Lexi.Core.Api.Services.Foundations.Users;
 using Lexi.Core.Api.Services.Orchestrations;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.OpenApi.Any;
 using NAudio.Wave;
 using RESTFulSense.Exceptions;
 using System;
@@ -23,6 +24,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
@@ -45,6 +47,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         private static readonly AsyncLocal<string> telegramName = new AsyncLocal<string>();
         private static readonly AsyncLocal<string> storedName = new AsyncLocal<string>();
         private static readonly AsyncLocal<string> storedLevel = new AsyncLocal<string>();
+        private readonly System.Timers.Timer dailyNotificationTimer;
         private string filePath;
         private string userPath;
 
@@ -63,10 +66,21 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             userPath = null;
             this.openAIService = openAIService;
             this.storageBroker = storageBroker;
+
+            dailyNotificationTimer = new System.Timers.Timer
+            {
+                Interval = TimeSpan.FromHours(24).TotalMilliseconds,
+                AutoReset = true, 
+                Enabled = true
+            };
+
+            dailyNotificationTimer.Elapsed += DailyNotificationTimerElapsed;
         }
 
         public void StartListening()
         {
+            dailyNotificationTimer.Start();
+
             botClient.StartReceiving(MessageHandler, ErrorHandler);
         }
 
@@ -83,13 +97,13 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                     return;
                 }
 
-                //using var httpClient = new HttpClient();
+                using var httpClient = new HttpClient();
 
-                //HttpResponseMessage httpResponseMessage = await httpClient.GetAsync(
-                //    "https://lexicoreapi20240505233145.azurewebsites.net/api/Feedback",
-                //    token);
+                HttpResponseMessage httpResponseMessage = await httpClient.GetAsync(
+                    "https://lexicoreapi20240506000549.azurewebsites.net/api/Home",
+                    token);
 
-                //Console.WriteLine(httpResponseMessage.StatusCode);
+                Console.WriteLine(httpResponseMessage.StatusCode);
 
                 var user = this.userService
                      .RetrieveAllUsers().FirstOrDefault(u => u.TelegramId == update.Message.Chat.Id);
@@ -160,6 +174,31 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                             }
 
                         }
+                        if(update.Message.Text.StartsWith("delete-"))
+                        {
+                            string reviewText = update.Message.Text.Substring(7);
+
+                            var review = this.storageBroker
+                                .SelectAllReviews().FirstOrDefault(r => r.Text == reviewText);
+                            if(review is not null)
+                            {
+                                await this.storageBroker.DeleteReviewAsync(review);
+
+                                await client.SendTextMessageAsync(
+                                    chatId: update.Message.Chat.Id,
+                                    text: $"Deleted");
+
+                                return;
+                            }
+                            else
+                            {
+                                await client.SendTextMessageAsync(
+                                    chatId: update.Message.Chat.Id,
+                                    text: $"Not found");
+
+                                return;
+                            }
+                        }
 
                         if (update.Message.Text == "/shpion")
                         {
@@ -208,6 +247,26 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                             await client.SendTextMessageAsync(
                                 chatId: update.Message.Chat.Id,
                                 text: stringBuilder.ToString());
+
+                            return;
+                        }
+                        else if (update.Message.Text == "/notifyall")
+                        {
+                            await NotifyAllUsersAsync();
+
+                            await client.SendTextMessageAsync(
+                                chatId: update.Message.Chat.Id,
+                                text: "Notification sent to all users successfully!");
+
+                            return;
+                        }
+                        else if (update.Message.Text == "/notifyallreview")
+                        {
+                            await NotifyUsersWithoutReviewAsync();
+
+                            await client.SendTextMessageAsync(
+                                chatId: update.Message.Chat.Id,
+                                text: "Notification sent to all users successfully!");
 
                             return;
                         }
@@ -325,7 +384,10 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                             int count = 1;
 
                             foreach (var review in reviews)
+                            {
                                 stringBuilder.Append($"{count}. {review.TelegramUserName}: {review.Text}\n");
+                                count++;
+                            }
 
                             stringBuilder.Append("\nAll reviews ✨");
 
@@ -430,7 +492,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                         await client.SendTextMessageAsync(
                               chatId: update.Message.Chat.Id,
                               text: $"🎓LexiEnglishBot🎓\n\n" +
-                              $"Go to the Test speech 🗣 section 🙂");
+                              $"Ops. click /start 🙂");
                         return;
                     }
                 }
@@ -620,6 +682,116 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 WaveFileWriter.CreateWaveFile16(userPath, sampleProvider);
             }
         }
+
+        public async Task NotifyAllUsersAsync()
+        {
+            try
+            {
+                var allUsers = userService.RetrieveAllUsers();
+
+                foreach (var user in allUsers)
+                {
+                    await SendDailyNotification(user);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending daily notifications: {ex.Message}");
+            }
+        }
+
+        public async Task NotifyUsersWithoutReviewAsync()
+        {
+            try
+            {
+                var usersWithoutReview = storageBroker.RetrieveUserWithoudReveiw();
+
+                foreach (var user in usersWithoutReview)
+                {
+                    await SendReviewReminder(user);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending review reminders: {ex.Message}");
+            }
+        }
+
+        private async void DailyNotificationTimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            try
+            {
+                var allUsers = userService.RetrieveAllUsers();
+
+                foreach (var user in allUsers)
+                {
+                    await SendDailyNotification(user);
+                }
+
+                var allReviews = this.storageBroker.SelectAllReviews();
+
+                var usersWithoutReview = allUsers
+                    .Where(u => !allReviews.Any(r => r.TelegramId == u.TelegramId));
+
+                foreach (var user in usersWithoutReview)
+                {
+                    await SendReviewReminder(user);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending daily notifications: {ex.Message}");
+            }
+        }
+
+        private async Task SendReviewReminder(
+            Lexi.Core.Api.Models.Foundations.Users.User user)
+        {
+            try
+            {
+                string reminderMessage = $"❗️ Don't forget to leave a review for LexiEnglishBot!\n" +
+                $"Your feedback helps us improve and serve you better.\n" +
+                $"To leave a review, go to the 'Feedback 📝' -> 'Leave a review. 📝'\n\nThank you! ☺️";
+
+                await botClient.SendTextMessageAsync(
+                    chatId: user.TelegramId,
+                    text: reminderMessage);
+            }
+            catch (Exception)
+            {
+                return;
+            }
+            
+        }
+
+        private async Task SendDailyNotification(
+            Lexi.Core.Api.Models.Foundations.Users.User user)
+        {
+            if(user.TelegramId is not 0)
+            {
+                try
+                {
+                    string notificationMessage = $"🌟 Good morning, {user.Name}!\n\n" +
+                        "🗣️ It's a new day, which means it's another opportunity to improve your English speaking skills!\n\n" +
+                        "💬 Practice makes perfect! Take a few minutes today to speak English, whether it's with friends, " +
+                        "practicing with our bot, or even speaking to yourself.\n\n" +
+                        "🚀 Keep up the great work and strive for progress, not perfection!\n\n" +
+                        "🎯 Remember, consistent effort leads to remarkable results!\n\n" +
+                        "Keep shining bright! 💫";
+
+                    await botClient.SendTextMessageAsync(
+                        chatId: user.TelegramId,
+                        text: notificationMessage);
+                }
+                catch (Exception)
+                {
+
+                    return;
+                }
+                
+            }
+        }
+
 
         public string ReturnFilePath()
         {
