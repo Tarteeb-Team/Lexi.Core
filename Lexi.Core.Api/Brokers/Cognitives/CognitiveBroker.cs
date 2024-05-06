@@ -18,7 +18,7 @@ namespace Lexi.Core.Api.Brokers.Cognitives
 {
     public class CognitiveBroker : ICognitiveBroker
     {
-        string speechKey = "d66971f56fcc40f7a25c85ed75a728a9";
+        string speechKey = "aec1b94cf0254f11b478d28a50743eeb";
         string speechRegion = "eastus";
         private readonly ITelegramBroker telegramBroker;
 
@@ -51,7 +51,7 @@ namespace Lexi.Core.Api.Brokers.Cognitives
                 var speechRecognitionResult = await speechRecognizer.RecognizeOnceAsync();
 
                 // The pronunciation assessment result as a Speech SDK object
-                var pronunciationAssessmentResult =
+           var pronunciationAssessmentResult =
                     PronunciationAssessmentResult.FromResult(speechRecognitionResult);
 
                 // The pronunciation assessment result as a JSON string

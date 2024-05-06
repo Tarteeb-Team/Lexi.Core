@@ -12,7 +12,7 @@ namespace Lexi.Core.Api.Brokers.Speeches
             IConfiguration configuration)
         {
             this.speechConfig = SpeechConfig.FromSubscription(
-                subscriptionKey: "d66971f56fcc40f7a25c85ed75a728a9",
+                subscriptionKey: "aec1b94cf0254f11b478d28a50743eeb",
                 region: "eastus");
 
             this.speechConfig.SpeechSynthesisVoiceName = "en-US-AriaNeural";

@@ -13,9 +13,7 @@ using Lexi.Core.Api.Services.Foundations.ImproveSpeech;
 using Lexi.Core.Api.Services.Foundations.Users;
 using Lexi.Core.Api.Services.Orchestrations;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.OpenApi.Any;
 using NAudio.Wave;
-using RESTFulSense.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -70,7 +68,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             dailyNotificationTimer = new System.Timers.Timer
             {
                 Interval = TimeSpan.FromHours(24).TotalMilliseconds,
-                AutoReset = true, 
+                AutoReset = true,
                 Enabled = true
             };
 
@@ -174,13 +172,13 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                             }
 
                         }
-                        if(update.Message.Text.StartsWith("delete-"))
+                        if (update.Message.Text.StartsWith("delete-"))
                         {
                             string reviewText = update.Message.Text.Substring(7);
 
                             var review = this.storageBroker
                                 .SelectAllReviews().FirstOrDefault(r => r.Text == reviewText);
-                            if(review is not null)
+                            if (review is not null)
                             {
                                 await this.storageBroker.DeleteReviewAsync(review);
 
@@ -229,30 +227,63 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                         }
                         else if (update.Message.Text == "All users")
                         {
-                            int count = 1;
-                            var allUser = this.userService.RetrieveAllUsers();
+                            IQueryable<Models.Foundations.Users.User> allUsers = this.userService.RetrieveAllUsers();
+                            int totalUsers = allUsers.Count();
+                            int usersPerMessage = 80; // Adjust the number of users per message as needed
 
-                            var stringBuilder = new StringBuilder();
+                            int partsCount = totalUsers / usersPerMessage + (totalUsers % usersPerMessage == 0 ? 0 : 1);
 
-                            stringBuilder.Append("All users:\n\n");
-
-                            foreach (var u in allUser)
+                            for (int i = 0; i < partsCount; i++)
                             {
-                                stringBuilder.Append($"{count}. {u.Name} | @{u.TelegramName} | {u.Level}\n\n");
-                                count++;
+                                int skipCount = i * usersPerMessage;
+
+                                var usersInCurrentPart = allUsers.Skip(skipCount).Take(usersPerMessage).ToList();
+
+                                var stringBuilder = new StringBuilder();
+                                stringBuilder.Append($"All users - Part {i + 1}/{partsCount}:\n\n");
+
+                                foreach (var user1 in usersInCurrentPart)
+                                {
+                                    stringBuilder.Append($"{skipCount + 1}. {user1.Name} | @{user1.TelegramName} | {user1.Level}\n\n");
+                                    skipCount++;
+                                }
+
+                                await client.SendTextMessageAsync(
+                                    chatId: update.Message.Chat.Id,
+                                    text: stringBuilder.ToString());
+
+                                // Add a small delay to avoid flooding the chat
+                                await Task.Delay(500);
                             }
-
-                            stringBuilder.Append($"\nCount: {count - 1}");
-
-                            await client.SendTextMessageAsync(
-                                chatId: update.Message.Chat.Id,
-                                text: stringBuilder.ToString());
 
                             return;
                         }
+
+
+
                         else if (update.Message.Text == "/notifyall")
                         {
                             await NotifyAllUsersAsync();
+
+                            await client.SendTextMessageAsync(
+                                chatId: update.Message.Chat.Id,
+                                text: "Notification sent to all users successfully!");
+
+                            return;
+                        }
+                        else if (update.Message.Text == "/notifyerror")
+                        {
+                            await NotifyAllUsersErrorAsync();
+
+                            await client.SendTextMessageAsync(
+                                chatId: update.Message.Chat.Id,
+                                text: "Notification sent to all users successfully!");
+
+                            return;
+                        }
+                        else if (update.Message.Text == "/notifygood")
+                        {
+                            await NotifyAllUsersGoodAsync();
 
                             await client.SendTextMessageAsync(
                                 chatId: update.Message.Chat.Id,
@@ -267,6 +298,22 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                             await client.SendTextMessageAsync(
                                 chatId: update.Message.Chat.Id,
                                 text: "Notification sent to all users successfully!");
+
+                            return;
+                        }
+                        else if (update.Message.Text.StartsWith("notify-@"))
+                        {
+                            string userTelegramName = update.Message.Text.Substring(8);
+
+                            var userToSend = this.userService.RetrieveAllUsers()
+                                .FirstOrDefault(u => u.TelegramName == userTelegramName);
+
+                            await SendReviewReminder(userToSend);
+                            await SendDailyNotification(user);
+
+                            await client.SendTextMessageAsync(
+                                chatId: update.Message.Chat.Id,
+                                text: $"Notification sent to @{userTelegramName} users successfully!");
 
                             return;
                         }
@@ -320,10 +367,16 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                         }
                         else if (user.State is State.Active && update.Message.Text is "Me 👤")
                         {
+
+                            decimal? originalValue = user.Overall;
+                            int decimalPlaces = 1;
+
+                            decimal roundedValue = Math.Round(originalValue.Value, decimalPlaces);
+
                             await client.SendTextMessageAsync(
                                chatId: update.Message.Chat.Id,
                                replyMarkup: OptionMarkup(),
-                               text: $"About me👤\n\nName: {user.Name}\nLevel: {user.Level}\nAverage speech result: {user.Overall}% 🧠");
+                               text: $"About me👤\n\nName: {user.Name}\nLevel: {user.Level}\nAverage speech result: {roundedValue}% 🧠");
 
                             user.State = State.Me;
                             await this.userService.ModifyUserAsync(user);
@@ -378,29 +431,43 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                         }
                         else if (user.State is State.Feedback && update.Message.Text is "View other reviews 🤯")
                         {
-                            var reviews = this.storageBroker.SelectAllReviews();
-                            var stringBuilder = new StringBuilder();
-                            stringBuilder.Append("All reviews ✨\n\n");
-                            int count = 1;
+                            var reviews = this.storageBroker.SelectAllReviews().ToList();
+                            int totalReviews = reviews.Count();
+                            int reviewsPerMessage = 80; // Adjust this value as needed
 
-                            foreach (var review in reviews)
+                            int partsCount = totalReviews / reviewsPerMessage + (totalReviews % reviewsPerMessage == 0 ? 0 : 1);
+
+                            for (int i = 0; i < partsCount; i++)
                             {
-                                stringBuilder.Append($"{count}. {review.TelegramUserName}: {review.Text}\n");
-                                count++;
+                                int skipCount = i * reviewsPerMessage;
+
+                                var reviewsInCurrentPart = reviews.Skip(skipCount).Take(reviewsPerMessage).ToList();
+
+                                var stringBuilder = new StringBuilder();
+                                stringBuilder.Append($"Reviews - Part {i + 1}/{partsCount}:\n\n");
+
+                                int count = skipCount + 1;
+                                foreach (var review in reviewsInCurrentPart)
+                                {
+                                    stringBuilder.Append($"{count}. {review.TelegramUserName}: {review.Text}\n\n");
+                                    count++;
+                                }
+
+                                await client.SendTextMessageAsync(
+                                    chatId: update.Message.Chat.Id,
+                                    replyMarkup: MenuMarkup(),
+                                    text: stringBuilder.ToString());
+
+                                // Add a small delay to avoid flooding the chat
+                                await Task.Delay(500);
                             }
-
-                            stringBuilder.Append("\nAll reviews ✨");
-
-                            await client.SendTextMessageAsync(
-                               chatId: update.Message.Chat.Id,
-                               replyMarkup: MenuMarkup(),
-                               text: stringBuilder.ToString());
 
                             user.State = State.Active;
                             await this.userService.ModifyUserAsync(user);
 
                             return;
                         }
+
                         else if (user.State is State.Me && update.Message.Text is "Change English level \U0001f92f")
                         {
                             await client.SendTextMessageAsync(
@@ -505,7 +572,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
                 return;
             }
-           
+
         }
         private static ReplyKeyboardMarkup ShpionMarkup()
         {
@@ -700,6 +767,40 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             }
         }
 
+        public async Task NotifyAllUsersErrorAsync()
+        {
+            try
+            {
+                var allUsers = userService.RetrieveAllUsers();
+
+                foreach (var user in allUsers)
+                {
+                    await NotificationError(user);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending daily notifications: {ex.Message}");
+            }
+        }
+
+        public async Task NotifyAllUsersGoodAsync()
+        {
+            try
+            {
+                var allUsers = userService.RetrieveAllUsers();
+
+                foreach (var user in allUsers)
+                {
+                    await NotificationGood(user);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending daily notifications: {ex.Message}");
+            }
+        }
+
         public async Task NotifyUsersWithoutReviewAsync()
         {
             try
@@ -728,10 +829,9 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                     await SendDailyNotification(user);
                 }
 
-                var allReviews = this.storageBroker.SelectAllReviews();
+                await Task.Delay(100000);
 
-                var usersWithoutReview = allUsers
-                    .Where(u => !allReviews.Any(r => r.TelegramId == u.TelegramId));
+                var usersWithoutReview = storageBroker.RetrieveUserWithoudReveiw();
 
                 foreach (var user in usersWithoutReview)
                 {
@@ -761,18 +861,84 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             {
                 return;
             }
-            
+
         }
 
-        private async Task SendDailyNotification(
-            Lexi.Core.Api.Models.Foundations.Users.User user)
+        private async Task NotificationError(Lexi.Core.Api.Models.Foundations.Users.User user)
         {
-            if(user.TelegramId is not 0)
+            try
+            {
+                string notificationMessage = $"⚠️ Dear {user.Name},\n\nWe apologize for the inconvenience, but there seems to be an issue with our application. " +
+                    $"Our team is working to resolve it as soon as possible. " +
+                    $"Please try again later. Thank you for your patience and understanding. 😃";
+
+                await botClient.SendTextMessageAsync(
+                    chatId: user.TelegramId,
+                    text: notificationMessage);
+            }
+            catch (Exception)
+            {
+                return;
+            }
+        }
+
+        private async Task NotificationGood(Lexi.Core.Api.Models.Foundations.Users.User user)
+        {
+            try
+            {
+                string notificationMessage = $"🎉 Congratulations, {user.Name}!\n\nYou can now proceed using our application. " +
+                    $"Thank you for your patience and understanding. Keep up the great work! 👍";
+
+                await botClient.SendTextMessageAsync(
+                    chatId: user.TelegramId,
+                    text: notificationMessage);
+            }
+            catch (Exception)
+            {
+                return;
+            }
+        }
+
+
+
+        private async Task SendDailyNotification(Lexi.Core.Api.Models.Foundations.Users.User user)
+        {
+            if (user.TelegramId is not 0)
             {
                 try
                 {
-                    string notificationMessage = $"🌟 Good morning, {user.Name}!\n\n" +
-                        "🗣️ It's a new day, which means it's another opportunity to improve your English speaking skills!\n\n" +
+                    var currentTime = DateTime.Now;
+                    string timeOfDayMessage;
+                    string message;
+                    string emoji;
+
+                    if (currentTime.Hour >= 5 && currentTime.Hour < 10)
+                    {
+                        timeOfDayMessage = "Good morning";
+                        message = "Start your day with a positive attitude and practice your English skills!";
+                        emoji = "☀️";
+                    }
+                    else if (currentTime.Hour >= 10 && currentTime.Hour < 18)
+                    {
+                        timeOfDayMessage = "Good day";
+                        message = "Take advantage of the daylight hours to enhance your English proficiency!";
+                        emoji = "✨";
+                    }
+                    else if (currentTime.Hour >= 18 && currentTime.Hour < 22)
+                    {
+                        timeOfDayMessage = "Good evening";
+                        message = "Relax and unwind with some English practice before the night ends!";
+                        emoji = "🌙";
+                    }
+                    else
+                    {
+                        timeOfDayMessage = "Good night";
+                        message = "Reflect on your day and improve your English skills before bedtime!";
+                        emoji = "🌃";
+                    }
+
+                    string notificationMessage = $"{emoji} {timeOfDayMessage}, {user.Name}!\n\n" +
+                        $"{message}\n\n" +
                         "💬 Practice makes perfect! Take a few minutes today to speak English, whether it's with friends, " +
                         "practicing with our bot, or even speaking to yourself.\n\n" +
                         "🚀 Keep up the great work and strive for progress, not perfection!\n\n" +
@@ -785,13 +951,10 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 }
                 catch (Exception)
                 {
-
                     return;
                 }
-                
             }
         }
-
 
         public string ReturnFilePath()
         {
