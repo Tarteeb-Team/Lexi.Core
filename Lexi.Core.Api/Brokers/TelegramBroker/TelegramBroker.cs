@@ -56,7 +56,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             IOpenAIService openAIService,
             IStorageBroker storageBroker)
         {
-            var token = "6866377621:AAFXOtQF6A4sP_L7tqn4C2DLqHqMie8KQ5k";
+            var token = "6908660319:AAE5I0sDaBLp5P5nm1Kf1ywdl7LmZXC-kqQ";
             this.botClient = new TelegramBotClient(token);
             this.userService = userService;
             this._hostingEnvironment = hostingEnvironment;
@@ -130,48 +130,6 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 {
                     if (update.Message.Text is not null)
                     {
-                        if (update.Message.Text.StartsWith("user-@"))
-                        {
-                            try
-                            {
-                                string username = update.Message.Text.Substring(6);
-
-                                var persistedUser = this.userService.RetrieveAllUsers().FirstOrDefault(u => u.TelegramName == username);
-
-                                string wwwRootPath = Environment.CurrentDirectory;
-                                string filePath = Path.Combine(wwwRootPath, "wwwroot", "outputWavs", $"{persistedUser.TelegramId}.wav");
-
-                                if (System.IO.File.Exists(filePath))
-                                {
-                                    using (var fileStream = System.IO.File.OpenRead(filePath))
-                                    {
-                                        await botClient.SendVoiceAsync(
-                                        chatId: update.Message.Chat.Id,
-                                        caption: $"{persistedUser.Name} | @{persistedUser.TelegramName}",
-                                        voice: InputFile.FromStream(fileStream));
-                                    }
-
-                                    return;
-                                }
-                                else
-                                {
-                                    await client.SendTextMessageAsync(
-                                        chatId: update.Message.Chat.Id,
-                                        text: "Sorry, the audio file for this user does not exist.");
-
-                                    return;
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                await client.SendTextMessageAsync(
-                                        chatId: 1924521160,
-                                        text: $"Error: {ex.Message}");
-
-                                return;
-                            }
-
-                        }
                         if (update.Message.Text.StartsWith("delete-"))
                         {
                             string reviewText = update.Message.Text.Substring(7);
@@ -258,6 +216,19 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
                             return;
                         }
+                        else if (update.Message.Text == "Admin tools")
+                        {
+                            await client.SendTextMessageAsync(
+                                chatId: update.Message.Chat.Id,
+                                text: "Tools:\n\n/notifyall - Notify all users to proceed using the bot\n\n" +
+                                "/notifyerror - Notify all users if error is occured\n\n" +
+                                "/notifygood - Notify all users ofter error\n\n" +
+                                "/notifyallreview - Notify all users to leave review\n\n" +
+                                "/notify-@(userName) - Notify specific user to proceed using the bot\n\n" +
+                                "delete-reviewText - Delete review of a user");
+
+                            return;
+                        }
 
 
 
@@ -301,7 +272,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
                             return;
                         }
-                        else if (update.Message.Text.StartsWith("notify-@"))
+                        else if (update.Message.Text.StartsWith("/notify-@"))
                         {
                             string userTelegramName = update.Message.Text.Substring(8);
 
@@ -517,18 +488,6 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                     }
 
 
-                    if (update.Message.Text is "/start")
-                    {
-                        await client.SendTextMessageAsync(
-                           chatId: update.Message.Chat.Id,
-                           replyMarkup: MenuMarkup(),
-                           text: $"Choose 👇🏼");
-
-                        user.State = State.Active;
-                        await this.userService.ModifyUserAsync(user);
-
-                        return;
-                    }
 
                     if (update.Message.Voice is not null && user.State is State.TestSpeech)
                     {
@@ -553,13 +512,38 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                         await CreateExternalUserAsync();
 
                         SetOrchestrationService(orchestrationService, update.Message.Chat.Id);
+
+                        return;
+                    }
+                    else if(user.State is State.TestSpeech && update.Message.Voice is null)
+                    {
+                        await client.SendTextMessageAsync(
+                              chatId: update.Message.Chat.Id,
+                              text: $"🎓LexiEnglishBot🎓\n\n" +
+                              $"Send only voice message, please 🙂");
+
+                        return;
+                    }
+
+                    if (update.Message.Text is "/start")
+                    {
+                        await client.SendTextMessageAsync(
+                           chatId: update.Message.Chat.Id,
+                           replyMarkup: MenuMarkup(),
+                           text: $"Choose 👇🏼");
+
+                        user.State = State.Active;
+                        await this.userService.ModifyUserAsync(user);
+
+                        return;
                     }
                     else
                     {
                         await client.SendTextMessageAsync(
                               chatId: update.Message.Chat.Id,
                               text: $"🎓LexiEnglishBot🎓\n\n" +
-                              $"Ops. click /start 🙂");
+                              $"Wrong choice 🙂");
+
                         return;
                     }
                 }
@@ -580,10 +564,12 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             {
                 new KeyboardButton[]
                 {
-                    new KeyboardButton("All users"),
+                    new KeyboardButton("Admin tools")
                 },
                 new KeyboardButton[]
                 {
+                    new KeyboardButton("All users"),
+                    new KeyboardButton("/start"),
                     new KeyboardButton("Count of users")
                 }
             };
@@ -697,7 +683,9 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             await botClient.DeleteMessageAsync(chatId: chatId, messageId: messageId.Value);
 
             string wwwRootPath = Environment.CurrentDirectory;
-            string filePath = Path.Combine(wwwRootPath, "wwwroot", "AiVoices", $"{chatId}.wav");
+            string audioDirectory = Path.Combine(wwwRootPath, "wwwroot", "AiVoices");
+
+            string filePath = Path.Combine(audioDirectory, $"{chatId}.wav");
 
             var user = this.userService.RetrieveAllUsers().FirstOrDefault(u => u.TelegramId == chatId);
 
@@ -711,16 +699,38 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                         text: text);
 
                     await botClient.SendVoiceAsync(
-                         chatId: chatId,
-                         caption: $"\n\nTry it like this 🎁\n\n{user.ImprovedSpeech} 😁",
-                         voice: InputFile.FromStream(fileStream));
+                        chatId: chatId,
+                        caption: $"\n\nTry it like this 🎁\n\n{user.ImprovedSpeech} 😁",
+                        voice: InputFile.FromStream(fileStream));
+
+                    
+                    
 
                     user.State = State.Active;
                     await this.userService.ModifyUserAsync(user);
-
                 }
             }
+
+            try
+            {
+                System.IO.File.Delete(filePath);
+
+                if (Directory.Exists(audioDirectory))
+                {
+                    foreach (string filePath1 in Directory.GetFiles(audioDirectory, "*.wav"))
+                    {
+                        System.IO.File.Delete(filePath1);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
+
+
 
         public void ReturningConvertOggToWav(Stream stream, long userId)
         {

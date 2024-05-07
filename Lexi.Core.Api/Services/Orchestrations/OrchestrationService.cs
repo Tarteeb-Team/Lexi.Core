@@ -13,6 +13,7 @@ using Lexi.Core.Api.Services.Foundations.Users;
 using Lexi.Core.Api.Services.Orchestrations.Cognitive;
 using Lexi.Core.Api.Services.Orchestrations.Speech;
 using System;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -73,6 +74,13 @@ namespace Lexi.Core.Api.Services.Orchestrations
             await this.cognitiveOrchestrationService
                 .MapFeedbackToStringAndSendMessage(user.TelegramId, feedback, speech.Sentence);
 
+            string wwwRootPath = Environment.CurrentDirectory;
+            string audioFilePath = Path.Combine(wwwRootPath, "wwwroot", "outputWavs", $"{user.TelegramId}.wav");
+
+            if (File.Exists(audioFilePath))
+            {
+                File.Delete(audioFilePath);
+            }
         }
 
         public ValueTask<Feedback> RemoveFeedbackAsync(Feedback feedback) =>
