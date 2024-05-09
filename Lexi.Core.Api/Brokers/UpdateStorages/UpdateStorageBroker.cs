@@ -1,24 +1,18 @@
-﻿//=================================
-// Copyright (c) Tarteeb LLC.
-// Powering True Leadership
-//=================================
-
-using EFxceptions;
+﻿using EFxceptions;
+using Lexi.Core.Api.Brokers.Storages;
 using Lexi.Core.Api.Models.Foundations.Questions;
 using Lexi.Core.Api.Models.Foundations.QuestionTypes;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
 
-namespace Lexi.Core.Api.Brokers.Storages
+namespace Lexi.Core.Api.Brokers.UpdateStorages
 {
-    public partial class StorageBroker : EFxceptionsContext, IStorageBroker
+    public partial class UpdateStorageBroker : EFxceptionsContext, IUpdateStorageBroker
     {
-        public StorageBroker()
-        {
+        public UpdateStorageBroker() =>
             this.Database.EnsureCreated();
-        }
 
         public DbSet<Question> Questions { get; set; }
         public DbSet<QuestionType> QuestionTypes { get; set; }
@@ -27,7 +21,7 @@ namespace Lexi.Core.Api.Brokers.Storages
         {
             try
             {
-                var broker = new StorageBroker();
+                var broker = new UpdateStorageBroker();
                 broker.Entry(@object).State = EntityState.Added;
                 await broker.SaveChangesAsync();
 
@@ -42,14 +36,14 @@ namespace Lexi.Core.Api.Brokers.Storages
 
         public IQueryable<T> SelectAll<T>() where T : class
         {
-            var broker = new StorageBroker();
+            var broker = new UpdateStorageBroker();
 
             return broker.Set<T>();
         }
 
         public async ValueTask<T> SelectAsync<T>(params object[] objectsId) where T : class
         {
-            var broker = new StorageBroker();
+            var broker = new UpdateStorageBroker();
 
             return await broker.FindAsync<T>(objectsId);
         }
@@ -57,7 +51,7 @@ namespace Lexi.Core.Api.Brokers.Storages
         public async ValueTask<T> UpdateAsync<T>(T @object)
         {
 
-            var broker = new StorageBroker();
+            var broker = new UpdateStorageBroker();
             broker.Entry(@object).State = EntityState.Modified;
             await broker.SaveChangesAsync();
 
@@ -68,7 +62,7 @@ namespace Lexi.Core.Api.Brokers.Storages
         {
             try
             {
-                var broker = new StorageBroker();
+                var broker = new UpdateStorageBroker();
                 broker.Entry(@object).State = EntityState.Deleted;
                 await broker.SaveChangesAsync();
 
@@ -82,8 +76,7 @@ namespace Lexi.Core.Api.Brokers.Storages
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString = "Data source = Lexi.db";
-            optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            string connectionString = "Data source = UpdatedLexi.db";
             optionsBuilder.UseSqlite(connectionString);
         }
 
