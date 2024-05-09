@@ -5,12 +5,11 @@
 
 using Concentus.Oggfile;
 using Concentus.Structs;
-using Lexi.Core.Api.Brokers.Storages;
+using Lexi.Core.Api.Brokers.UpdateStorages;
 using Lexi.Core.Api.Models.Foundations.ExternalUsers;
 using Lexi.Core.Api.Models.Foundations.Reviews;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Services.Foundations.ImproveSpeech;
-using Lexi.Core.Api.Services.Foundations.Users;
 using Lexi.Core.Api.Services.Orchestrations;
 using Microsoft.AspNetCore.Hosting;
 using NAudio.Wave;
@@ -35,10 +34,9 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
         private TelegramBotClient botClient;
         private IOrchestrationService orchestrationService;
-        private readonly IUserService userService;
         private readonly IOpenAIService openAIService;
-        private readonly IStorageBroker storageBroker;
         private readonly IWebHostEnvironment _hostingEnvironment;
+        private readonly IUpdateStorageBroker updateStorageBroker;
 
         private static readonly AsyncLocal<long> storedTelegramId = new AsyncLocal<long>();
         private static readonly AsyncLocal<int> messageId = new AsyncLocal<int>();
@@ -52,19 +50,16 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         private string userPath;
 
         public TelegramBroker(
-            IUserService userService,
             IWebHostEnvironment hostingEnvironment,
             IOpenAIService openAIService,
-            IStorageBroker storageBroker)
+            IUpdateStorageBroker updateStorageBroker)
         {
-            var token = "6908660319:AAE5I0sDaBLp5P5nm1Kf1ywdl7LmZXC-kqQ";
+            var token = "6866377621:AAFXOtQF6A4sP_L7tqn4C2DLqHqMie8KQ5k";
             this.botClient = new TelegramBotClient(token);
-            this.userService = userService;
             this._hostingEnvironment = hostingEnvironment;
             filePath = Path.Combine(this._hostingEnvironment.WebRootPath, "outputWavs/");
             userPath = null;
             this.openAIService = openAIService;
-            this.storageBroker = storageBroker;
 
             dailyNotificationTimer = new System.Timers.Timer
             {
@@ -84,6 +79,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             };
 
             requestTimer.Elapsed += async (sender, e) => await SendRequest(this.botClient);
+            this.updateStorageBroker = updateStorageBroker;
         }
 
         public void StartListening()
@@ -122,236 +118,249 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         {
             try
             {
-                var user = this.userService
-                     .RetrieveAllUsers().FirstOrDefault(u => u.TelegramId == update.Message.Chat.Id);
-
-                if (await UserIsNull(client, update, user))
-                    return;
-
-                if (await AdminPanel(client, update, user))
-                    return;
-
-                if (await ChooseLevel(client, update, user))
-                    return;
-
-                if (await TestSpeechPronun(client, update, user))
-                    return;
-
-
-                else
+                var user = this.updateStorageBroker
+                     .SelectAllUsers().FirstOrDefault(u => u.TelegramId == update.Message.Chat.Id);
+                if (update.Message.Text is not null)
                 {
-                    if (update.Message.Text is not null)
+                    if (await UserIsNull(client, update, user))
+                        return;
+
+                    if (await AdminPanel(client, update, user))
+                        return;
+
+                    if (await ChooseLevel(client, update, user))
+                        return;
+
+                    //if (await TestSpeechPronun(client, update, user))
+                    //    return;
+
+
+
+                    if (user.State is State.Active && update.Message.Text is "Me 👤")
                     {
-                        if (user.State is State.Active && update.Message.Text is "Me 👤")
-                        {
 
-                            decimal? originalValue = user.Overall;
-                            int decimalPlaces = 1;
+                        decimal? originalValue = user.Overall;
+                        int decimalPlaces = 1;
 
-                            decimal roundedValue = Math.Round(originalValue.Value, decimalPlaces);
+                        decimal roundedValue = Math.Round(originalValue.Value, decimalPlaces);
 
-                            await client.SendTextMessageAsync(
-                               chatId: update.Message.Chat.Id,
-                               replyMarkup: OptionMarkup(),
-                               text: $"About me👤\n\nName: {user.Name}\nLevel: {user.Level}\nAverage speech result: {roundedValue}% 🧠");
+                        await client.SendTextMessageAsync(
+                           chatId: update.Message.Chat.Id,
+                           replyMarkup: OptionMarkup(),
+                           text: $"About me👤\n\nName: {user.Name}\nLevel: {user.Level}\nAverage speech result: {roundedValue}% 🧠");
 
-                            user.State = State.Me;
-                            await this.userService.ModifyUserAsync(user);
-
-                            return;
-                        }
-                        else if (user.State is State.Active && update.Message.Text is "Feedback 📝")
-                        {
-                            await client.SendTextMessageAsync(
-                               chatId: update.Message.Chat.Id,
-                               replyMarkup: FeedbackMarkup(),
-                               text: $"Choose 👇🏼");
-
-                            user.State = State.Feedback;
-                            await this.userService.ModifyUserAsync(user);
-
-                            return;
-                        }
-                        else if (user.State is State.Feedback && update.Message.Text is "Leave a review 📝")
-                        {
-                            await client.SendTextMessageAsync(
-                               chatId: update.Message.Chat.Id,
-                               replyMarkup: new ReplyKeyboardRemove(),
-                               text: $"Leave a review as text ✏️");
-
-                            user.State = State.LeaveReview;
-                            await this.userService.ModifyUserAsync(user);
-
-                            return;
-                        }
-                        else if (user.State is State.LeaveReview)
-                        {
-                            await client.SendTextMessageAsync(
-                               chatId: update.Message.Chat.Id,
-                               replyMarkup: MenuMarkup(),
-                               text: $"Thanks 😊");
-
-                            var review = new Review
-                            {
-                                Id = Guid.NewGuid(),
-                                Text = update.Message.Text,
-                                TelegramId = user.TelegramId,
-                                TelegramUserName = user.Name
-                            };
-
-                            await this.storageBroker.InsertReviewAsync(review);
-
-                            user.State = State.Active;
-                            await this.userService.ModifyUserAsync(user);
-
-                            return;
-                        }
-                        else if (user.State is State.Feedback && update.Message.Text is "View other reviews 🤯")
-                        {
-                            var reviews = this.storageBroker.SelectAllReviews().ToList();
-                            int totalReviews = reviews.Count();
-                            int reviewsPerMessage = 80; // Adjust this value as needed
-
-                            int partsCount = totalReviews / reviewsPerMessage + (totalReviews % reviewsPerMessage == 0 ? 0 : 1);
-
-                            for (int i = 0; i < partsCount; i++)
-                            {
-                                int skipCount = i * reviewsPerMessage;
-
-                                var reviewsInCurrentPart = reviews.Skip(skipCount).Take(reviewsPerMessage).ToList();
-
-                                var stringBuilder = new StringBuilder();
-                                stringBuilder.Append($"Reviews - Part {i + 1}/{partsCount}:\n\n");
-
-                                int count = skipCount + 1;
-                                foreach (var review in reviewsInCurrentPart)
-                                {
-                                    stringBuilder.Append($"{count}. {review.TelegramUserName}: {review.Text}\n\n");
-                                    count++;
-                                }
-
-                                await client.SendTextMessageAsync(
-                                    chatId: update.Message.Chat.Id,
-                                    replyMarkup: MenuMarkup(),
-                                    text: stringBuilder.ToString());
-
-                                // Add a small delay to avoid flooding the chat
-                                await Task.Delay(500);
-                            }
-
-                            user.State = State.Active;
-                            await this.userService.ModifyUserAsync(user);
-
-                            return;
-                        }
-
-                        else if (user.State is State.Me && update.Message.Text is "Change English level \U0001f92f")
-                        {
-                            await client.SendTextMessageAsync(
-                               chatId: update.Message.Chat.Id,
-                               replyMarkup: OptionMarkup(),
-                               text: $"Choose 👇🏼");
-
-                            return;
-                        }
-                        else if (user.State is State.Me && update.Message.Text is "Menu 🎙")
-                        {
-                            await client.SendTextMessageAsync(
-                                   chatId: update.Message.Chat.Id,
-                                   replyMarkup: MenuMarkup(),
-                                   text: $"Choose 👇🏼");
-
-                            user.State = State.Active;
-                            await this.userService.ModifyUserAsync(user);
-
-                            return;
-                        }
-                        else if (user.State is State.Me && update.Message.Text is "Change my English level \U0001f92f")
-                        {
-                            await client.SendTextMessageAsync(
-                                   chatId: update.Message.Chat.Id,
-                                   replyMarkup: LevelMarkup(),
-                                   text: $"Choose your current English level: 👇🏼");
-
-                            user.State = State.ChangeLevel;
-                            await this.userService.ModifyUserAsync(user);
-
-                            return;
-                        }
-                        else if (user.State is State.ChangeLevel)
-                        {
-                            await client.SendTextMessageAsync(
-                                   chatId: update.Message.Chat.Id,
-                                   replyMarkup: MenuMarkup(),
-                                   text: $"Changed 👍🏼");
-
-                            user.State = State.Active;
-                            user.Level = update.Message.Text;
-                            await this.userService.ModifyUserAsync(user);
-
-                            return;
-                        }
-                    }
-
-
-
-                    if (update.Message.Voice is not null && user.State is State.TestSpeechPronun)
-                    {
-                        var loadingMessage = await client.SendTextMessageAsync(
-                               chatId: update.Message.Chat.Id,
-                               text: $"🎓LexiEnglishBot🎓\n\n" +
-                               $"Loading...");
-
-                        messageId.Value = loadingMessage.MessageId;
-
-                        var file = await client.GetFileAsync(update.Message.Voice.FileId);
-
-                        using (var stream = new MemoryStream())
-                        {
-                            await client.DownloadFileAsync(file.FilePath, stream);
-                            stream.Position = 0;
-
-                            ReturningConvertOggToWav(stream, update.Message.Chat.Id);
-                        }
-
-
-                        await CreateExternalUserAsync();
-
-                        SetOrchestrationService(orchestrationService, update.Message.Chat.Id);
+                        user.State = State.Me;
+                        await this.updateStorageBroker.UpdateUserAsync(user);
 
                         return;
                     }
-                    else if (user.State is State.TestSpeechPronun && update.Message.Voice is null)
+                    else if (user.State is State.Active && update.Message.Text is "Test speech 🎙")
+                    {
+                        var prompt = $"Generate for me onr Ielts part 1 question. Only question!";
+
+                        var question = await this.openAIService.AnalizeRequestAsync("Look!!!", prompt);
+
+                        await client.SendTextMessageAsync(
+                           chatId: update.Message.Chat.Id,
+                           replyMarkup: new ReplyKeyboardRemove(),
+                           text: $"🎓 LexiEnglishBot 🎓\r\n\r\n" +
+                           $"Try to answer the question ❓ or simply send a voice message 🎙 (~ 30 seconds):" +
+                           $"\r\n\r\nQuestion: {question}\n\nI will provide feedback based on your response 😁"); ;
+
+                        user.State = State.TestSpeechPronun;
+                        await this.updateStorageBroker.UpdateUserAsync(user);
+
+                        return;
+                    }
+                    else if (user.State is State.Active && update.Message.Text is "Feedback 📝")
                     {
                         await client.SendTextMessageAsync(
-                              chatId: update.Message.Chat.Id,
-                              text: $"🎓LexiEnglishBot🎓\n\n" +
-                              $"Send only voice message, please 🙂");
+                           chatId: update.Message.Chat.Id,
+                           replyMarkup: FeedbackMarkup(),
+                           text: $"Choose 👇🏼");
+
+                        user.State = State.Feedback;
+                        await this.updateStorageBroker.UpdateUserAsync(user);
 
                         return;
                     }
+                    else if (user.State is State.Feedback && update.Message.Text is "Leave a review 📝")
+                    {
+                        await client.SendTextMessageAsync(
+                           chatId: update.Message.Chat.Id,
+                           replyMarkup: new ReplyKeyboardRemove(),
+                           text: $"Leave a review as text ✏️");
 
-                    if (update.Message.Text is "/start")
+                        user.State = State.LeaveReview;
+                        await this.updateStorageBroker.UpdateUserAsync(user);
+
+                        return;
+                    }
+                    else if (user.State is State.LeaveReview)
                     {
                         await client.SendTextMessageAsync(
                            chatId: update.Message.Chat.Id,
                            replyMarkup: MenuMarkup(),
-                           text: $"Choose 👇🏼");
+                           text: $"Thanks 😊");
+
+                        var review = new Review
+                        {
+                            Id = Guid.NewGuid(),
+                            Text = update.Message.Text,
+                            TelegramId = user.TelegramId,
+                            TelegramUserName = user.Name
+                        };
+
+                        await this.updateStorageBroker.InsertReviewAsync(review);
 
                         user.State = State.Active;
-                        await this.userService.ModifyUserAsync(user);
+                        await this.updateStorageBroker.UpdateUserAsync(user);
 
                         return;
                     }
-                    else
+                    else if (user.State is State.Feedback && update.Message.Text is "View other reviews 🤯")
+                    {
+                        var reviews = this.updateStorageBroker.SelectAllReviews().ToList();
+                        int totalReviews = reviews.Count();
+                        int reviewsPerMessage = 80; // Adjust this value as needed
+
+                        int partsCount = totalReviews / reviewsPerMessage + (totalReviews % reviewsPerMessage == 0 ? 0 : 1);
+
+                        for (int i = 0; i < partsCount; i++)
+                        {
+                            int skipCount = i * reviewsPerMessage;
+
+                            var reviewsInCurrentPart = reviews.Skip(skipCount).Take(reviewsPerMessage).ToList();
+
+                            var stringBuilder = new StringBuilder();
+                            stringBuilder.Append($"Reviews - Part {i + 1}/{partsCount}:\n\n");
+
+                            int count = skipCount + 1;
+                            foreach (var review in reviewsInCurrentPart)
+                            {
+                                stringBuilder.Append($"{count}. {review.TelegramUserName}: {review.Text}\n\n");
+                                count++;
+                            }
+
+                            await client.SendTextMessageAsync(
+                                chatId: update.Message.Chat.Id,
+                                replyMarkup: MenuMarkup(),
+                                text: stringBuilder.ToString());
+
+                            // Add a small delay to avoid flooding the chat
+                            await Task.Delay(500);
+                        }
+
+                        user.State = State.Active;
+                        await this.updateStorageBroker.UpdateUserAsync(user);
+
+                        return;
+                    }
+
+                    else if (user.State is State.Me && update.Message.Text is "Change English level \U0001f92f")
                     {
                         await client.SendTextMessageAsync(
-                              chatId: update.Message.Chat.Id,
-                              text: $"🎓LexiEnglishBot🎓\n\n" +
-                              $"Wrong choice 🙂");
+                           chatId: update.Message.Chat.Id,
+                           replyMarkup: OptionMarkup(),
+                           text: $"Choose 👇🏼");
 
                         return;
                     }
+                    else if (user.State is State.Me && update.Message.Text is "Menu 🎙")
+                    {
+                        await client.SendTextMessageAsync(
+                               chatId: update.Message.Chat.Id,
+                               replyMarkup: MenuMarkup(),
+                               text: $"Choose 👇🏼");
+
+                        user.State = State.Active;
+                        await this.updateStorageBroker.UpdateUserAsync(user);
+
+                        return;
+                    }
+                    else if (user.State is State.Me && update.Message.Text is "Change my English level \U0001f92f")
+                    {
+                        await client.SendTextMessageAsync(
+                               chatId: update.Message.Chat.Id,
+                               replyMarkup: LevelMarkup(),
+                               text: $"Choose your current English level: 👇🏼");
+
+                        user.State = State.ChangeLevel;
+                        await this.updateStorageBroker.UpdateUserAsync(user);
+
+                        return;
+                    }
+                    else if (user.State is State.ChangeLevel)
+                    {
+                        await client.SendTextMessageAsync(
+                               chatId: update.Message.Chat.Id,
+                               replyMarkup: MenuMarkup(),
+                               text: $"Changed 👍🏼");
+
+                        user.State = State.Active;
+                        user.Level = update.Message.Text;
+                        await this.updateStorageBroker.UpdateUserAsync(user);
+
+                        return;
+                    }
+                }
+
+                if (update.Message.Voice is not null && user.State is State.TestSpeechPronun)
+                {
+                    var loadingMessage = await client.SendTextMessageAsync(
+                           chatId: update.Message.Chat.Id,
+                           text: $"🎓LexiEnglishBot🎓\n\n" +
+                           $"Loading...");
+
+                    messageId.Value = loadingMessage.MessageId;
+
+                    var file = await client.GetFileAsync(update.Message.Voice.FileId);
+
+                    using (var stream = new MemoryStream())
+                    {
+                        await client.DownloadFileAsync(file.FilePath, stream);
+                        stream.Position = 0;
+
+                        ReturningConvertOggToWav(stream, update.Message.Chat.Id);
+                    }
+
+
+                    await CreateExternalUserAsync();
+
+                    SetOrchestrationService(orchestrationService, update.Message.Chat.Id);
+
+                    return;
+                }
+                else if (user.State is State.TestSpeechPronun && update.Message.Voice is null)
+                {
+                    await client.SendTextMessageAsync(
+                          chatId: update.Message.Chat.Id,
+                          text: $"🎓LexiEnglishBot🎓\n\n" +
+                          $"Send only voice message, please 🙂");
+
+                    return;
+                }
+
+                if (update.Message.Text is "/start")
+                {
+                    await client.SendTextMessageAsync(
+                       chatId: update.Message.Chat.Id,
+                       replyMarkup: MenuMarkup(),
+                       text: $"Choose 👇🏼");
+
+                    user.State = State.Active;
+                    await this.updateStorageBroker.UpdateUserAsync(user);
+
+                    return;
+                }
+                else
+                {
+                    await client.SendTextMessageAsync(
+                          chatId: update.Message.Chat.Id,
+                          text: $"🎓LexiEnglishBot🎓\n\n" +
+                          $"Wrong choice 🙂");
+
+                    return;
                 }
             }
             catch (Exception ex)
@@ -431,7 +440,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             {
                 new KeyboardButton[]
                 {
-                    new KeyboardButton("Test pronunciation 🎙"),
+                    new KeyboardButton("Test speech 🎙"),
                 },
                 new KeyboardButton[]
                 {
@@ -513,7 +522,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
             string filePath = Path.Combine(audioDirectory, $"{chatId}.wav");
 
-            var user = this.userService.RetrieveAllUsers().FirstOrDefault(u => u.TelegramId == chatId);
+            var user = this.updateStorageBroker.SelectAllUsers().FirstOrDefault(u => u.TelegramId == chatId);
 
             if (System.IO.File.Exists(filePath))
             {
@@ -533,7 +542,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
 
                     user.State = State.Active;
-                    await this.userService.ModifyUserAsync(user);
+                    await this.updateStorageBroker.UpdateUserAsync(user);
                 }
             }
 
@@ -590,7 +599,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         {
             try
             {
-                var allUsers = userService.RetrieveAllUsers();
+                var allUsers = updateStorageBroker.SelectAllUsers();
 
                 foreach (var user in allUsers)
                 {
@@ -607,7 +616,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         {
             try
             {
-                var allUsers = userService.RetrieveAllUsers();
+                var allUsers = updateStorageBroker.SelectAllUsers();
 
                 foreach (var user in allUsers)
                 {
@@ -624,7 +633,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         {
             try
             {
-                var allUsers = userService.RetrieveAllUsers();
+                var allUsers = updateStorageBroker.SelectAllUsers();
 
                 foreach (var user in allUsers)
                 {
@@ -641,7 +650,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         {
             try
             {
-                var usersWithoutReview = storageBroker.RetrieveUserWithoudReveiw();
+                var usersWithoutReview = updateStorageBroker.RetrieveUserWithoudReveiw();
 
                 foreach (var user in usersWithoutReview)
                 {
@@ -658,7 +667,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         {
             try
             {
-                var allUsers = userService.RetrieveAllUsers();
+                var allUsers = updateStorageBroker.SelectAllUsers();
 
                 foreach (var user in allUsers)
                 {
@@ -667,7 +676,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
                 await Task.Delay(100000);
 
-                var usersWithoutReview = storageBroker.RetrieveUserWithoudReveiw();
+                var usersWithoutReview = updateStorageBroker.RetrieveUserWithoudReveiw();
 
                 foreach (var user in usersWithoutReview)
                 {

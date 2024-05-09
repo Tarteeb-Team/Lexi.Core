@@ -29,7 +29,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
                     user.State = State.Active;
                     user.Level = update.Message.Text;
-                    await this.userService.ModifyUserAsync(user);
+                    await this.updateStorageBroker.UpdateUserAsync(user);
 
                     return true;
                 }

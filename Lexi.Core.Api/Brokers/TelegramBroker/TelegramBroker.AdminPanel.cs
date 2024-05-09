@@ -18,11 +18,11 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             {
                 string reviewText = update.Message.Text.Substring(7);
 
-                var review = this.storageBroker
+                var review = this.updateStorageBroker
                     .SelectAllReviews().FirstOrDefault(r => r.Text == reviewText);
                 if (review is not null)
                 {
-                    await this.storageBroker.DeleteReviewAsync(review);
+                    await this.updateStorageBroker.DeleteReviewAsync(review);
 
                     await client.SendTextMessageAsync(
                         chatId: update.Message.Chat.Id,
@@ -54,7 +54,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             else if (update.Message.Text == "Count of users")
             {
                 int count = 0;
-                var allUser = this.userService.RetrieveAllUsers();
+                var allUser = this.updateStorageBroker.SelectAllUsers();
 
                 foreach (var u in allUser)
                 {
@@ -69,7 +69,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             }
             else if (update.Message.Text == "All users")
             {
-                IQueryable<Models.Foundations.Users.User> allUsers = this.userService.RetrieveAllUsers();
+                IQueryable<Models.Foundations.Users.User> allUsers = this.updateStorageBroker.SelectAllUsers();
                 int totalUsers = allUsers.Count();
                 int usersPerMessage = 80;
 
@@ -161,7 +161,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             {
                 string userTelegramName = update.Message.Text.Substring(8);
 
-                var userToSend = this.userService.RetrieveAllUsers()
+                var userToSend = this.updateStorageBroker.SelectAllUsers()
                     .FirstOrDefault(u => u.TelegramName == userTelegramName);
 
                 await SendReviewReminder(userToSend);

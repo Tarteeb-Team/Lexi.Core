@@ -24,7 +24,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                           $"\r\nI will evaluate your pronunciation and fluency based on your response. 😁");
 
                 user.State = State.TestSpeechPronun;
-                await this.userService.ModifyUserAsync(user);
+                await this.updateStorageBroker.UpdateUserAsync(user);
 
                 return true;
             }

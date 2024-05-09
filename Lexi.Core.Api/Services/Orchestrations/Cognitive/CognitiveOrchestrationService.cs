@@ -3,16 +3,14 @@
 // Powering True Leadership
 //=================================
 
+using Lexi.Core.Api.Brokers.UpdateStorages;
 using Lexi.Core.Api.Models.Foundations.ExternalUsers;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Models.ObjcetModels;
 using Lexi.Core.Api.Services.Cognitives;
 using Lexi.Core.Api.Services.Foundations.Telegrams;
-using Lexi.Core.Api.Services.Foundations.Users;
 using Newtonsoft.Json;
-using System;
-using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,16 +20,15 @@ namespace Lexi.Core.Api.Services.Orchestrations.Cognitive
     {
         private readonly ICognitiveServices cognitiveServices;
         private readonly ITelegramService telegramService;
-        private readonly IUserService userService;
-
+        private readonly IUpdateStorageBroker updateStorageBroker;
         public CognitiveOrchestrationService(
-            ICognitiveServices cognitiveServices, 
-            ITelegramService telegramService, 
-            IUserService userService)
+            ICognitiveServices cognitiveServices,
+            ITelegramService telegramService,
+            IUpdateStorageBroker updateStorageBroker)
         {
             this.cognitiveServices = cognitiveServices;
             this.telegramService = telegramService;
-            this.userService = userService;
+            this.updateStorageBroker = updateStorageBroker;
         }
 
         public void StartListening() =>
@@ -50,18 +47,18 @@ namespace Lexi.Core.Api.Services.Orchestrations.Cognitive
         {
             ExternalUser externalUser = await this.telegramService.GetExternalUserAsync();
 
-            User user =  await MapToUser(externalUser);
+            User user = await MapToUser(externalUser);
 
             return user;
         }
 
         public async ValueTask MapFeedbackToStringAndSendMessage(long telegramId, Feedback feedback, string sentence) =>
             await this.telegramService.MapFeedbackToStringAndSendMessage(telegramId, feedback, sentence);
-             
+
         private async ValueTask<User> MapToUser(ExternalUser externalUser)
         {
-            var user = this.userService
-                .RetrieveAllUsers().FirstOrDefault(u => u.TelegramId == externalUser.TelegramId);
+            var user = this.updateStorageBroker
+                .SelectAllUsers().FirstOrDefault(u => u.TelegramId == externalUser.TelegramId);
 
             if (user is not null)
             {
@@ -78,7 +75,7 @@ namespace Lexi.Core.Api.Services.Orchestrations.Cognitive
                     State = State.Level
                 };
 
-                return await this.userService.AddUserAsync(newUser);
+                return await this.updateStorageBroker.InsertUserAsync(newUser);
 
             }
         }

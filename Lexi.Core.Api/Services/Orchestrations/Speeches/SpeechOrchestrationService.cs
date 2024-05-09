@@ -3,11 +3,9 @@
 // Powering True Leadership
 //=================================
 
+using Lexi.Core.Api.Brokers.UpdateStorages;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
 using Lexi.Core.Api.Models.ObjcetModels;
-using Lexi.Core.Api.Services.Foundations.Feedbacks;
-using Lexi.Core.Api.Services.Foundations.Speeches;
-using Microsoft.Identity.Client;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,25 +15,24 @@ namespace Lexi.Core.Api.Services.Orchestrations.Speech
 {
     public class SpeechOrchestrationService : ISpeechOrchestrationService
     {
-        private readonly ISpeechService speechService;
-        private readonly IFeedbackService feedbackService;
+        private readonly IUpdateStorageBroker updateStorageBroker;
+
         private Guid _speechId;
 
-        public SpeechOrchestrationService(IFeedbackService feedbackService,
-            ISpeechService speechService)
+        public SpeechOrchestrationService(
+            IUpdateStorageBroker updateStorageBroker)
         {
-            this.feedbackService = feedbackService;
-            this.speechService = speechService;
+            this.updateStorageBroker = updateStorageBroker;
         }
 
         public ValueTask<Feedback> RemoveFeedbackAsync(Feedback feedback) =>
             this.RemoveFeedbackAsync(feedback);
 
         public IQueryable<Feedback> RetrieveAllFeedbacks() =>
-            this.feedbackService.RetrieveAllFeedbacks();
+            this.updateStorageBroker.SelectAllFeedbacks();
 
         public ValueTask<Feedback> RetrieveFeedbackByIdAsync(Guid id) =>
-            this.feedbackService.RetrieveFeedbackByIdAsync(id);
+            this.updateStorageBroker.SelectFeedbackByIdAsync(id);
 
         public async ValueTask<Feedback> MapToFeedback(ResponseCognitive responseCognitive, Guid speechId)
         {
@@ -50,7 +47,7 @@ namespace Lexi.Core.Api.Services.Orchestrations.Speech
                 SpeechId = speechId
             };
 
-            return await this.feedbackService.AddFeedbackAsync(feedback);
+            return await this.updateStorageBroker.InsertFeedbackAsync(feedback);
         }
 
         public async ValueTask<SpeechModel> MapToSpeech(ResponseCognitive responseCognitive, Guid userId)
@@ -63,16 +60,16 @@ namespace Lexi.Core.Api.Services.Orchestrations.Speech
             };
 
             _speechId = speech.Id;
-            return await speechService.AddSpechesAsync(speech);
+            return await updateStorageBroker.InsertSpeechAsync(speech);
         }
 
         public IQueryable<SpeechModel> RetrieveAllSpeeches() =>
-            this.speechService.RetrieveAllSpeeches();
+            this.updateStorageBroker.SelectAllSpeeches();
 
         public ValueTask<SpeechModel> RetrieveSpeechByIdAsync(Guid id) =>
-            this.speechService.RetrieveSpeechesByIdAsync(id);
+            this.updateStorageBroker.SelectSpeechByIdAsync(id);
 
         public ValueTask<SpeechModel> RemoveSpeechAsync(SpeechModel speechModel) =>
-            this.speechService.RemoveSpeechAsync(speechModel);
+            this.updateStorageBroker.DeleteSpeechAsync(speechModel);
     }
 }

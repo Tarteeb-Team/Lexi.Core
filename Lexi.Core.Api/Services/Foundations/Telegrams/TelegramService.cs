@@ -4,24 +4,23 @@
 //=================================
 
 using Lexi.Core.Api.Brokers.TelegramBroker;
+using Lexi.Core.Api.Brokers.UpdateStorages;
 using Lexi.Core.Api.Models.Foundations.ExternalUsers;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
-using Lexi.Core.Api.Services.Foundations.Users;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace Lexi.Core.Api.Services.Foundations.Telegrams
 {
     public class TelegramService : ITelegramService
     {
         private readonly ITelegramBroker telegramBroker;
-        private readonly IUserService userService;
+        private readonly IUpdateStorageBroker updateStorageBroker;
 
-        public TelegramService(ITelegramBroker telegramBroker, IUserService userService)
+        public TelegramService(ITelegramBroker telegramBroker, IUpdateStorageBroker updateStorageBroker)
         {
             this.telegramBroker = telegramBroker;
-            this.userService = userService;
+            this.updateStorageBroker = updateStorageBroker;
         }
 
         public async ValueTask<ExternalUser> GetExternalUserAsync() =>
@@ -33,20 +32,20 @@ namespace Lexi.Core.Api.Services.Foundations.Telegrams
             decimal overall = (feedback.Accuracy + feedback.Prosody + feedback.Fluency +
                 feedback.Complenteness + feedback.Pronunciation) / 5;
 
-            var user = this.userService
-                .RetrieveAllUsers().FirstOrDefault(u => u.TelegramId == telegramId);
+            var user = this.updateStorageBroker
+                .SelectAllUsers().FirstOrDefault(u => u.TelegramId == telegramId);
 
-            if(user.Overall is null)
+            if (user.Overall is null)
             {
                 user.Overall = overall;
-                await this.userService.ModifyUserAsync(user);
+                await this.updateStorageBroker.UpdateUserAsync(user);
             }
             else
             {
                 user.Overall += overall;
                 user.Overall /= 2;
 
-                await this.userService.ModifyUserAsync(user);
+                await this.updateStorageBroker.UpdateUserAsync(user);
             }
 
             string readyFeedback = $"🎓 LexiEnglishBot 🎓\n\n" +
