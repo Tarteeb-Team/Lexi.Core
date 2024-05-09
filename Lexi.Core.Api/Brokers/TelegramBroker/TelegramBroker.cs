@@ -46,6 +46,8 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         private static readonly AsyncLocal<string> storedName = new AsyncLocal<string>();
         private static readonly AsyncLocal<string> storedLevel = new AsyncLocal<string>();
         private readonly System.Timers.Timer dailyNotificationTimer;
+        private readonly System.Timers.Timer requestTimer;
+        private DateTime lastNotificationTime;
         private string filePath;
         private string userPath;
 
@@ -56,7 +58,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             IOpenAIService openAIService,
             IStorageBroker storageBroker)
         {
-            var token = "6908660319:AAE5I0sDaBLp5P5nm1Kf1ywdl7LmZXC-kqQ";
+            var token = "6866377621:AAFXOtQF6A4sP_L7tqn4C2DLqHqMie8KQ5k";
             this.botClient = new TelegramBotClient(token);
             this.userService = userService;
             this._hostingEnvironment = hostingEnvironment;
@@ -73,13 +75,50 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             };
 
             dailyNotificationTimer.Elapsed += DailyNotificationTimerElapsed;
+            lastNotificationTime = DateTime.Now;
+
+            requestTimer = new System.Timers.Timer
+            {
+                Interval = TimeSpan.FromMinutes(10).TotalMilliseconds,
+                AutoReset = true,
+                Enabled = true
+            };
+
+            requestTimer.Elapsed += async (sender, e) => await SendRequest(this.botClient);
         }
 
         public void StartListening()
         {
             dailyNotificationTimer.Start();
+            requestTimer.Start();
 
             botClient.StartReceiving(MessageHandler, ErrorHandler);
+        }
+
+        static async Task SendRequest(TelegramBotClient telegramBotClient)
+        {
+            try
+            {
+                using var httpClient = new HttpClient();
+
+                HttpResponseMessage httpResponseMessage = await httpClient.GetAsync(
+                    "https://lexicoreapi20240506000549.azurewebsites.net/api/Home");
+
+                Console.WriteLine(httpResponseMessage.StatusCode);
+
+                await telegramBotClient
+                    .SendTextMessageAsync(
+                    1924521160, 
+                    $"Request has sent.\nStatus: {httpResponseMessage.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                await telegramBotClient
+                    .SendTextMessageAsync(1924521160, $"Error: {ex.Message}");
+
+                return;
+            }
+            
         }
 
         public async Task MessageHandler(ITelegramBotClient client, Update update, CancellationToken token)
@@ -94,14 +133,6 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 {
                     return;
                 }
-
-                using var httpClient = new HttpClient();
-
-                HttpResponseMessage httpResponseMessage = await httpClient.GetAsync(
-                    "https://lexicoreapi20240506000549.azurewebsites.net/api/Home",
-                    token);
-
-                Console.WriteLine(httpResponseMessage.StatusCode);
 
                 var user = this.userService
                      .RetrieveAllUsers().FirstOrDefault(u => u.TelegramId == update.Message.Chat.Id);
@@ -224,7 +255,9 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                                 "/notifyerror - Notify all users if error is occured\n\n" +
                                 "/notifygood - Notify all users ofter error\n\n" +
                                 "/notifyallreview - Notify all users to leave review\n\n" +
-                                "/notify-@(userName) - Notify specific user to proceed using the bot\n\n" +
+                                "/notify-@(userName) - Notify specific user to proceed using the bot" +
+                                "\n\n/time - Shows time\n\n" +
+                                "\n\n/notificationtime - Auto notitfication info" +
                                 "delete-reviewText - Delete review of a user");
 
                             return;
@@ -288,6 +321,36 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
                             return;
                         }
+                        else if (update.Message.Text == "/time")
+                        {
+                            var currentTime = DateTime.Now.AddHours(5);
+
+                            string formattedTime = currentTime.ToString("HH:mm:ss");
+
+                            await client.SendTextMessageAsync(
+                                chatId: update.Message.Chat.Id,
+                                text: $"Current time: {formattedTime}");
+
+                            return;
+                        }
+                        else if (update.Message.Text == "/notificationtime")
+                        {
+                            TimeSpan timeLeft = TimeSpan.FromMilliseconds(dailyNotificationTimer.Interval) - (DateTime.Now - lastNotificationTime);
+
+                            string timeLeftFormatted = $"{timeLeft.Hours} hours, {timeLeft.Minutes} minutes, and {timeLeft.Seconds} seconds";
+
+                            string formattedTime = DateTime.Now.ToString("HH:mm:ss");
+
+                            await client.SendTextMessageAsync(
+                                chatId: update.Message.Chat.Id,
+                                text: $"Time left until next notification: {timeLeftFormatted}\n\nLast notification time: " +
+                                $"{lastNotificationTime.AddHours(5).ToString("HH:mm:ss")}");
+
+                            return;
+                        }
+
+
+
 
                         if (user.State is State.Level)
                         {
@@ -320,7 +383,12 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
                         if (user.State is State.Active && update.Message.Text is "Test speech 🎙")
                         {
-                            var prompt = $"Generate one IELTS part 1 random question for speaking (1 - 10000 -> give me one from 10000 common), and return it me. (return only question)";
+                            var prompt = $"In an English speaking exam, candidates are often asked questions in " +
+                                $"Part 1 to assess their ability to communicate" +
+                                $" about everyday topics. Generate a question that could be asked during this " +
+                                $"part of the exam. The question should be open-ended and related to personal " +
+                                $"experiences, opinions, preferences, or daily life. Make sure each " +
+                                $"question is unique and diverse from previous questions.";
 
                             var question = await this.openAIService.AnalizeRequestAsync("Look!!!", prompt);
 
@@ -515,7 +583,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
                         return;
                     }
-                    else if(user.State is State.TestSpeech && update.Message.Voice is null)
+                    else if (user.State is State.TestSpeech && update.Message.Voice is null)
                     {
                         await client.SendTextMessageAsync(
                               chatId: update.Message.Chat.Id,
@@ -703,8 +771,8 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                         caption: $"\n\nTry it like this 🎁\n\n{user.ImprovedSpeech} 😁",
                         voice: InputFile.FromStream(fileStream));
 
-                    
-                    
+
+
 
                     user.State = State.Active;
                     await this.userService.ModifyUserAsync(user);
@@ -847,6 +915,8 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 {
                     await SendReviewReminder(user);
                 }
+
+                lastNotificationTime = DateTime.Now;
             }
             catch (Exception ex)
             {
@@ -917,7 +987,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             {
                 try
                 {
-                    var currentTime = DateTime.Now;
+                    var currentTime = DateTime.Now.AddHours(5);
                     string timeOfDayMessage;
                     string message;
                     string emoji;
