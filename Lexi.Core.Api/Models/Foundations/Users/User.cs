@@ -3,9 +3,11 @@
 // Powering True Leadership
 //=================================
 
+using Lexi.Core.Api.Models.Foundations.QuestionTypes;
 using Lexi.Core.Api.Models.Foundations.Speeches;
 using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Lexi.Core.Api.Models.Foundations.Users
 {

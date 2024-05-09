@@ -8,7 +8,7 @@ namespace Lexi.Core.Api.Models.Foundations.Users
     public enum State
     {
         Active,
-        TestSpeech,
+        TestSpeechPronun,
         Me,
         Level,
         ChangeLevel,

@@ -30,7 +30,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Lexi.Core.Api.Brokers.TelegramBroker
 {
-    public class TelegramBroker : ITelegramBroker
+    public partial class TelegramBroker : ITelegramBroker
     {
 
         private TelegramBotClient botClient;
@@ -52,7 +52,6 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         private string userPath;
 
         public TelegramBroker(
-            IServiceProvider serviceProvider,
             IUserService userService,
             IWebHostEnvironment hostingEnvironment,
             IOpenAIService openAIService,
@@ -89,9 +88,8 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
         public void StartListening()
         {
-            dailyNotificationTimer.Start();
             requestTimer.Start();
-
+            dailyNotificationTimer.Start();
             botClient.StartReceiving(MessageHandler, ErrorHandler);
         }
 
@@ -108,7 +106,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
                 await telegramBotClient
                     .SendTextMessageAsync(
-                    1924521160, 
+                    1924521160,
                     $"Request has sent.\nStatus: {httpResponseMessage.StatusCode}");
             }
             catch (Exception ex)
@@ -118,293 +116,33 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
                 return;
             }
-            
         }
 
         public async Task MessageHandler(ITelegramBotClient client, Update update, CancellationToken token)
         {
             try
             {
-                if (update == null)
-                {
-                    return;
-                }
-                if (update.Message == null)
-                {
-                    return;
-                }
-
                 var user = this.userService
                      .RetrieveAllUsers().FirstOrDefault(u => u.TelegramId == update.Message.Chat.Id);
 
-                if (user is null)
-                {
-                    await client.SendTextMessageAsync(
-                        chatId: update.Message.Chat.Id,
-                        replyMarkup: LevelMarkup(),
-                        text: $"🎓LexiEnglishBot🎓\n\n" +
-                        $"⚠️Welcome {update.Message.Chat.FirstName}, " +
-                        $"you can test your English speaking skill.\n\n Choose your English level 🧠");
-
-                    storedTelegramId.Value = update.Message.Chat.Id;
-                    storedName.Value = update.Message.Chat.FirstName;
-                    telegramName.Value = update.Message.Chat.Username;
-
-                    await CreateExternalUserAsync();
-
-                    SetOrchestrationService(orchestrationService, update.Message.Chat.Id);
-
+                if (await UserIsNull(client, update, user))
                     return;
-                }
+
+                if (await AdminPanel(client, update, user))
+                    return;
+
+                if (await ChooseLevel(client, update, user))
+                    return;
+
+                if (await TestSpeechPronun(client, update, user))
+                    return;
+
 
                 else
                 {
                     if (update.Message.Text is not null)
                     {
-                        if (update.Message.Text.StartsWith("delete-"))
-                        {
-                            string reviewText = update.Message.Text.Substring(7);
-
-                            var review = this.storageBroker
-                                .SelectAllReviews().FirstOrDefault(r => r.Text == reviewText);
-                            if (review is not null)
-                            {
-                                await this.storageBroker.DeleteReviewAsync(review);
-
-                                await client.SendTextMessageAsync(
-                                    chatId: update.Message.Chat.Id,
-                                    text: $"Deleted");
-
-                                return;
-                            }
-                            else
-                            {
-                                await client.SendTextMessageAsync(
-                                    chatId: update.Message.Chat.Id,
-                                    text: $"Not found");
-
-                                return;
-                            }
-                        }
-
-                        if (update.Message.Text == "/shpion")
-                        {
-                            var shpionMarkup = ShpionMarkup();
-
-                            await client.SendTextMessageAsync(
-                                chatId: update.Message.Chat.Id,
-                                replyMarkup: shpionMarkup,
-                                text: $"Salom shpion.");
-
-                            return;
-                        }
-                        else if (update.Message.Text == "Count of users")
-                        {
-                            int count = 0;
-                            var allUser = this.userService.RetrieveAllUsers();
-
-                            foreach (var u in allUser)
-                            {
-                                count++;
-                            }
-
-                            await client.SendTextMessageAsync(
-                                chatId: update.Message.Chat.Id,
-                                text: $"Count: {count}");
-
-                            return;
-                        }
-                        else if (update.Message.Text == "All users")
-                        {
-                            IQueryable<Models.Foundations.Users.User> allUsers = this.userService.RetrieveAllUsers();
-                            int totalUsers = allUsers.Count();
-                            int usersPerMessage = 80; // Adjust the number of users per message as needed
-
-                            int partsCount = totalUsers / usersPerMessage + (totalUsers % usersPerMessage == 0 ? 0 : 1);
-
-                            for (int i = 0; i < partsCount; i++)
-                            {
-                                int skipCount = i * usersPerMessage;
-
-                                var usersInCurrentPart = allUsers.Skip(skipCount).Take(usersPerMessage).ToList();
-
-                                var stringBuilder = new StringBuilder();
-                                stringBuilder.Append($"All users - Part {i + 1}/{partsCount}:\n\n");
-
-                                foreach (var user1 in usersInCurrentPart)
-                                {
-                                    stringBuilder.Append($"{skipCount + 1}. {user1.Name} | @{user1.TelegramName} | {user1.Level}\n\n");
-                                    skipCount++;
-                                }
-
-                                await client.SendTextMessageAsync(
-                                    chatId: update.Message.Chat.Id,
-                                    text: stringBuilder.ToString());
-
-                                // Add a small delay to avoid flooding the chat
-                                await Task.Delay(500);
-                            }
-
-                            return;
-                        }
-                        else if (update.Message.Text == "Admin tools")
-                        {
-                            await client.SendTextMessageAsync(
-                                chatId: update.Message.Chat.Id,
-                                text: "Tools:\n\n/notifyall - Notify all users to proceed using the bot\n\n" +
-                                "/notifyerror - Notify all users if error is occured\n\n" +
-                                "/notifygood - Notify all users ofter error\n\n" +
-                                "/notifyallreview - Notify all users to leave review\n\n" +
-                                "/notify-@(userName) - Notify specific user to proceed using the bot" +
-                                "\n\n/time - Shows time\n\n" +
-                                "\n\n/notificationtime - Auto notitfication info" +
-                                "delete-reviewText - Delete review of a user");
-
-                            return;
-                        }
-
-
-
-                        else if (update.Message.Text == "/notifyall")
-                        {
-                            await NotifyAllUsersAsync();
-
-                            await client.SendTextMessageAsync(
-                                chatId: update.Message.Chat.Id,
-                                text: "Notification sent to all users successfully!");
-
-                            return;
-                        }
-                        else if (update.Message.Text == "/notifyerror")
-                        {
-                            await NotifyAllUsersErrorAsync();
-
-                            await client.SendTextMessageAsync(
-                                chatId: update.Message.Chat.Id,
-                                text: "Notification sent to all users successfully!");
-
-                            return;
-                        }
-                        else if (update.Message.Text == "/notifygood")
-                        {
-                            await NotifyAllUsersGoodAsync();
-
-                            await client.SendTextMessageAsync(
-                                chatId: update.Message.Chat.Id,
-                                text: "Notification sent to all users successfully!");
-
-                            return;
-                        }
-                        else if (update.Message.Text == "/notifyallreview")
-                        {
-                            await NotifyUsersWithoutReviewAsync();
-
-                            await client.SendTextMessageAsync(
-                                chatId: update.Message.Chat.Id,
-                                text: "Notification sent to all users successfully!");
-
-                            return;
-                        }
-                        else if (update.Message.Text.StartsWith("/notify-@"))
-                        {
-                            string userTelegramName = update.Message.Text.Substring(8);
-
-                            var userToSend = this.userService.RetrieveAllUsers()
-                                .FirstOrDefault(u => u.TelegramName == userTelegramName);
-
-                            await SendReviewReminder(userToSend);
-                            await SendDailyNotification(user);
-
-                            await client.SendTextMessageAsync(
-                                chatId: update.Message.Chat.Id,
-                                text: $"Notification sent to @{userTelegramName} users successfully!");
-
-                            return;
-                        }
-                        else if (update.Message.Text == "/time")
-                        {
-                            var currentTime = DateTime.Now.AddHours(5);
-
-                            string formattedTime = currentTime.ToString("HH:mm:ss");
-
-                            await client.SendTextMessageAsync(
-                                chatId: update.Message.Chat.Id,
-                                text: $"Current time: {formattedTime}");
-
-                            return;
-                        }
-                        else if (update.Message.Text == "/notificationtime")
-                        {
-                            TimeSpan timeLeft = TimeSpan.FromMilliseconds(dailyNotificationTimer.Interval) - (DateTime.Now - lastNotificationTime);
-
-                            string timeLeftFormatted = $"{timeLeft.Hours} hours, {timeLeft.Minutes} minutes, and {timeLeft.Seconds} seconds";
-
-                            string formattedTime = DateTime.Now.ToString("HH:mm:ss");
-
-                            await client.SendTextMessageAsync(
-                                chatId: update.Message.Chat.Id,
-                                text: $"Time left until next notification: {timeLeftFormatted}\n\nLast notification time: " +
-                                $"{lastNotificationTime.AddHours(5).ToString("HH:mm:ss")}");
-
-                            return;
-                        }
-
-
-
-
-                        if (user.State is State.Level)
-                        {
-                            if (update.Message.Text is "A1 😊"
-                            || update.Message.Text is "A2 😉"
-                            || update.Message.Text is "B1 😄"
-                            || update.Message.Text is "B2 😎"
-                            || update.Message.Text is "C1 😇"
-                            || update.Message.Text is "C2 🤗")
-                            {
-                                storedLevel.Value = update.Message.Text;
-                                await client.SendTextMessageAsync(
-                                   chatId: update.Message.Chat.Id,
-                                   replyMarkup: MenuMarkup(),
-                                   text: $"Welcome {user.Name} ⚡️\n\nYour level is {update.Message.Text} ⭐️\n\nChoose 👇🏼");
-
-                                user.State = State.Active;
-                                user.Level = update.Message.Text;
-                                await this.userService.ModifyUserAsync(user);
-
-                                return;
-                            }
-                            else
-                            {
-                                await client.SendTextMessageAsync(
-                                    chatId: update.Message.Chat.Id,
-                                    text: "Please, choose your level ❗️");
-                            }
-                        }
-
-                        if (user.State is State.Active && update.Message.Text is "Test speech 🎙")
-                        {
-                            var prompt = $"In an English speaking exam, candidates are often asked questions in " +
-                                $"Part 1 to assess their ability to communicate" +
-                                $" about everyday topics. Generate a question that could be asked during this " +
-                                $"part of the exam. The question should be open-ended and related to personal " +
-                                $"experiences, opinions, preferences, or daily life. Make sure each " +
-                                $"question is unique and diverse from previous questions.";
-
-                            var question = await this.openAIService.AnalizeRequestAsync("Look!!!", prompt);
-
-                            await client.SendTextMessageAsync(
-                               chatId: update.Message.Chat.Id,
-                               replyMarkup: new ReplyKeyboardRemove(),
-                               text: $"🎓 LexiEnglishBot 🎓\r\n\r\n" +
-                               $"Try to answer the question ❓ or simply send a voice message 🎙:" +
-                               $"\r\n\r\nQuestion: {question}\n\nI will provide feedback based on your response 😁"); ;
-
-                            user.State = State.TestSpeech;
-                            await this.userService.ModifyUserAsync(user);
-
-                            return;
-                        }
-                        else if (user.State is State.Active && update.Message.Text is "Me 👤")
+                        if (user.State is State.Active && update.Message.Text is "Me 👤")
                         {
 
                             decimal? originalValue = user.Overall;
@@ -557,7 +295,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
 
 
-                    if (update.Message.Voice is not null && user.State is State.TestSpeech)
+                    if (update.Message.Voice is not null && user.State is State.TestSpeechPronun)
                     {
                         var loadingMessage = await client.SendTextMessageAsync(
                                chatId: update.Message.Chat.Id,
@@ -583,7 +321,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
                         return;
                     }
-                    else if (user.State is State.TestSpeech && update.Message.Voice is null)
+                    else if (user.State is State.TestSpeechPronun && update.Message.Voice is null)
                     {
                         await client.SendTextMessageAsync(
                               chatId: update.Message.Chat.Id,
@@ -693,12 +431,32 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             {
                 new KeyboardButton[]
                 {
-                    new KeyboardButton("Test speech 🎙"),
+                    new KeyboardButton("Test pronunciation 🎙"),
                 },
                 new KeyboardButton[]
                 {
                     new KeyboardButton("Me 👤"),
                     new KeyboardButton("Feedback 📝")
+                }
+            };
+
+            return new ReplyKeyboardMarkup(keyboardButtons)
+            {
+                ResizeKeyboard = true
+            };
+        }
+
+        private static ReplyKeyboardMarkup PronunciationMarkup()
+        {
+            var keyboardButtons = new List<KeyboardButton[]>
+            {
+                new KeyboardButton[]
+                {
+                    new KeyboardButton("Generate a question 🎁"),
+                },
+                new KeyboardButton[]
+                {
+                    new KeyboardButton("Menu 🎙")
                 }
             };
 

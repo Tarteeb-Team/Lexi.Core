@@ -4,6 +4,8 @@
 //=================================
 
 using EFxceptions;
+using Lexi.Core.Api.Models.Foundations.Questions;
+using Lexi.Core.Api.Models.Foundations.QuestionTypes;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -17,6 +19,9 @@ namespace Lexi.Core.Api.Brokers.Storages
         {
             this.Database.EnsureCreated();
         }
+
+        public DbSet<Question> Questions { get; set; }
+        public DbSet<QuestionType> QuestionTypes { get; set; }
 
         public async ValueTask<T> InsertAsync<T>(T @object)
         {
