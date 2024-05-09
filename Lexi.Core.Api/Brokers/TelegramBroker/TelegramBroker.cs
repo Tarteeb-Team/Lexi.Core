@@ -57,7 +57,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             IOpenAIService openAIService,
             IStorageBroker storageBroker)
         {
-            var token = "6866377621:AAFXOtQF6A4sP_L7tqn4C2DLqHqMie8KQ5k";
+            var token = "6908660319:AAE5I0sDaBLp5P5nm1Kf1ywdl7LmZXC-kqQ";
             this.botClient = new TelegramBotClient(token);
             this.userService = userService;
             this._hostingEnvironment = hostingEnvironment;
