@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using System;
 using Lexi.Core.Api.Models.Foundations.QuestionTypes;
 
-namespace Lexi.Core.Api.Brokers.Storages
+namespace Lexi.Core.Api.Brokers.UpdateStorages
 {
-    public partial class StorageBroker
+    public partial class UpdateStorageBroker
     {
         DbSet<QuestionType> QuestionTypes { get; set; }
 

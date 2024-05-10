@@ -3,9 +3,9 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Lexi.Core.Api.Brokers.Storages
+namespace Lexi.Core.Api.Brokers.UpdateStorages
 {
-    public partial interface IStorageBroker
+    public partial interface IUpdateStorageBroker
     {
         ValueTask<QuestionType> InsertQuestionTypeAsync(QuestionType questionType);
         IQueryable<QuestionType> SelectAllQuestionTypes();

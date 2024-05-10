@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System;
 using Lexi.Core.Api.Models.Foundations.Questions;
 
-namespace Lexi.Core.Api.Brokers.Storages
+namespace Lexi.Core.Api.Brokers.UpdateStorages
 {
     public partial class StorageBroker
     {
