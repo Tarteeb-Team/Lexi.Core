@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Lexi.Core.Api.Brokers.UpdateStorages;
 using Lexi.Core.Api.Models.Foundations.Questions;
@@ -14,26 +15,24 @@ namespace Lexi.Core.Api.Controllers
 	{
 		private readonly IUpdateStorageBroker updateStorageBroker;
 
-		public QuestionController(IUpdateStorageBroker storageBroker)
-		{
+		public QuestionController(IUpdateStorageBroker storageBroker) =>
 			this.updateStorageBroker = storageBroker;
-		}
 
 		[HttpPost]
 		public async ValueTask<ActionResult<List<Question>>> AddQuestions()
 		{
 			var questions = new List<Question>
 			{
-				  new Question { Id = Guid.NewGuid(), Content = "Can you describe your home?", Number = 1, QuestionType = "Home 🏡" },
-				  new Question { Id = Guid.NewGuid(), Content = "What do you like the most about your home?", Number = 2, QuestionType = "Home 🏡" },
-				  new Question { Id = Guid.NewGuid(), Content = "How long have you lived in your current home?", Number = 3, QuestionType = "Home 🏡" },
-				  new Question { Id = Guid.NewGuid(), Content = "Do you prefer living in a house or an apartment?", Number = 4, QuestionType = "Home 🏡" },
-				  new Question { Id = Guid.NewGuid(), Content = "What is your favorite room in your home and why?", Number = 5, QuestionType = "Home 🏡" },
-				  new Question { Id = Guid.NewGuid(), Content = "Are there any changes you would like to make to your home?", Number = 6, QuestionType = "Home 🏡" },
-				  new Question { Id = Guid.NewGuid(), Content = "Who do you live with in your home?", Number = 7, QuestionType = "Home 🏡" },
-				  new Question { Id = Guid.NewGuid(), Content = "What makes a house feel like a home to you?", Number = 8, QuestionType = "Home 🏡" },
-				  new Question { Id = Guid.NewGuid(), Content = "Do you enjoy spending time at home or outside more?", Number = 9, QuestionType = "Home 🏡" },
-				  new Question { Id = Guid.NewGuid(), Content = "Can you share a special memory related to your home?", Number = 10, QuestionType = "Home 🏡" }
+				 new Question { Id = Guid.NewGuid(), Content = "What is the weather like today?", Number = 1, QuestionType = "Weather ☀️" },
+				 new Question { Id = Guid.NewGuid(), Content = "Do you pay attention to the weather forecast?", Number = 2, QuestionType = "Weather ☀️" },
+				 new Question { Id = Guid.NewGuid(), Content = "What is your favorite type of weather?", Number = 3, QuestionType = "Weather ☀️" },
+				 new Question { Id = Guid.NewGuid(), Content = "How does the weather affect your daily activities?", Number = 4, QuestionType = "Weather ☀️" },
+				 new Question { Id = Guid.NewGuid(), Content = "Do you prefer hot or cold weather?", Number = 5, QuestionType = "Weather ☀️" },
+				 new Question { Id = Guid.NewGuid(), Content = "What outdoor activities do you enjoy doing in good weather?", Number = 6, QuestionType = "Weather ☀️" },
+				 new Question { Id = Guid.NewGuid(), Content = "How do people in your country typically dress during different seasons?", Number = 7, QuestionType = "Weather ☀️" },
+				 new Question { Id = Guid.NewGuid(), Content = "Have you ever experienced extreme weather conditions?", Number = 8, QuestionType = "Weather ☀️" },
+				 new Question { Id = Guid.NewGuid(), Content = "How do you feel when it's raining outside?", Number = 9, QuestionType = "Weather ☀️" },
+				 new Question { Id = Guid.NewGuid(), Content = "Do you think climate change is affecting the weather patterns in your region?", Number = 10, QuestionType = "Weather ☀️" }
 			};
 
 			foreach (var question in questions)
@@ -42,6 +41,14 @@ namespace Lexi.Core.Api.Controllers
 			}
 
 			return Ok(questions);
+		}
+
+		[HttpGet]
+		public IQueryable<Question> GetAllQuestions()
+		{
+			IQueryable<Question> questions = this.updateStorageBroker.SelectAllQuestions();
+
+			return questions;
 		}
 	}
 }
