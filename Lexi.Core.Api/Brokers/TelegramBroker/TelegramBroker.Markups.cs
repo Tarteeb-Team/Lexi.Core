@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Lexi.Core.Api.Brokers.TelegramBroker
@@ -52,11 +55,12 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             {
                 new KeyboardButton[]
                 {
-                    new KeyboardButton("Leave a review 📝")
+                    new KeyboardButton("Menu 🎙")
                 },
                 new KeyboardButton[]
                 {
-                    new KeyboardButton("View other reviews 🤯"),
+                    new KeyboardButton("Leave a review 📝"),
+                    new KeyboardButton("View other reviews 🤯")
                 }
             };
 
@@ -108,6 +112,44 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             };
         }
 
+        private ReplyKeyboardMarkup PartOneQuestionsMarkup()
+        {
+            var distinctQuestionTypes = this.updateStorageBroker.SelectAllQuestions()
+                .Select(q => q.QuestionType)
+                .Distinct()
+                .ToList();
+
+            var random = new Random();
+            distinctQuestionTypes = distinctQuestionTypes.OrderBy(q => random.Next()).ToList();
+
+            distinctQuestionTypes = distinctQuestionTypes.Take(6).ToList();
+
+            var keyboardButtons = new List<KeyboardButton[]>();
+
+            var menuButton = new KeyboardButton[]
+                {
+                    new KeyboardButton("Menu 🎙"),
+                };
+            keyboardButtons.Add(menuButton);
+
+            for (int i = 0; i < 6; i += 2)
+            {
+                var rowButtons = new KeyboardButton[]
+                {
+                    new KeyboardButton(distinctQuestionTypes[i]),
+                    new KeyboardButton(distinctQuestionTypes[i + 1])
+                };
+
+                keyboardButtons.Add(rowButtons);
+            }
+
+            return new ReplyKeyboardMarkup(keyboardButtons)
+            {
+                ResizeKeyboard = true
+            };
+        }
+
+
 
 
         private static ReplyKeyboardMarkup PronunciationMarkup()
@@ -117,6 +159,26 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 new KeyboardButton[]
                 {
                     new KeyboardButton("Generate a question 🎁"),
+                },
+                new KeyboardButton[]
+                {
+                    new KeyboardButton("Menu 🎙")
+                }
+            };
+
+            return new ReplyKeyboardMarkup(keyboardButtons)
+            {
+                ResizeKeyboard = true
+            };
+        }
+        
+        private static ReplyKeyboardMarkup PartOneMarkup()
+        {
+            var keyboardButtons = new List<KeyboardButton[]>
+            {
+                new KeyboardButton[]
+                {
+                    new KeyboardButton("Types of questions 🎁"),
                 },
                 new KeyboardButton[]
                 {

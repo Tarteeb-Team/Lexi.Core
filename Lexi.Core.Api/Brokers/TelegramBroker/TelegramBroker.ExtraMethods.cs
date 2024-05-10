@@ -127,6 +127,36 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 WaveFileWriter.CreateWaveFile16(userPath, sampleProvider);
             }
         }
+        
+        public string ReturningConvertOggToWavSecond(Stream stream, long userId)
+        {
+            using (MemoryStream pcmStream = new MemoryStream())
+            {
+                OpusDecoder decoder = OpusDecoder.Create(48000, 1);
+                OpusOggReadStream oggIn = new OpusOggReadStream(decoder, stream);
+                while (oggIn.HasNextPacket)
+                {
+                    short[] packet = oggIn.DecodeNextPacket();
+                    if (packet != null)
+                    {
+                        foreach (short sample in packet)
+                        {
+                            var bytes = BitConverter.GetBytes(sample);
+                            pcmStream.Write(bytes, 0, bytes.Length);
+                        }
+                    }
+                }
+
+                pcmStream.Position = 0;
+                var wavStream = new RawSourceWaveStream(pcmStream, new WaveFormat(48000, 1));
+                var sampleProvider = wavStream.ToSampleProvider();
+                userPath2 = filePath2 + userId.ToString() + ".wav";
+
+                WaveFileWriter.CreateWaveFile16(userPath2, sampleProvider);
+
+                return userPath2;
+            }
+        }
 
         public async Task NotifyAllUsersAsync()
         {
