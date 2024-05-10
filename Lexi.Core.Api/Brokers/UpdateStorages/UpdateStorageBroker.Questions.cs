@@ -1,13 +1,12 @@
-﻿using Lexi.Core.Api.Models.Foundations.Feedbacks;
+﻿using Lexi.Core.Api.Models.Foundations.Questions;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using System;
-using Lexi.Core.Api.Models.Foundations.Questions;
 
 namespace Lexi.Core.Api.Brokers.UpdateStorages
 {
-    public partial class StorageBroker
+    public partial class UpdateStorageBroker
     {
         DbSet<Question> Questions { get; set; }
 

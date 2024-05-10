@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Lexi.Core.Api.Brokers.UpdateStorages
 {
-    public partial interface IStorageBroker
+    public partial interface IUpdateStorageBroker
     {
         ValueTask<Question> InsertQuestionAsync(Question question);
         IQueryable<Question> SelectAllQuestions();
