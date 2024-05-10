@@ -48,16 +48,20 @@ namespace Lexi.Core.Api.Services.Foundations.Telegrams
                 await this.updateStorageBroker.UpdateUserAsync(user);
             }
 
-            string readyFeedback = $"🎓 LexiEnglishBot 🎓\n\n" +
-        $"📝 Your sentence: {sentence}\n\n" +
-        $"✅ Result:\n\n" +
-        $"🤩 Accuracy: {feedback.Accuracy}%\n" +
-        $"🤓 Fluency: {feedback.Fluency}%\n" +
-        $"😎 Prosody: {feedback.Prosody}%\n" +
-        $"🥸 Completeness: {feedback.Complenteness}%\n" +
-        $"🥳 Pronunciation: {feedback.Pronunciation}%\n\n🔥 Overall: {overall}%\n\nKeep studying 💪🏼";
+            string readyFeedback = $"🌟 Your Pronunciation Assessment 🌟\n\n" +
+                $"📝 Sentence: {sentence}\n\n" +
+                $"✅ Feedback:\n\n" +
+                $"👂 Clearness: {feedback.Accuracy}%\n" +
+                $"🗣️ Smoothness: {feedback.Fluency}%\n" +
+                $"😊 Expression: {feedback.Prosody}%\n" +
+                $"📝 Completeness: {feedback.Complenteness}%\n" +
+                $"👅 Pronunciation: {feedback.Pronunciation}%\n\n" +
+                $"🔥 Overall: {overall}%\n\n" +
+                $"Keep up the great work! 💪";
 
             await this.telegramBroker.SendTextMessageAsync(telegramId, readyFeedback);
+
+
         }
 
         public void StartListening() =>

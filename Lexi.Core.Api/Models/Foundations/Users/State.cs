@@ -13,6 +13,7 @@ namespace Lexi.Core.Api.Models.Foundations.Users
         Level,
         ChangeLevel,
         Feedback,
+        TestSpeech,
         LeaveReview
     }
 }
