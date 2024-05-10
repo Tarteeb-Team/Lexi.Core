@@ -30,6 +30,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             }
             if (user.State is State.Active && update.Message.Text is "Generate a question 🎁")
             {
+
                 
                 return true;
             }

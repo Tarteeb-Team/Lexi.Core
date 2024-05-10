@@ -54,7 +54,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             IOpenAIService openAIService,
             IUpdateStorageBroker updateStorageBroker)
         {
-            var token = "6866377621:AAFXOtQF6A4sP_L7tqn4C2DLqHqMie8KQ5k";
+            var token = "6908660319:AAE5I0sDaBLp5P5nm1Kf1ywdl7LmZXC-kqQ";
             this.botClient = new TelegramBotClient(token);
             this._hostingEnvironment = hostingEnvironment;
             filePath = Path.Combine(this._hostingEnvironment.WebRootPath, "outputWavs/");
@@ -89,31 +89,6 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             botClient.StartReceiving(MessageHandler, ErrorHandler);
         }
 
-        static async Task SendRequest(TelegramBotClient telegramBotClient)
-        {
-            try
-            {
-                using var httpClient = new HttpClient();
-
-                HttpResponseMessage httpResponseMessage = await httpClient.GetAsync(
-                    "https://lexicoreapi20240506000549.azurewebsites.net/api/Home");
-
-                Console.WriteLine(httpResponseMessage.StatusCode);
-
-                await telegramBotClient
-                    .SendTextMessageAsync(
-                    1924521160,
-                    $"Request has sent.\nStatus: {httpResponseMessage.StatusCode}");
-            }
-            catch (Exception ex)
-            {
-                await telegramBotClient
-                    .SendTextMessageAsync(1924521160, $"Error: {ex.Message}");
-
-                return;
-            }
-        }
-
         public async Task MessageHandler(ITelegramBotClient client, Update update, CancellationToken token)
         {
             try
@@ -131,14 +106,14 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                     if (await ChooseLevel(client, update, user))
                         return;
 
-                    //if (await TestSpeechPronun(client, update, user))
-                    //    return;
-
-
+                    if (await TestSpeechPronun(client, update, user))
+                        return;
+                    
+                    if (await PracticePartOne(client, update, user))
+                        return;
 
                     if (user.State is State.Active && update.Message.Text is "Me 👤")
                     {
-
                         decimal? originalValue = user.Overall;
                         int decimalPlaces = 1;
 
@@ -440,7 +415,8 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             {
                 new KeyboardButton[]
                 {
-                    new KeyboardButton("Test speech 🎙"),
+                    new KeyboardButton("Practice IELTS part 1 🎯"),
+                    new KeyboardButton("Test pronunciation 🎙"),
                 },
                 new KeyboardButton[]
                 {
@@ -565,7 +541,30 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             }
         }
 
+        static async Task SendRequest(TelegramBotClient telegramBotClient)
+        {
+            try
+            {
+                using var httpClient = new HttpClient();
 
+                HttpResponseMessage httpResponseMessage = await httpClient.GetAsync(
+                    "https://lexicoreapi20240506000549.azurewebsites.net/api/Home");
+
+                Console.WriteLine(httpResponseMessage.StatusCode);
+
+                await telegramBotClient
+                    .SendTextMessageAsync(
+                    1924521160,
+                    $"Request has sent.\nStatus: {httpResponseMessage.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                await telegramBotClient
+                    .SendTextMessageAsync(1924521160, $"Error: {ex.Message}");
+
+                return;
+            }
+        }
 
         public void ReturningConvertOggToWav(Stream stream, long userId)
         {
