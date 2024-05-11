@@ -18,12 +18,12 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 decimal? originalValue = user.Overall;
                 int decimalPlaces = 1;
 
-                decimal roundedValue = Math.Round(originalValue.Value, decimalPlaces);
+                decimal? roundedValue = originalValue.HasValue ? Math.Round(originalValue.Value, decimalPlaces) : 0;
 
                 await client.SendTextMessageAsync(
                    chatId: update.Message.Chat.Id,
                    replyMarkup: OptionMarkup(),
-                   text: $"About me👤\n\nName: {user.Name}\nLevel: {user.Level}\nAverage speech result: {roundedValue}% 🧠");
+                   text: $"About me👤\n\nName: {user.Name}\nLevel: {user.Level}\nAverage pronunciation result: {roundedValue}% 🧠");
 
                 user.State = State.Me;
                 await this.updateStorageBroker.UpdateUserAsync(user);

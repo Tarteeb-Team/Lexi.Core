@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using System.Runtime.InteropServices;
 
 namespace Lexi.Core.Api.Brokers.TelegramBroker
 {
@@ -38,6 +39,21 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
                     return true;
                 }
+            }
+            if (update.Message.Text.StartsWith("deleteuser-"))
+            {
+                string telegramName = update.Message.Text.Substring(12);
+
+                var possibleUser = this.updateStorageBroker
+                    .SelectAllUsers().FirstOrDefault(u => u.TelegramName == telegramName);
+
+                await this.updateStorageBroker.DeleteUserAsync(possibleUser);
+
+                await client.SendTextMessageAsync(
+                        chatId: update.Message.Chat.Id,
+                        text: $"Deleted: {possibleUser.TelegramName}");
+
+                return true;
             }
 
             if (update.Message.Text == "/shpion")

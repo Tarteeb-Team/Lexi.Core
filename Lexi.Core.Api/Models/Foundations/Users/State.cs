@@ -18,6 +18,7 @@ namespace Lexi.Core.Api.Models.Foundations.Users
         PartOneTest,
         Settigns,
         ChooseVoice,
+        ChooseAIAssistantVoice,
         LeaveReview
     }
 }

@@ -158,16 +158,6 @@ please provide feedback accordingly, but if the answer is based on the question,
                 user.State = State.ChooseTypeOfQuestion;
                 await this.updateStorageBroker.UpdateUserAsync(user);
 
-
-
-
-
-
-
-
-
-
-
                 return true;
             }
             else if (user.State is State.TestSpeechPronun && update.Message.Voice is null)

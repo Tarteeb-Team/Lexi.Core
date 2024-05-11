@@ -187,9 +187,6 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             };
         }
 
-
-
-
         private static ReplyKeyboardMarkup PronunciationMarkup()
         {
             var keyboardButtons = new List<KeyboardButton[]>

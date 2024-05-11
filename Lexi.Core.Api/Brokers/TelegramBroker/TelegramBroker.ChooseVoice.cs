@@ -23,8 +23,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                    text: $"🎙️ Choose Your Teacher's Voice! 🎙️\r\n\r\nSelect a voice to personalize your learning experience:" +
                    $"\r\n\r\nEmma \U0001f9d1🏽‍🏫: " +
                    $"Clear and soothing voice.\r\n\nBrian 👨🏽‍🏫: " +
-                   $"Energetic and engaging tone.\r\nPick your preference and let's get started! 😊🎶");
-
+                   $"Energetic and engaging tone.\r\n\nPick your preference and let's get started! 😊🎶");
 
                 user.State = State.ChooseVoice;
                 await this.updateStorageBroker.UpdateUserAsync(user);
