@@ -12,7 +12,7 @@ namespace Lexi.Core.Api.Brokers.Speeches
             text = text.Replace("\n", "").Replace("\t", "").Replace("*", "").Replace("\\\"", "").Replace("/", "");
             string audioFolderPath = Path.Combine(this.wwwRootPath, "PartOneFeedback", $"{fileName}.wav");
 
-            SpeechSynthesisResult speechSynthesisResult = await GetSpeechResultAsync(text);
+            SpeechSynthesisResult speechSynthesisResult = await GetSpeechResultAsync(text, "");
 
             await SaveSpeechSynthesisResultToLocalDirectoryAsync(
                        speechSynthesisResult: speechSynthesisResult,

@@ -1,4 +1,5 @@
-﻿using Lexi.Core.Api.Models.Foundations.Users;
+﻿using Lexi.Core.Api.Models.Foundations.Questions;
+using Lexi.Core.Api.Models.Foundations.Users;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -49,6 +50,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                           "🎙️ Now, it's your turn! Take your time to articulate your thoughts clearly and confidently. " +
                           "Once you're ready, send a voice message with your response. 🌟");
 
+                    user.ImprovedSpeech = randomQuestion.Content;
 
                     user.State = State.PartOneTest;
                     await this.updateStorageBroker.UpdateUserAsync(user);

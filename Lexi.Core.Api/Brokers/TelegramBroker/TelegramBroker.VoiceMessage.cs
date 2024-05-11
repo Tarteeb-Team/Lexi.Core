@@ -1,5 +1,6 @@
 ﻿using Lexi.Core.Api.Models.Foundations.Speeches;
 using Lexi.Core.Api.Models.Foundations.Users;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -62,44 +63,53 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
                 var speechText = await this.speechBroker.RecognizeSpeechAsync(filePath);
 
+                // Split the speechText into words
+                string[] words = speechText.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (words.Length <= 3)
+                {
+                    string shortAnswerMessage = "Your answer seems to be too short. Please provide a more detailed response.";
+                    await botClient.SendTextMessageAsync(chatId: user.TelegramId, text: shortAnswerMessage);
+                    return true;
+                }
+
                 if (System.IO.File.Exists(filePath))
                 {
                     System.IO.File.Delete(filePath);
                 }
-                string feedbackTemplate = $@"
-                📝 **IELTS Part 1 Feedback** 📝
+                string feedbackTemplate = $@"📝 *Feedback for IELTS Part 1 Answer* 📝
 
-                🔍 **Student's Answer:**
-                '{speechText}'
+📝 *{user.Name}'s Answer:* 
 
-                👍 **Strengths:**
-                - Clear expression of ideas
-                - Good fluency
+{speechText}
 
-                👎 **Areas for Improvement:**
-                - Provide more detailed responses
-                - Include specific examples
+🎓 *Approximate IELTS Score:* 
+[Insert Score Here]
 
-                💡 **Suggestions:**
-                - Use a wider range of vocabulary
-                - Organize ideas more effectively
+📘 *1. Grammar:* ✅
+   - Check for any grammar mistakes and correct them for clarity.
 
-                🔍 **Grammar:**
-                - The sentence 'I Zafar' was not correct,...
+📘 *2. Vocabulary:* 📚
+   - Suggest using more diverse vocabulary to enhance expression.
 
-                🚩 **Note:**
-                - Ensure to provide sufficient detail in your answers.
+📘 *3. Clarity:* 🌟
+   - Ensure your response is clear and easy to understand.
 
-                🔥 **Overall Feedback:**
-                Based on your response, focus on expanding your answers with specific details and 
-                utilizing a wider vocabulary range to enhance your performance.
+📘 *4. Organization:* 🧩
+   - Organize your ideas logically for better coherence.
 
-                📊 **Approximate IELTS Score:**
-                Considering the content and language proficiency demonstrated in your response, 
-                your approximate IELTS score for this task would likely be [insert score here].";
+📘 *5. Engagement:* 💬
+   - Aim to captivate the reader with interesting language and ideas.
 
+📚 Remember, practice makes progress! Keep up the good work! 🚀
+
+*📔 Note:*
+This feedback template is for the question '{user.ImprovedSpeech}'. If your answer is for a different question, 
+please provide feedback accordingly, but if the answer is based on the question, just skip this option.
+";
                 string prompt = $"As you've attempted IELTS Part 1, please provide feedback " +
-                    $"based on the given answer:\n\n'{speechText}'\n\n{feedbackTemplate}. Remember, only feedback based on template, without extra words.";
+                    $"based on the given answer:\n\n'{feedbackTemplate}' for this question '{user.ImprovedSpeech}'. " +
+                    $"Remember, provide feedback only based on this template, and keep it simple and student-friendly. 😊";
 
                 string secondPromt = $"Just improve this answer of part one question based on IELTS 7 score, and return only improved one.";
 

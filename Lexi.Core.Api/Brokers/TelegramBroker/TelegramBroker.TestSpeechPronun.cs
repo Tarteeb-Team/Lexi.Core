@@ -21,7 +21,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 await client.SendTextMessageAsync(
                     chatId: update.Message.Chat.Id,
                     replyMarkup: PronunciationMarkup(),
-                    text: $"🎓 LexiEnglishBot 🎓\r\n\r\n" +
+                    text: $"🎧 Pronunciation test\r\n\r\n" +
                           $"You can:\r\n" +
                           $"1. Send a voice message 🎙 to check pronunciation and fluency.\r\n" +
                           $"2. Click 'Generate Question' if it's difficult to think of what to say.\r\n" +
