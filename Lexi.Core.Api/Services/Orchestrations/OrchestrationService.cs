@@ -56,7 +56,8 @@ namespace Lexi.Core.Api.Services.Orchestrations
 
             SpeechModel speech = await speechOrchestrationService.MapToSpeech(responseCognitive, user.Id);
 
-            string promt = $"Improve this text and change the words to {user.Level} level and return me. (only improved version!)";
+            string promt = $"If there any grammar mistakes correct and return. If there are not just return my text." +
+                $"You should not add any extra text, except if there are some grammar mistakes.";
 
             var improvedSpeech = await this.openAIService.AnalizeRequestAsync(speech.Sentence, promt);
 

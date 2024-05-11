@@ -32,7 +32,23 @@ namespace aisha_ai.Services.Foundations.HandleSpeeches
                 string audioFolderPath = Path.Combine(this.wwwRootPath, "AiVoices" ,$"{fileName}.wav");
 
                 SpeechSynthesisResult speechSynthesisResult =
-                    await this.speechBroker.GetSpeechResultAsync(text);
+                    await this.speechBroker.GetSpeechResultAsync(text, "");
+
+                await SaveSpeechSynthesisResultToLocalDirectoryAsync(
+                           speechSynthesisResult: speechSynthesisResult,
+                           filePath: audioFolderPath);
+
+
+                return audioFolderPath;
+        }
+        
+        public async ValueTask<string> CreateAndSaveSpeechAudioPartOneAsync(string text, string fileName)
+        {
+                text = text.Replace("\n", "").Replace("\t", "").Replace("*", "").Replace("\\\"", "").Replace("/", "");
+                string audioFolderPath = Path.Combine(this.wwwRootPath, "PartOneFeedback", $"{fileName}.wav");
+
+                SpeechSynthesisResult speechSynthesisResult =
+                    await this.speechBroker.GetSpeechResultAsync(text, "");
 
                 await SaveSpeechSynthesisResultToLocalDirectoryAsync(
                            speechSynthesisResult: speechSynthesisResult,
