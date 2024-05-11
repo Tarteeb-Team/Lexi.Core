@@ -1,9 +1,11 @@
 ﻿using Lexi.Core.Api.Brokers.Speeches;
+using Lexi.Core.Api.Brokers.UpdateStorages;
 using Lexi.Core.Api.Services.Foundations.Telegrams;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.CognitiveServices.Speech;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace aisha_ai.Services.Foundations.HandleSpeeches
@@ -14,16 +16,19 @@ namespace aisha_ai.Services.Foundations.HandleSpeeches
         private readonly IWebHostEnvironment webHostEnvironment;
         private readonly ITelegramService telegramService;
         private readonly string wwwRootPath;
+        private readonly IUpdateStorageBroker updateStorageBroker;
 
         public HandleSpeechService(
             ISpeechBroker speechBroker,
             IWebHostEnvironment webHostEnvironment,
-            ITelegramService telegramService)
+            ITelegramService telegramService,
+            IUpdateStorageBroker updateStorageBroker)
         {
             this.speechBroker = speechBroker;
             this.webHostEnvironment = webHostEnvironment;
             this.wwwRootPath = this.webHostEnvironment.WebRootPath;
             this.telegramService = telegramService;
+            this.updateStorageBroker = updateStorageBroker;
         }
 
         public async ValueTask<string> CreateAndSaveSpeechAudioAsync(string text, string fileName)
@@ -31,8 +36,13 @@ namespace aisha_ai.Services.Foundations.HandleSpeeches
                 text = text.Replace("\n", "").Replace("\t", "").Replace("*", "").Replace("\\\"", "").Replace("/", "");
                 string audioFolderPath = Path.Combine(this.wwwRootPath, "AiVoices" ,$"{fileName}.wav");
 
-                SpeechSynthesisResult speechSynthesisResult =
-                    await this.speechBroker.GetSpeechResultAsync(text, "");
+            long telegramId = Convert.ToInt64(fileName);
+
+            var voiceType = this.updateStorageBroker.SelectAllQuestionTypes()
+                .FirstOrDefault(q => q.TelegramId == telegramId);
+
+            SpeechSynthesisResult speechSynthesisResult =
+                    await this.speechBroker.GetSpeechResultAsync(text, voiceType.Type);
 
                 await SaveSpeechSynthesisResultToLocalDirectoryAsync(
                            speechSynthesisResult: speechSynthesisResult,
@@ -47,8 +57,13 @@ namespace aisha_ai.Services.Foundations.HandleSpeeches
                 text = text.Replace("\n", "").Replace("\t", "").Replace("*", "").Replace("\\\"", "").Replace("/", "");
                 string audioFolderPath = Path.Combine(this.wwwRootPath, "PartOneFeedback", $"{fileName}.wav");
 
-                SpeechSynthesisResult speechSynthesisResult =
-                    await this.speechBroker.GetSpeechResultAsync(text, "");
+            long telegramId = Convert.ToInt64(fileName);
+
+            var voiceType = this.updateStorageBroker.SelectAllQuestionTypes()
+                .FirstOrDefault(q => q.TelegramId == telegramId);
+
+            SpeechSynthesisResult speechSynthesisResult =
+                    await this.speechBroker.GetSpeechResultAsync(text, voiceType.Type);
 
                 await SaveSpeechSynthesisResultToLocalDirectoryAsync(
                            speechSynthesisResult: speechSynthesisResult,

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using System;
+using System.Linq;
 
 namespace Lexi.Core.Api.Brokers.Speeches
 {
@@ -12,7 +13,12 @@ namespace Lexi.Core.Api.Brokers.Speeches
             text = text.Replace("\n", "").Replace("\t", "").Replace("*", "").Replace("\\\"", "").Replace("/", "");
             string audioFolderPath = Path.Combine(this.wwwRootPath, "PartOneFeedback", $"{fileName}.wav");
 
-            SpeechSynthesisResult speechSynthesisResult = await GetSpeechResultAsync(text, "");
+            long telegramId = Convert.ToInt64(fileName);
+
+            var voiceType = this.updateStorageBroker.SelectAllQuestionTypes()
+                .FirstOrDefault(q => q.TelegramId == telegramId);
+
+            SpeechSynthesisResult speechSynthesisResult = await GetSpeechResultAsync(text, voiceType.Type);
 
             await SaveSpeechSynthesisResultToLocalDirectoryAsync(
                        speechSynthesisResult: speechSynthesisResult,

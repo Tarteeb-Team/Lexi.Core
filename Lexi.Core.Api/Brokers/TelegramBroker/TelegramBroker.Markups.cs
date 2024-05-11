@@ -49,6 +49,23 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 ResizeKeyboard = true
             };
         }
+        
+        private static ReplyKeyboardMarkup VoiceMarkup()
+        {
+            var keyboardButtons = new List<KeyboardButton[]>
+            {
+                new KeyboardButton[]
+                {
+                    new KeyboardButton("Emma 🧑🏽‍🏫"),
+                    new KeyboardButton("Brian 👨🏽‍🏫")
+                },
+            };
+
+            return new ReplyKeyboardMarkup(keyboardButtons)
+            {
+                ResizeKeyboard = true
+            };
+        }
         private static ReplyKeyboardMarkup FeedbackMarkup()
         {
             var keyboardButtons = new List<KeyboardButton[]>
@@ -80,8 +97,29 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                 },
                 new KeyboardButton[]
                 {
-                    new KeyboardButton("Me 👤"),
+                    new KeyboardButton("Settings ⚙️"),
                     new KeyboardButton("Feedback 📝")
+                }
+            };
+
+            return new ReplyKeyboardMarkup(keyboardButtons)
+            {
+                ResizeKeyboard = true
+            };
+        }
+        
+        private static ReplyKeyboardMarkup SettingsMarkup()
+        {
+            var keyboardButtons = new List<KeyboardButton[]>
+            {
+                new KeyboardButton[]
+                {
+                    new KeyboardButton("Menu 🎙"),
+                },
+                new KeyboardButton[]
+                {
+                    new KeyboardButton("Me 👤"),
+                    new KeyboardButton("Voice 🗣️")
                 }
             };
 

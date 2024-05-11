@@ -13,7 +13,7 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             Update update,
             Models.Foundations.Users.User user)
         {
-            if (user.State is State.Active && update.Message.Text is "Me 👤")
+            if (user.State is State.Settigns && update.Message.Text is "Me 👤")
             {
                 decimal? originalValue = user.Overall;
                 int decimalPlaces = 1;

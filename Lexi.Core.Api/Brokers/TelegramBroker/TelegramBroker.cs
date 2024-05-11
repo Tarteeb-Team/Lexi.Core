@@ -104,7 +104,11 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
                         return;
                     if (await Feedback(client, update, user))
                         return;
+                    if (await Settings(client, update, user))
+                        return;
                     if (await Me(client, update, user))
+                        return;
+                    if (await ChooseVoice(client, update, user))
                         return;
                 }
 
