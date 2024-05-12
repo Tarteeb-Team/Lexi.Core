@@ -6,9 +6,9 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using System.Runtime.InteropServices;
 
-namespace Lexi.Core.Api.Brokers.TelegramBroker
+namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
 {
-    public partial class TelegramBroker
+    public partial class TelegramHandleService
     {
         private async ValueTask<bool> AdminPanel(
             ITelegramBotClient client,

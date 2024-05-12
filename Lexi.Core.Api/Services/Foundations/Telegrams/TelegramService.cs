@@ -3,10 +3,10 @@
 // Powering True Leadership
 //=================================
 
-using Lexi.Core.Api.Brokers.TelegramBroker;
 using Lexi.Core.Api.Brokers.UpdateStorages;
 using Lexi.Core.Api.Models.Foundations.ExternalUsers;
 using Lexi.Core.Api.Models.Foundations.Feedbacks;
+using Lexi.Core.Api.Services.Foundations.TelegramHandles;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,10 +14,10 @@ namespace Lexi.Core.Api.Services.Foundations.Telegrams
 {
     public class TelegramService : ITelegramService
     {
-        private readonly ITelegramBroker telegramBroker;
+        private readonly ITelegramHandleService telegramBroker;
         private readonly IUpdateStorageBroker updateStorageBroker;
 
-        public TelegramService(ITelegramBroker telegramBroker, IUpdateStorageBroker updateStorageBroker)
+        public TelegramService(ITelegramHandleService telegramBroker, IUpdateStorageBroker updateStorageBroker)
         {
             this.telegramBroker = telegramBroker;
             this.updateStorageBroker = updateStorageBroker;
@@ -65,6 +65,6 @@ namespace Lexi.Core.Api.Services.Foundations.Telegrams
         }
 
         public void StartListening() =>
-            this.telegramBroker.StartListening();
+            this.telegramBroker.ListenTelegramUserMessage();
     }
 }

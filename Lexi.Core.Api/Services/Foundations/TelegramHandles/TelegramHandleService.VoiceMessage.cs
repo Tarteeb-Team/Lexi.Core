@@ -1,16 +1,13 @@
-﻿using Lexi.Core.Api.Models.Foundations.Speeches;
-using Lexi.Core.Api.Models.Foundations.Users;
+﻿using Lexi.Core.Api.Models.Foundations.Users;
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.ReplyMarkups;
 
-namespace Lexi.Core.Api.Brokers.TelegramBroker
+namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
 {
-    public partial class TelegramBroker
+    public partial class TelegramHandleService
     {
         private async ValueTask<bool> VoiceMessage(
             ITelegramBotClient client,

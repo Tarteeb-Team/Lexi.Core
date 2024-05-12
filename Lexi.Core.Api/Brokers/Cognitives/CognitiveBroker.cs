@@ -3,15 +3,10 @@
 // Powering True Leadership
 //=================================
 
-using Concentus.Oggfile;
-using Concentus.Structs;
-using Lexi.Core.Api.Brokers.TelegramBroker;
+using Lexi.Core.Api.Services.Foundations.TelegramHandles;
 using Microsoft.CognitiveServices.Speech;
 using Microsoft.CognitiveServices.Speech.Audio;
 using Microsoft.CognitiveServices.Speech.PronunciationAssessment;
-using NAudio.Wave;
-using System;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace Lexi.Core.Api.Brokers.Cognitives
@@ -20,9 +15,9 @@ namespace Lexi.Core.Api.Brokers.Cognitives
     {
         string speechKey = "aec1b94cf0254f11b478d28a50743eeb";
         string speechRegion = "eastus";
-        private readonly ITelegramBroker telegramBroker;
+        private readonly ITelegramHandleService telegramBroker;
 
-        public CognitiveBroker(ITelegramBroker telegramBroker)
+        public CognitiveBroker(ITelegramHandleService telegramBroker)
         {
             this.telegramBroker = telegramBroker;
         }
@@ -51,8 +46,8 @@ namespace Lexi.Core.Api.Brokers.Cognitives
                 var speechRecognitionResult = await speechRecognizer.RecognizeOnceAsync();
 
                 // The pronunciation assessment result as a Speech SDK object
-           var pronunciationAssessmentResult =
-                    PronunciationAssessmentResult.FromResult(speechRecognitionResult);
+                var pronunciationAssessmentResult =
+                         PronunciationAssessmentResult.FromResult(speechRecognitionResult);
 
                 // The pronunciation assessment result as a JSON string
                 var pronunciationAssessmentResultJson = speechRecognitionResult

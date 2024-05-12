@@ -4,8 +4,10 @@
 //=================================
 
 using Lexi.Core.Api.Brokers.Speeches;
+using Lexi.Core.Api.Brokers.Telegrams;
 using Lexi.Core.Api.Brokers.UpdateStorages;
 using Lexi.Core.Api.Services.Foundations.ImproveSpeech;
+using Lexi.Core.Api.Services.Foundations.TelegramHandles;
 using Lexi.Core.Api.Services.Orchestrations;
 using Microsoft.AspNetCore.Hosting;
 using System;
@@ -17,17 +19,19 @@ using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 
-namespace Lexi.Core.Api.Brokers.TelegramBroker
+namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
 {
-    public partial class TelegramBroker : ITelegramBroker
+    public partial class TelegramHandleService : ITelegramHandleService
     {
 
         private TelegramBotClient botClient;
+        private static Func<Update, ValueTask> taskHandler;
         private IOrchestrationService orchestrationService;
         private readonly IOpenAIService openAIService;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IUpdateStorageBroker updateStorageBroker;
         private readonly ISpeechBroker speechBroker;
+        private readonly ITelegramBroker telegramBroker;
         private static readonly AsyncLocal<long> storedTelegramId = new AsyncLocal<long>();
         private static readonly AsyncLocal<int> messageId = new AsyncLocal<int>();
         private static readonly AsyncLocal<int> messageId2 = new AsyncLocal<int>();
@@ -42,14 +46,13 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
         private string userPath;
         private string userPath2;
 
-        public TelegramBroker(
+        public TelegramHandleService(
             IWebHostEnvironment hostingEnvironment,
             IOpenAIService openAIService,
             IUpdateStorageBroker updateStorageBroker,
-            ISpeechBroker speechBroker)
+            ISpeechBroker speechBroker,
+            ITelegramBroker telegramBroker)
         {
-            var token = "6908660319:AAE5I0sDaBLp5P5nm1Kf1ywdl7LmZXC-kqQ";
-            this.botClient = new TelegramBotClient(token);
             this._hostingEnvironment = hostingEnvironment;
             filePath = Path.Combine(this._hostingEnvironment.WebRootPath, "outputWavs/");
             filePath2 = Path.Combine(this._hostingEnvironment.WebRootPath, "PartOneAnswers/");
@@ -77,9 +80,21 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
             requestTimer.Elapsed += async (sender, e) => await SendRequest(this.botClient);
             this.updateStorageBroker = updateStorageBroker;
             this.speechBroker = speechBroker;
+            this.telegramBroker = telegramBroker;
+
+            requestTimer.Start();
+            dailyNotificationTimer.Start();
         }
 
-        public async Task MessageHandler(ITelegramBotClient client, Update update, CancellationToken token)
+        public void ListenTelegramUserMessage()
+        {
+            this.telegramBroker.RegisterTelegramEventHandler(async (update, client) =>
+            {
+                await this.ProcessMessageHandler(update, client);
+            });
+        }
+
+        private async Task ProcessMessageHandler(Update update, ITelegramBotClient client)
         {
             try
             {
@@ -123,27 +138,6 @@ namespace Lexi.Core.Api.Brokers.TelegramBroker
 
                 return;
             }
-
-        }
-
-        public void StartListening()
-        {
-            requestTimer.Start();
-            dailyNotificationTimer.Start();
-            botClient.StartReceiving(MessageHandler, ErrorHandler);
-        }
-
-        static Task ErrorHandler(ITelegramBotClient client, Exception exception, CancellationToken token)
-        {
-            var ErrorMessage = exception switch
-            {
-                ApiRequestException apiRequestException
-                    => $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}",
-                _ => exception.ToString()
-            };
-
-            Console.WriteLine(ErrorMessage);
-            return Task.CompletedTask;
         }
     }
 }

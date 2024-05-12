@@ -3,12 +3,12 @@ using Lexi.Core.Api.Services.Orchestrations;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Lexi.Core.Api.Brokers.TelegramBroker
+namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
 {
-    public interface ITelegramBroker
+    public interface ITelegramHandleService
     {
         ValueTask<ExternalUser> CreateExternalUserAsync();
-        void StartListening();
+        void ListenTelegramUserMessage();
         void ReturningConvertOggToWav(Stream stream, long userId);
         string ReturningConvertOggToWavSecond(Stream stream, long userId);
         string ReturnFilePath();

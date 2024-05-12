@@ -9,10 +9,11 @@ using Lexi.Core.Api.Brokers.Loggings;
 using Lexi.Core.Api.Brokers.OpenAIs;
 using Lexi.Core.Api.Brokers.Speeches;
 using Lexi.Core.Api.Brokers.Storages;
-using Lexi.Core.Api.Brokers.TelegramBroker;
+using Lexi.Core.Api.Brokers.Telegrams;
 using Lexi.Core.Api.Brokers.UpdateStorages;
 using Lexi.Core.Api.Services.Cognitives;
 using Lexi.Core.Api.Services.Foundations.ImproveSpeech;
+using Lexi.Core.Api.Services.Foundations.TelegramHandles;
 using Lexi.Core.Api.Services.Foundations.Telegrams;
 using Lexi.Core.Api.Services.Orchestrations;
 using Lexi.Core.Api.Services.Orchestrations.Cognitive;
@@ -36,6 +37,7 @@ builder.Services.AddTransient<ICognitiveServices, CognitiveServices>();
 builder.Services.AddTransient<ICognitiveBroker, CognitiveBroker>();
 builder.Services.AddScoped<ICognitiveOrchestrationService, CognitiveOrchestrationService>();
 builder.Services.AddTransient<ISpeechOrchestrationService, SpeechOrchestrationService>();
+builder.Services.AddScoped<ITelegramHandleService, TelegramHandleService>();
 builder.Services.AddScoped<ITelegramBroker, TelegramBroker>();
 builder.Services.AddScoped<ITelegramService, TelegramService>();
 builder.Services.AddEndpointsApiExplorer();
@@ -47,10 +49,10 @@ var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
 
 using (var scope = scopeFactory.CreateScope())
 {
-    var telegramService = scope.ServiceProvider.GetRequiredService<ITelegramBroker>();
+    var telegramService = scope.ServiceProvider.GetRequiredService<ITelegramHandleService>();
     var orchestrationService = scope.ServiceProvider.GetRequiredService<IOrchestrationService>();
 
-    telegramService.StartListening();
+    telegramService.ListenTelegramUserMessage();
 
     telegramService.SetOrchestrationService(orchestrationService);
 
