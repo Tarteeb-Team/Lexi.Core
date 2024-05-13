@@ -372,7 +372,7 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
                 return;
             }
         }
-        
+
         private async Task NotificationRelease(Lexi.Core.Api.Models.Foundations.Users.User user)
         {
             try
@@ -391,9 +391,7 @@ We're thrilled to announce some fantastic new features in our bot, designed to e
 
 4. Train While You Wait: Turn idle moments into learning opportunities! Now, you can train and expand your vocabulary while waiting for feedback or responses.
 
-To explore these exciting features and more, for a detailed explanation:
-
-https://www.loom.com/share/86d6f510493f496e8c6c62f712034d29
+To explore these exciting features and more, watch this video for a detailed explanation:
 
 Get ready to elevate your learning experience to new heights with our enhanced bot! 🚀
 
@@ -401,9 +399,37 @@ Happy learning!
 
 ©️ Tarteeb Team";
 
-                await botClient.SendTextMessageAsync(
-                    chatId: user.TelegramId,
-                    text: notificationMessage);
+                string wwwRootPath = Environment.CurrentDirectory;
+                string audioDirectory = Path.Combine(wwwRootPath, "wwwroot", "ReleaseVideos");
+
+                string filePath = Path.Combine(audioDirectory, $"Video-20240513_164525-Meeting Recording.mp4");
+
+                if (System.IO.File.Exists(filePath))
+                {
+                    using (var fileStream = System.IO.File.OpenRead(filePath))
+                    {
+                        await botClient.SendVideoAsync(
+                            chatId: user.TelegramId,
+                            video: InputFile.FromStream(fileStream),
+                            caption: notificationMessage,
+                            replyMarkup: MenuMarkup());
+                    }
+                }
+
+                try
+                {
+                    System.IO.File.Delete(filePath);
+
+                    if (Directory.Exists(audioDirectory))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
             }
             catch (Exception)
             {
