@@ -53,52 +53,76 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
             }
             else if (user.State is State.PartOneTest && update.Message.Voice is not null)
             {
-                List<(string, string, string)> wordsToLearn = this.wordsToLearn.NewWordsToLearn();
-
-                var random = new Random();
-                var randomWord1 = wordsToLearn[random.Next(wordsToLearn.Count)];
-                var randomWord2 = wordsToLearn[random.Next(wordsToLearn.Count)];
-
-                var textWithRandomWords = $"🔍 Practice them 🔍\n\n" +
-                                           $"1. {randomWord1.Item1} - {randomWord1.Item2} {randomWord1.Item3}\n\n" +
-                                           $"2. {randomWord2.Item1} - {randomWord2.Item2} {randomWord2.Item3}";
-
-
-                var loadingMessage = await client.SendTextMessageAsync(
-                chatId: update.Message.Chat.Id,
-                text: $"📝 Submitting Answer for IELTS Part 1\n\n" +
-                $"{textWithRandomWords}\n\n" +
-                $"Loading...");
-
-                messageId2.Value = loadingMessage.MessageId;
-                var file = await client.GetFileAsync(update.Message.Voice.FileId);
-                string filePath;
-
-                using (var stream = new MemoryStream())
+                try
                 {
-                    await client.DownloadFileAsync(file.FilePath, stream);
-                    stream.Position = 0;
+                    // Fetch new words to learn, handling potential emptiness
+                    List<(string, string, string)> wordsToLearn;
+                    try
+                    {
+                        wordsToLearn = this.wordsToLearn.NewWordsToLearn();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log or handle the exception appropriately (e.g., send error message)
+                        Console.WriteLine($"Error retrieving new words: {ex.Message}");
+                        wordsToLearn = new List<(string, string, string)>(); // Empty list
+                    }
 
-                    filePath = ReturningConvertOggToWavSecond(stream, update.Message.Chat.Id);
-                }
+                    if (wordsToLearn.Count > 0)
+                    {
+                        var random = new Random();
+                        var randomWord1 = wordsToLearn[random.Next(wordsToLearn.Count)];
+                        var randomWord2 = wordsToLearn[random.Next(wordsToLearn.Count)];
 
-                var speechText = await this.speechBroker.RecognizeSpeechAsync(filePath);
+                        var textWithRandomWords = $" Practice them \n\n" +
+                                                   $"1. {randomWord1.Item1} - {randomWord1.Item2} {randomWord1.Item3}\n\n" +
+                                                   $"2. {randomWord2.Item1} - {randomWord2.Item2} {randomWord2.Item3}";
 
-                // Split the speechText into words
-                string[] words = speechText.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                        var loadingMessage = await client.SendTextMessageAsync(
+                            chatId: update.Message.Chat.Id,
+                            text: $" Submitting Answer for IELTS Part 1\n\n" +
+                                  $"{textWithRandomWords}\n\n" +
+                                  $"Loading...");
+                        messageId2.Value = loadingMessage.MessageId;
+                    }
+                    else
+                    {
+                        // Inform the user there are no words to learn
+                        await client.SendTextMessageAsync(
+                            chatId: update.Message.Chat.Id,
+                            text: " There are currently no new words to learn for IELTS Part 1. Check back later or try a different section!");
+                    }
 
-                if (words.Length <= 3)
-                {
-                    string shortAnswerMessage = "Your answer seems to be too short. Please provide a more detailed response.";
-                    await botClient.SendTextMessageAsync(chatId: user.TelegramId, text: shortAnswerMessage);
-                    return true;
-                }
 
-                if (System.IO.File.Exists(filePath))
-                {
-                    System.IO.File.Delete(filePath);
-                }
-                string feedbackTemplate = $@"📝 *Feedback for IELTS Part 1 Answer*
+
+                    var file = await client.GetFileAsync(update.Message.Voice.FileId);
+                    string filePath;
+
+                    using (var stream = new MemoryStream())
+                    {
+                        await client.DownloadFileAsync(file.FilePath, stream);
+                        stream.Position = 0;
+
+                        filePath = ReturningConvertOggToWavSecond(stream, update.Message.Chat.Id);
+                    }
+
+                    var speechText = await this.speechBroker.RecognizeSpeechAsync(filePath);
+
+                    // Split the speechText into words
+                    string[] words = speechText.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (words.Length <= 3)
+                    {
+                        string shortAnswerMessage = "Your answer seems to be too short. Please provide a more detailed response.";
+                        await botClient.SendTextMessageAsync(chatId: user.TelegramId, text: shortAnswerMessage);
+                        return true;
+                    }
+
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                    string feedbackTemplate = $@"📝 *Feedback for IELTS Part 1 Answer*
 
 🗣 *{user.Name}'s Answer:* 
 
@@ -128,42 +152,51 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
 This feedback template is for the question '{user.ImprovedSpeech}'. If your answer is for a different question, 
 please provide feedback accordingly, but if the answer is based on the question, just skip this option.
 ";
-                string prompt = $"As you've attempted IELTS Part 1, please provide feedback " +
-                    $"based on the given answer:\n\n'{feedbackTemplate}' for this question '{user.ImprovedSpeech}'. " +
-                    $"Remember, provide feedback only based on this template, and keep it simple and student-friendly. 😊";
+                    string prompt = $"As you've attempted IELTS Part 1, please provide feedback " +
+                        $"based on the given answer:\n\n'{feedbackTemplate}' for this question '{user.ImprovedSpeech}'. " +
+                        $"Remember, provide feedback only based on this template, and keep it simple and student-friendly. 😊";
 
-                string secondPromt = $"Just improve this answer of part one question based on IELTS 7 score, and return only improved one.";
+                    string secondPromt = $"Just improve this answer of part one question based on IELTS 7 score, and return only improved one.";
 
-                var feedback = await this.openAIService.AnalizeRequestAsync(speechText, prompt);
-                var improvedSpeech = await this.openAIService.AnalizeRequestAsync(speechText, secondPromt);
+                    var feedback = await this.openAIService.AnalizeRequestAsync(speechText, prompt);
+                    var improvedSpeech = await this.openAIService.AnalizeRequestAsync(speechText, secondPromt);
 
-                var improvedSpeechPath = await this.speechBroker
-                    .CreateAndSaveSpeechAudioPartOneAsync(improvedSpeech, $"{user.TelegramId}");
+                    var improvedSpeechPath = await this.speechBroker
+                        .CreateAndSaveSpeechAudioPartOneAsync(improvedSpeech, $"{user.TelegramId}", client);
 
-                var improvedSpeechText = await this.speechBroker
-                    .RecognizeSpeechAsync(improvedSpeechPath);
 
-                if (System.IO.File.Exists(improvedSpeechPath))
-                {
-                    using (var fileStream = System.IO.File.OpenRead(improvedSpeechPath))
+                    var improvedSpeechText = await this.speechBroker
+                        .RecognizeSpeechAsync(improvedSpeechPath);
+
+
+                    if (System.IO.File.Exists(improvedSpeechPath))
                     {
-                        await botClient.DeleteMessageAsync(chatId: user.TelegramId, messageId: messageId2.Value);
+                        using (var fileStream = System.IO.File.OpenRead(improvedSpeechPath))
+                        {
+                            await botClient.DeleteMessageAsync(chatId: user.TelegramId, messageId: messageId2.Value);
 
-                        await botClient.SendTextMessageAsync(
-                            chatId: user.TelegramId,
-                            replyMarkup: PartOneMarkup(),
-                            text: feedback);
+                            await botClient.SendTextMessageAsync(
+                                chatId: user.TelegramId,
+                                replyMarkup: PartOneMarkup(),
+                                text: feedback);
 
-                        await botClient.SendVoiceAsync(
-                            chatId: user.TelegramId,
-                            caption: $"🎙️ Improved Version - Part 1 🎙️\n\n{improvedSpeechText}\n\nTry like this 🤯",
-                            voice: InputFile.FromStream(fileStream));
+                            await botClient.SendVoiceAsync(
+                                chatId: user.TelegramId,
+                                caption: $"🎙️ Improved Version - Part 1 🎙️\n\n{improvedSpeechText}\n\nTry like this 🤯",
+                                voice: InputFile.FromStream(fileStream));
+                        }
+                    }
+
+                    if (System.IO.File.Exists(improvedSpeechPath))
+                    {
+                        System.IO.File.Delete(improvedSpeechPath);
                     }
                 }
-
-                if (System.IO.File.Exists(improvedSpeechPath))
+                catch (Exception ex)
                 {
-                    System.IO.File.Delete(improvedSpeechPath);
+                    await client.SendTextMessageAsync(
+                       chatId: 1924521160,
+                       text: $"Error here: {ex.Message}\nInner ex: {ex.InnerException}");
                 }
 
                 return true;
@@ -208,7 +241,7 @@ please provide feedback accordingly, but if the answer is based on the question,
                 await client.SendTextMessageAsync(
                       chatId: update.Message.Chat.Id,
                       text: $"🎓LexiEnglishBot🎓\n\n" +
-                      $"Wrong choice 🙂");
+                      $"Wrong choice 🙂 (/start)");
 
                 return true;
             }

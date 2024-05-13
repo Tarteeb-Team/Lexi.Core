@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
 {
@@ -173,6 +174,104 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
 
                 return true;
             }
+            else if (update.Message.Text == "/writeusers")
+            {
+                var users = this.updateStorageBroker.SelectAllUsers().ToList();
+
+                string filePath = "users.txt";
+
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    foreach (var i in users)
+                    {
+                        writer.WriteLine($"ID: {i.Id}, " +
+                                         $"TelegramId: {i.TelegramId}, " +
+                                         $"TelegramName: {i.TelegramName}, " +
+                                         $"Level: {i.Level}, " +
+                                         $"State: {i.State}, " +
+                                         $"Name: {i.Name}, " +
+                                         $"ImprovedSpeech: {i.ImprovedSpeech}, " +
+                                         $"Overall: {user.Overall}");
+
+                    }
+                }
+
+
+                using (var fileStream = System.IO.File.OpenRead(filePath))
+                {
+                    var fileToSend = InputFile.FromStream(fileStream, "users.txt");
+                    await client.SendDocumentAsync(
+                        chatId: update.Message.Chat.Id,
+                        document: fileToSend,
+                        caption: "Here is the list of users."
+                    );
+                }
+
+                return true;
+            }
+            else if (update.Message.Text == "/writereviews")
+            {
+                System.Collections.Generic.List<Models.Foundations.Reviews.Review> reviews = this.updateStorageBroker.SelectAllReviews().ToList();
+
+                string filePath = "reveiws.txt";
+
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    foreach (var review in reviews)
+                    {
+                        writer.WriteLine($"ID: {review.Id}, " +
+                                         $"TelegramId: {review.TelegramId}, " +
+                                         $"TelegramUserName: {review.TelegramUserName}, " +
+                                         $"Text: {review.Text}");
+                    }
+                }
+
+
+                using (var fileStream = System.IO.File.OpenRead(filePath))
+                {
+                    var fileToSend = InputFile.FromStream(fileStream, "users.txt");
+                    await client.SendDocumentAsync(
+                        chatId: update.Message.Chat.Id,
+                        document: fileToSend,
+                        caption: "Here is the list of users."
+                    );
+                }
+
+                return true;
+            }
+            else if (update.Message.Text == "/writequestions")
+            {
+                // Retrieve questions from the storage broker
+                System.Collections.Generic.List<Models.Foundations.Questions.Question> questions = this.updateStorageBroker.SelectAllQuestions().ToList();
+
+                string filePath = "questions.txt";
+
+                // Write questions to a text file
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    foreach (var question in questions)
+                    {
+                        writer.WriteLine($"ID: {question.Id}, " +
+                                         $"Content: {question.Content}, " +
+                                         $"Number: {question.Number}, " +
+                                         $"QuestionType: {question.QuestionType}");
+                    }
+                }
+
+                // Send the document containing questions
+                using (var fileStream = System.IO.File.OpenRead(filePath))
+                {
+                    var fileToSend = InputFile.FromStream(fileStream, "questions.txt");
+                    await client.SendDocumentAsync(
+                        chatId: update.Message.Chat.Id,
+                        document: fileToSend,
+                        caption: "Here is the list of questions."
+                    );
+                }
+
+                return true;
+            }
+
             else if (update.Message.Text == "/notifygood")
             {
                 await NotifyAllUsersGoodAsync();

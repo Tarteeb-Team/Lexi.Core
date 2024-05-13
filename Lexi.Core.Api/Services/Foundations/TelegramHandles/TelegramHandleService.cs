@@ -6,6 +6,7 @@
 using Lexi.Core.Api.Brokers.Speeches;
 using Lexi.Core.Api.Brokers.Telegrams;
 using Lexi.Core.Api.Brokers.UpdateStorages;
+using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Services.Foundations.ImproveSpeech;
 using Lexi.Core.Api.Services.Orchestrations;
 using Microsoft.AspNetCore.Hosting;
@@ -17,6 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
 {
@@ -74,7 +76,7 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
 
             requestTimer = new System.Timers.Timer
             {
-                Interval = TimeSpan.FromDays(1).TotalMilliseconds,
+                Interval = TimeSpan.FromMinutes(10).TotalMilliseconds,
                 AutoReset = true,
                 Enabled = true
             };
@@ -109,12 +111,103 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
             });
         }
 
+        //private Models.Foundations.Questions.Question ParseQuestionInfo(string line)
+        //{
+        //    // Split the line by commas
+        //    string[] parts = line.Split(',');
+
+        //    // Create a new Question instance
+        //    Models.Foundations.Questions.Question question = new Models.Foundations.Questions.Question();
+
+        //    // Iterate through each part to extract question information
+        //    foreach (var part in parts)
+        //    {
+        //        // Split each part by colon to separate property name and value
+        //        string[] keyValue = part.Trim().Split(':');
+
+        //        if (keyValue.Length == 2)
+        //        {
+        //            // Trim the property name and value
+        //            string propertyName = keyValue[0].Trim();
+        //            string propertyValue = keyValue[1].Trim();
+
+        //            // Assign the value to the corresponding property of the question object
+        //            switch (propertyName)
+        //            {
+        //                case "ID":
+        //                    if (Guid.TryParse(propertyValue, out Guid id))
+        //                        question.Id = id;
+        //                    break;
+        //                case "Content":
+        //                    question.Content = propertyValue;
+        //                    break;
+        //                case "Number":
+        //                    if (int.TryParse(propertyValue, out int number))
+        //                        question.Number = number;
+        //                    break;
+        //                case "QuestionType":
+        //                    question.QuestionType = propertyValue;
+        //                    break;
+        //                    // Add more cases for other properties if needed
+        //            }
+        //        }
+        //    }
+
+        //    return question;
+        //}
+
+
         private async Task ProcessMessageHandler(Update update, ITelegramBotClient client)
         {
             try
             {
-                var user = this.updateStorageBroker
+                Models.Foundations.Users.User user = this.updateStorageBroker
                      .SelectAllUsers().FirstOrDefault(u => u.TelegramId == update.Message.Chat.Id);
+
+                //if (update.Message.Type == MessageType.Document && update.Message.Document.FileName == "questions.txt")
+                //{
+                //    var fileId = update.Message.Document.FileId;
+
+                //    // Download the file
+                //    var file = await client.GetFileAsync(fileId);
+
+                //    using (var fileStream = new MemoryStream())
+                //    {
+                //        // Download the file's content into a MemoryStream
+                //        await client.DownloadFileAsync(file.FilePath, fileStream);
+
+                //        // Reset the position of the stream to the beginning
+                //        fileStream.Position = 0;
+
+                //        using (var reader = new StreamReader(fileStream))
+                //        {
+                //            // Read the content of the file line by line
+                //            string line;
+                //            while ((line = reader.ReadLine()) != null)
+                //            {
+                //                // Parse the line to extract question information
+                //                Models.Foundations.Questions.Question questionInfo = ParseQuestionInfo(line);
+
+                //                // Check if the question already exists in the database
+                //                var existingQuestion = this.updateStorageBroker
+                //                    .SelectAllQuestions().FirstOrDefault(q => q.Id == questionInfo.Id);
+
+                //                // If the question exists, update the question; otherwise, insert the question
+                //                if (existingQuestion != null)
+                //                {
+                //                    await this.updateStorageBroker.UpdateQuestionAsync(questionInfo);
+                //                }
+                //                else
+                //                {
+                //                    await this.updateStorageBroker.InsertQuestionAsync(questionInfo);
+                //                }
+                //            }
+                //        }
+                //    }
+
+                //    await client.SendTextMessageAsync(update.Message.Chat.Id, "Questions added to the database.");
+                //}
+
 
                 if (update.Message.Text is not null)
                 {

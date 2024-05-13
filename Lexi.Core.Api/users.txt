@@ -1,0 +1,5 @@
+ID: 547c93a4-c178-4813-a9d7-d2ef4c7f5c73, TelegramId: 0, TelegramName: , Level: A1, State: Level, Name: , ImprovedSpeech: , Overall: 
+ID: 37eaf864-078b-4d5a-8f27-f49ec390dcb8, TelegramId: 5066019552, TelegramName: azam_amonov, Level: B1 😄, State: Active, Name: A’zam, ImprovedSpeech: Hi. Hello., Overall: 
+ID: c0169931-dba5-4b7a-9748-f56f9f78b776, TelegramId: 2064869905, TelegramName: , Level: A2 😉, State: Settigns, Name: :), ImprovedSpeech: What kind of facilities do you think are important for a good study environment?, Overall: 
+ID: 6884849b-a76f-4399-867a-d3ec70dd0c18, TelegramId: 1924521160, TelegramName: zafar_urakov, Level: A1, State: Level, Name: Zafar, ImprovedSpeech: , Overall: 
+ID: 7b29a102-47c0-4d3b-bf7d-17c5e2d1f12b, TelegramId: 1746868866, TelegramName: Johnnysenior, Level: A1, State: Level, Name: Jamshidbek, ImprovedSpeech: , Overall: 

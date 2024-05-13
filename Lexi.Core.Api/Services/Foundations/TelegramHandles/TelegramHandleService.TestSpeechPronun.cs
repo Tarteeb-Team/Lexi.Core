@@ -35,19 +35,29 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
             if (user.State is State.TestSpeechPronun && update.Message.Text == "Generate a question 🎁")
             {
                 List<Question> questions = this.updateStorageBroker.SelectAllQuestions().ToList();
-                var random = new Random();
-                var randomIndex = random.Next(0, questions.Count);
 
-                var question = questions[randomIndex]; 
-                var questionText = question.Content;
+                if (questions.Count > 0) 
+                {
+                    var random = new Random();
+                    var randomIndex = random.Next(0, questions.Count - 1);
 
-                await client.SendTextMessageAsync(
-                    chatId: update.Message.Chat.Id,
-                    text: $"🎁 Here's your question: \n\n❓{questionText} \n\n" +
-                          "🎙️ Now, it's your turn! Express yourself with a beautiful voice message. " +
-                          "Let your pronunciation and fluency shine! 🌟");
+                    var question = questions[randomIndex];
+                    var questionText = question.Content;
 
-                return true;
+                    await client.SendTextMessageAsync(
+                        chatId: update.Message.Chat.Id,
+                        text: $"🎁 Here's your question: \n\n❓{questionText} \n\n" +
+                              "🎙️ Now, it's your turn! Express yourself with a beautiful voice message. " +
+                              "Let your pronunciation and fluency shine! 🌟");
+                    return true;
+                }
+                else
+                {
+                    await client.SendTextMessageAsync(
+                        chatId: update.Message.Chat.Id,
+                        text: "There are currently no questions available for speech pronunciation practice. Check back later or try a different section!"
+                    );
+                }
             }
 
             return false;

@@ -3,16 +3,16 @@ using System.IO;
 using System.Threading.Tasks;
 using System;
 using System.Linq;
+using Telegram.Bot;
 
 namespace Lexi.Core.Api.Brokers.Speeches
 {
     public partial class SpeechBroker
     {
-        public async ValueTask<string> CreateAndSaveSpeechAudioPartOneAsync(string text, string fileName)
+        public async ValueTask<string> CreateAndSaveSpeechAudioPartOneAsync(string text, string fileName, ITelegramBotClient client)
         {
             text = text.Replace("\n", "").Replace("\t", "").Replace("*", "").Replace("\\\"", "").Replace("/", "");
-            string audioFolderPath = Path.Combine(this.wwwRootPath, "PartOneFeedback", $"{fileName}.wav");
-
+            string audioFolderPath = Path.Combine(this.wwwRootPath, "PartOneFeedbackTwo", $"{fileName}.wav");
             long telegramId = Convert.ToInt64(fileName);
 
             var voiceType = this.updateStorageBroker.SelectAllQuestionTypes()
@@ -20,7 +20,7 @@ namespace Lexi.Core.Api.Brokers.Speeches
 
             string? voice = "en-US-AndrewNeural";
 
-            if (voiceType is not null)
+            if (voiceType.Type is not null)
             {
                 voice = voiceType.Type;
             }
@@ -29,7 +29,7 @@ namespace Lexi.Core.Api.Brokers.Speeches
 
             await SaveSpeechSynthesisResultToLocalDirectoryAsync(
                        speechSynthesisResult: speechSynthesisResult,
-                       filePath: audioFolderPath);
+                       filePath: audioFolderPath, client, telegramId);
 
 
             return audioFolderPath;
@@ -38,7 +38,9 @@ namespace Lexi.Core.Api.Brokers.Speeches
 
         private async Task SaveSpeechSynthesisResultToLocalDirectoryAsync(
         SpeechSynthesisResult speechSynthesisResult,
-        string filePath)
+        string filePath,
+        ITelegramBotClient client,
+        long telegramId)
         {
             if (speechSynthesisResult.Reason == ResultReason.SynthesizingAudioCompleted)
             {
@@ -52,6 +54,7 @@ namespace Lexi.Core.Api.Brokers.Speeches
                         }
 
                         await audioStream.SaveToWaveFileAsync(filePath);
+
                     }
 
                     speechSynthesisResult.Dispose();

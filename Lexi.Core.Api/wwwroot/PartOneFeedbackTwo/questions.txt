@@ -1,0 +1,328 @@
+ID: 682bd082-42a3-416f-9def-e304c43ca2b5, Content: Where do you study?, Number: 1, QuestionType: Study 🎓
+ID: e87a115c-98dd-40d3-b712-387217595f69, Content: What subject are you currently studying?, Number: 2, QuestionType: Study 🎓
+ID: 7d570a28-3750-4af0-b371-dba020a989fd, Content: How do you usually prepare for your exams?, Number: 3, QuestionType: Study 🎓
+ID: d9b0df6e-4d95-4b57-b7cb-36b99ebca422, Content: Do you prefer studying alone or in a group? Why?, Number: 4, QuestionType: Study 🎓
+ID: bcb204e2-e6e1-4b8e-b51b-4c72cf06a805, Content: How do you think education has changed over the years?, Number: 5, QuestionType: Study 🎓
+ID: b94c85b3-c219-4258-a3f6-a6579d2a66eb, Content: What kind of facilities do you think are important for a good study environment?, Number: 6, QuestionType: Study 🎓
+ID: 72eed1cb-9acd-4c7c-b136-c2887b4e8487, Content: Are you satisfied with the education system in your country? Why or why not?, Number: 7, QuestionType: Study 🎓
+ID: 2ebcde43-0ad5-4d58-83ed-79a8e6dce3ef, Content: Do you think it's important to have a good relationship with your teachers? Why?, Number: 8, QuestionType: Study 🎓
+ID: 3363c453-f404-45df-932f-8a4b36c7c05c, Content: What advice would you give to someone who is struggling with their studies?, Number: 9, QuestionType: Study 🎓
+ID: df4f27a1-4461-434d-9a62-c3a8297a0d8f, Content: Do you think it's necessary to go to university to be successful in life?, Number: 10, QuestionType: Study 🎓
+ID: 497074a2-4107-43c0-99b9-8681980a137a, Content: What are your hobbies?, Number: 1, QuestionType: Hobby 😊
+ID: c75a8a2b-afc3-4cec-9783-73e9b9adcbce, Content: How did you develop an interest in your hobbies?, Number: 2, QuestionType: Hobby 😊
+ID: 42c4e1f1-f6b3-4087-a297-9380b3591069, Content: Do you think hobbies are important? Why?, Number: 3, QuestionType: Hobby 😊
+ID: 3885b43f-fdd4-4e34-aabf-1273f296fd2f, Content: How do you find time for your hobbies?, Number: 4, QuestionType: Hobby 😊
+ID: 3930258d-ac6f-4f6b-89b7-fb62478a5717, Content: Have your hobbies changed over the years? Why or why not?, Number: 5, QuestionType: Hobby 😊
+ID: f58204f7-97d9-49c2-b7bb-7b9843e7a902, Content: Do you prefer indoor or outdoor hobbies? Why?, Number: 6, QuestionType: Hobby 😊
+ID: d232d54d-2b9c-4dfd-a717-e824d03c62dd, Content: What benefits do you think hobbies bring to people's lives?, Number: 7, QuestionType: Hobby 😊
+ID: 6ff196c8-9cd2-497c-85aa-8946fa1e73cd, Content: Would you like to turn your hobby into a profession? Why or why not?, Number: 8, QuestionType: Hobby 😊
+ID: e4f2cf88-e40a-4387-a381-bec921a33bd3, Content: Do you think people should try new hobbies? Why?, Number: 9, QuestionType: Hobby 😊
+ID: 5b75a33d-a1c4-4bf7-9007-5cc34236026a, Content: How do you think technology has affected people's hobbies in recent years?, Number: 10, QuestionType: Hobby 😊
+ID: 5dac6a9a-db3e-4467-811b-a1f358ca4fa9, Content: Tell me about your family., Number: 1, QuestionType: Family 🏠
+ID: 4054448e-b17b-40f2-9e6e-f277882c2e08, Content: How often do you spend time with your family?, Number: 2, QuestionType: Family 🏠
+ID: 31f8c1db-e592-4d9b-aa62-5031b06b5b07, Content: What activities do you usually do together as a family?, Number: 3, QuestionType: Family 🏠
+ID: 29056ace-6f96-4796-9fe5-bb8d0f015003, Content: Do you think it's important to maintain strong family bonds? Why?, Number: 4, QuestionType: Family 🏠
+ID: abc69c04-48f6-4902-967d-7ed9b5635e3a, Content: What role do grandparents play in your family?, Number: 5, QuestionType: Family 🏠
+ID: 1b502934-1746-43b4-bd00-14ddc0cb434c, Content: How has your family influenced your life choices?, Number: 6, QuestionType: Family 🏠
+ID: 1890dd54-fb4d-4041-9d01-38097f5afa73, Content: Do you think family dynamics have changed in recent years? How?, Number: 7, QuestionType: Family 🏠
+ID: f02520e6-1a42-4d94-99d2-226f0e500dd1, Content: How do families typically celebrate special occasions in your culture?, Number: 8, QuestionType: Family 🏠
+ID: 3ed3e707-906d-41c8-8d5e-7327976cb89c, Content: What responsibilities do you have within your family?, Number: 9, QuestionType: Family 🏠
+ID: 38e7104d-6dc1-414b-98e9-6b5a6c5349f0, Content: How do you resolve conflicts within your family?, Number: 10, QuestionType: Family 🏠
+ID: 1898903c-0ebc-4c46-b54a-971e07f7732f, Content: Do you enjoy traveling? Why or why not?, Number: 1, QuestionType: Travel ✈️
+ID: a11cb1be-8c3d-48e8-995e-24281655bfb3, Content: What is your favorite mode of transportation when traveling? Why?, Number: 2, QuestionType: Travel ✈️
+ID: bbc6a6a4-9273-45e8-bb21-9dfeac2c0604, Content: Where is the most interesting place you've ever visited?, Number: 3, QuestionType: Travel ✈️
+ID: d2f8ae01-af0f-4ef2-af41-6574f1749200, Content: Do you prefer to travel alone or with others? Why?, Number: 4, QuestionType: Travel ✈️
+ID: 4d6acf98-a293-4013-bdf9-988d47a59d27, Content: How do you think traveling broadens one's horizons?, Number: 5, QuestionType: Travel ✈️
+ID: b23bed0b-5516-4a6c-81be-46bd3cacaa81, Content: What do you think are the benefits of traveling to different countries?, Number: 6, QuestionType: Travel ✈️
+ID: 792365d7-f81d-4975-bcb4-5ed0aa2b95ea, Content: What kind of travel experiences do you think are the most valuable?, Number: 7, QuestionType: Travel ✈️
+ID: c9e1dc6d-7205-40e5-ae86-a5eb4a0df6a7, Content: How do you plan your trips?, Number: 8, QuestionType: Travel ✈️
+ID: f88fa519-d57b-4ea7-8396-773173d49d79, Content: Do you think it's important to learn about the culture of the places you visit? Why?, Number: 9, QuestionType: Travel ✈️
+ID: 65549f1c-0b19-4660-bf6d-cde5c744d588, Content: How do you think technology has changed the way people travel?, Number: 10, QuestionType: Travel ✈️
+ID: 897a2228-50cc-48e1-bfa2-28eedd87fa3e, Content: What is your current job?, Number: 1, QuestionType: Work 💼
+ID: 9afeb426-e5f9-4893-ab60-05d73d5024df, Content: Do you enjoy your work? Why or why not?, Number: 2, QuestionType: Work 💼
+ID: 434b6822-4305-4acd-8800-878485aca503, Content: What are your main responsibilities at work?, Number: 3, QuestionType: Work 💼
+ID: d6711618-114f-4675-9eb7-422a34976233, Content: How did you choose your career?, Number: 4, QuestionType: Work 💼
+ID: 6705eed1-0d93-492c-949f-6633344cef1f, Content: What skills do you think are important for success in your field?, Number: 5, QuestionType: Work 💼
+ID: b743ea04-5894-4b95-bea2-2f26d2644f19, Content: How do you balance your work and personal life?, Number: 6, QuestionType: Work 💼
+ID: b39f068e-a85c-4be3-97d2-46f04ef09ba5, Content: What changes would you like to see in your workplace?, Number: 7, QuestionType: Work 💼
+ID: 36f1b5b0-9f26-40b7-8687-36c588f5228e, Content: How do you handle stress at work?, Number: 8, QuestionType: Work 💼
+ID: b5f98023-d1c6-4dff-aa7d-72a59d6a9488, Content: What do you think the future of work will look like?, Number: 9, QuestionType: Work 💼
+ID: eef1f5e0-066f-4e95-926e-3b9a90116fa8, Content: Do you think it's important to enjoy your job? Why?, Number: 10, QuestionType: Work 💼
+ID: 85326b93-8bfc-4228-be28-8636736c8f75, Content: Can you describe your hometown?, Number: 1, QuestionType: Hometown 🏡
+ID: 60001f28-a812-4374-9a80-0c361731fa66, Content: What do you like most about your hometown?, Number: 2, QuestionType: Hometown 🏡
+ID: 0f0a7acb-b38a-42dd-9ecb-e7a1b1667388, Content: How has your hometown changed over the years?, Number: 3, QuestionType: Hometown 🏡
+ID: e39bb579-019e-4165-be2a-59ab29a29e9c, Content: What are some popular attractions or landmarks in your hometown?, Number: 4, QuestionType: Hometown 🏡
+ID: 7153e451-2750-430a-8976-1be4acb2cf43, Content: What kind of activities are available for visitors in your hometown?, Number: 5, QuestionType: Hometown 🏡
+ID: 1744f20a-2dfc-4268-97f6-5c6a85e20077, Content: Do you think your hometown is a good place to live? Why or why not?, Number: 6, QuestionType: Hometown 🏡
+ID: 85a753c2-9f9b-4ba9-b45c-8053a923053d, Content: What is the weather like in your hometown?, Number: 7, QuestionType: Hometown 🏡
+ID: 452c8db6-0ee5-446a-a23d-a5da36dd0c92, Content: How do people typically spend their leisure time in your hometown?, Number: 8, QuestionType: Hometown 🏡
+ID: 005e29d0-95a3-495f-b058-8d66032f9ad3, Content: What are the main industries or sources of employment in your hometown?, Number: 9, QuestionType: Hometown 🏡
+ID: 1b640e79-0b93-4c55-bdfc-d2bcfd48cfbe, Content: How do you think growing up in your hometown has influenced you?, Number: 10, QuestionType: Hometown 🏡
+ID: b458dadf-7f26-46ce-b13d-fa01d11b6f2f, Content: Can you describe your home?, Number: 1, QuestionType: Home 🏡
+ID: a697b721-a4ed-4e85-a98c-a4bab6850311, Content: What do you like the most about your home?, Number: 2, QuestionType: Home 🏡
+ID: b5543df8-fec4-496b-8dbb-8a4c8a4fe015, Content: How long have you lived in your current home?, Number: 3, QuestionType: Home 🏡
+ID: f445a225-c8f9-441b-886b-2140542399f8, Content: Do you prefer living in a house or an apartment?, Number: 4, QuestionType: Home 🏡
+ID: bb08361e-f924-4b87-b9b0-02b7f17e7407, Content: What is your favorite room in your home and why?, Number: 5, QuestionType: Home 🏡
+ID: 58e216e3-ff45-4a24-9a98-cfe0f64397d4, Content: Are there any changes you would like to make to your home?, Number: 6, QuestionType: Home 🏡
+ID: 007e8354-5d4b-44c1-a4b4-eec73a5817d0, Content: Who do you live with in your home?, Number: 7, QuestionType: Home 🏡
+ID: 56dbb43d-26f0-4ffe-b540-adb0f8d2486d, Content: What makes a house feel like a home to you?, Number: 8, QuestionType: Home 🏡
+ID: 3107d650-e086-489e-9a47-d43b41e35c33, Content: Do you enjoy spending time at home or outside more?, Number: 9, QuestionType: Home 🏡
+ID: 10ce654a-7009-4b7c-af47-959a6b9a183c, Content: Can you share a special memory related to your home?, Number: 10, QuestionType: Home 🏡
+ID: 15351a5b-b4ed-4dcc-927c-560a9b5e78d6, Content: Do you enjoy looking at art?, Number: 1, QuestionType: Art 🎨
+ID: 62f95823-9273-4ebe-a7ac-275a05abd31c, Content: Have you ever tried creating art yourself?, Number: 2, QuestionType: Art 🎨
+ID: 6b0216ab-06eb-4cf7-99ad-f31ec42ff313, Content: What kind of art do you like the most?, Number: 3, QuestionType: Art 🎨
+ID: a070fdca-8885-4cc0-b0a6-b69cf3b6e0c3, Content: How often do you visit art galleries or museums?, Number: 4, QuestionType: Art 🎨
+ID: dae87116-e399-4906-8f1b-f4f3d12c6daa, Content: Who is your favorite artist and why?, Number: 5, QuestionType: Art 🎨
+ID: a3c231c1-6363-429c-ba8a-d1266cd9a726, Content: How does art make you feel?, Number: 6, QuestionType: Art 🎨
+ID: d7dbe563-8c04-44fb-b59d-ecee96c17ce9, Content: Do you think art is important in society?, Number: 7, QuestionType: Art 🎨
+ID: 2b18a66e-fe6e-4774-82e4-2df8bc8b365f, Content: Can art change the way people think?, Number: 8, QuestionType: Art 🎨
+ID: 99b1544f-1b55-4fe0-9f29-c23dd3a50e12, Content: Do you think art should be taught in schools?, Number: 9, QuestionType: Art 🎨
+ID: 0f39e82c-13c9-4bf0-acce-e02cb1902884, Content: How has art changed over the years?, Number: 10, QuestionType: Art 🎨
+ID: 5c3b0484-dd41-43d0-a086-cb6c35dbdf19, Content: Do you ride bicycles often?, Number: 1, QuestionType: Bicycles 🚲
+ID: 5a40bc4a-0478-4b5e-9e1b-d2200d5b98c8, Content: What do you like about riding bicycles?, Number: 2, QuestionType: Bicycles 🚲
+ID: 1db4d789-a94e-4867-aa18-1c23f274faf0, Content: Where do you usually ride your bicycle?, Number: 3, QuestionType: Bicycles 🚲
+ID: 96d3218a-81a1-4cd8-8910-a8b58bdd9ab2, Content: What are the benefits of riding bicycles?, Number: 4, QuestionType: Bicycles 🚲
+ID: ef61f2e0-378c-4348-a79e-75100729128e, Content: Do you think bicycles are popular in your country?, Number: 5, QuestionType: Bicycles 🚲
+ID: 5a1f4cc3-e163-4339-bc43-547ca3446c01, Content: Have you ever been on a long bicycle trip?, Number: 6, QuestionType: Bicycles 🚲
+ID: bb0074cd-2c75-4e20-bd43-bedfdb7e21a2, Content: Do you prefer riding bicycles alone or with others?, Number: 7, QuestionType: Bicycles 🚲
+ID: 69991da7-3a96-4f35-b7db-c7eb2c5cb560, Content: Would you like to see more bicycle lanes in your city?, Number: 8, QuestionType: Bicycles 🚲
+ID: 301ff91f-9991-4f7b-93c4-887a27162bf0, Content: What safety measures should cyclists take?, Number: 9, QuestionType: Bicycles 🚲
+ID: 0fc273d4-2c48-4d94-9736-e80c04a9f623, Content: Can you ride a bicycle? If yes, how did you learn?, Number: 10, QuestionType: Bicycles 🚲
+ID: 71ff4a71-1bc1-4880-987c-5b4db4b5c615, Content: How do you usually celebrate your birthday?, Number: 1, QuestionType: Birthdays 🎂
+ID: e0022cf3-afbd-40f2-8e4b-ae69765aa0bb, Content: What is your most memorable birthday celebration?, Number: 2, QuestionType: Birthdays 🎂
+ID: bf732edc-af1c-492a-8ccc-b3d69767d1f6, Content: Do you think birthdays are important?, Number: 3, QuestionType: Birthdays 🎂
+ID: fab8e72a-c2f1-44a4-bc12-00473c7b9e70, Content: How do people celebrate birthdays in your country?, Number: 4, QuestionType: Birthdays 🎂
+ID: ae71e439-7c8e-4e01-9975-744ea46f50d2, Content: Do you enjoy attending birthday parties?, Number: 5, QuestionType: Birthdays 🎂
+ID: 8414425a-90c7-4607-a046-939c27e592c6, Content: What was the best birthday gift you ever received?, Number: 6, QuestionType: Birthdays 🎂
+ID: c1c40ba3-2a4b-4976-a338-52c93a9bea19, Content: Do you prefer small or large birthday celebrations?, Number: 7, QuestionType: Birthdays 🎂
+ID: 5dbbf0d0-68c7-41fd-8960-c8134eabf745, Content: How do you plan birthday parties for your family or friends?, Number: 8, QuestionType: Birthdays 🎂
+ID: 0b461a82-f7cf-43dd-9e54-5d7543208760, Content: Do you think birthdays become less important as people get older?, Number: 9, QuestionType: Birthdays 🎂
+ID: 4417f9e8-0804-4694-9003-9a9f2352be6f, Content: Can you remember a particularly special birthday from your childhood?, Number: 10, QuestionType: Birthdays 🎂
+ID: 01656007-321f-4db4-9980-571acc82b8a0, Content: Can you describe your childhood?, Number: 1, QuestionType: Childhood 👶
+ID: dd7e3841-989e-4655-8c96-86d275fa0a7f, Content: What were your favorite childhood activities?, Number: 2, QuestionType: Childhood 👶
+ID: b90f0d11-b53c-43fe-b5b7-1c1dd726a4c0, Content: Did you have any special toys or games you liked to play with?, Number: 3, QuestionType: Childhood 👶
+ID: b9d6081e-f1ba-436e-8439-d2271bf10e1e, Content: What was your favorite subject in school when you were a child?, Number: 4, QuestionType: Childhood 👶
+ID: 361f51dd-29ce-4f3f-af0b-814f7d6cc87f, Content: How has your childhood influenced your life today?, Number: 5, QuestionType: Childhood 👶
+ID: 215e8af3-82ae-4954-a9ba-fa709afad332, Content: What do you miss the most about your childhood?, Number: 6, QuestionType: Childhood 👶
+ID: 09146755-1e3d-435c-9fdc-25ff8e492841, Content: Did you have any pets when you were growing up?, Number: 7, QuestionType: Childhood 👶
+ID: 73f27048-1cba-4946-90c0-1ae576c1b5f1, Content: How did you spend your free time as a child?, Number: 8, QuestionType: Childhood 👶
+ID: 8e13e245-e817-4db0-b3fe-fe689f7558e6, Content: Who was your best friend when you were young?, Number: 9, QuestionType: Childhood 👶
+ID: 09dd7848-a321-4ca0-8996-3a16b3363f1f, Content: Can you share a funny or memorable childhood story?, Number: 10, QuestionType: Childhood 👶
+ID: 3192cd84-77f6-44f7-bb98-8aedffdb0880, Content: How would you describe your fashion style?, Number: 1, QuestionType: Clothes 👗
+ID: aed0b6c6-6e57-4aab-a26c-76968adc5266, Content: Do you enjoy shopping for clothes?, Number: 2, QuestionType: Clothes 👗
+ID: 3ca6fead-34de-4b33-98b9-0027bab2d497, Content: Where do you usually buy your clothes?, Number: 3, QuestionType: Clothes 👗
+ID: 749cd3d8-8704-4503-97b7-d1586b16b45e, Content: Do you prefer comfortable or stylish clothes?, Number: 4, QuestionType: Clothes 👗
+ID: e92a09e8-57f5-4630-bbfd-dd9d290663bb, Content: How do you decide what to wear each day?, Number: 5, QuestionType: Clothes 👗
+ID: 4a4a28ac-68a9-4537-bfb8-ad5121ced090, Content: Do you have a favorite piece of clothing?, Number: 6, QuestionType: Clothes 👗
+ID: 1cdd83ac-4da6-49c6-aa62-f12578929c82, Content: What colors do you like to wear the most?, Number: 7, QuestionType: Clothes 👗
+ID: 9424d155-b3df-437f-8895-9801a8ef84da, Content: Do you follow fashion trends?, Number: 8, QuestionType: Clothes 👗
+ID: 84fcecca-7f86-4e40-8553-05196eb173f0, Content: Have you ever bought clothes online? If so, what was your experience like?, Number: 9, QuestionType: Clothes 👗
+ID: 62c301f1-b137-4310-856e-c440417eca83, Content: Do you think people judge others based on their clothing choices?, Number: 10, QuestionType: Clothes 👗
+ID: 2a03b80b-bc84-46ee-8739-6b59b1ae28e5, Content: How often do you use a computer?, Number: 1, QuestionType: Computer 💻
+ID: 2e5168bd-0c05-4deb-8e37-51ebac422cdd, Content: What do you mainly use your computer for?, Number: 2, QuestionType: Computer 💻
+ID: a119dd99-3954-4fdc-93c7-fd7922fc1bb0, Content: Do you prefer laptops or desktop computers?, Number: 3, QuestionType: Computer 💻
+ID: 5323fb9c-f0d9-4cd9-a140-4a3b7f2657de, Content: How has the computer changed people's lives?, Number: 4, QuestionType: Computer 💻
+ID: e52f67c9-3ad9-446c-a569-08bbe098699f, Content: Can you remember the first time you used a computer?, Number: 5, QuestionType: Computer 💻
+ID: e48f0070-7696-4b82-bbab-0ee78fb27c04, Content: Do you think children should learn how to use computers at school?, Number: 6, QuestionType: Computer 💻
+ID: 2aeff5af-1ea6-4994-ada9-58155969a74f, Content: What computer skills do you think are important for the future?, Number: 7, QuestionType: Computer 💻
+ID: d88e2ddf-7973-49c7-aec2-bdc24117db64, Content: How has the internet affected the way people use computers?, Number: 8, QuestionType: Computer 💻
+ID: 43c7f789-0f9b-4b21-801e-5c0fefe36f96, Content: Do you think computers have made life easier or more complicated?, Number: 9, QuestionType: Computer 💻
+ID: e558b37b-1c77-4b38-96d2-8fe64b3485c5, Content: What do you think the future of computers will be like?, Number: 10, QuestionType: Computer 💻
+ID: 74c4bc12-2ccb-472c-b847-8e804f4efe64, Content: Can you describe your typical daily routine?, Number: 1, QuestionType: Daily Routine 🌞
+ID: 989743f3-4a72-4ee1-bfbf-e5b451dcdf57, Content: What time do you usually wake up in the morning?, Number: 2, QuestionType: Daily Routine 🌞
+ID: ab0e2a49-0e37-4a54-a38c-4f87ad75a7a2, Content: What is the first thing you do after waking up?, Number: 3, QuestionType: Daily Routine 🌞
+ID: 12ad097f-d5c3-4429-949b-c4bb59e32c8a, Content: How do you like to start your day?, Number: 4, QuestionType: Daily Routine 🌞
+ID: f353666c-89e2-4fa9-b0da-38e04485ae25, Content: What do you usually eat for breakfast?, Number: 5, QuestionType: Daily Routine 🌞
+ID: 79242405-76f0-4c2e-9e96-c01a4fc904f4, Content: How do you organize your day to be productive?, Number: 6, QuestionType: Daily Routine 🌞
+ID: 4e9a998e-5b8b-482f-b03b-47ae9846e59a, Content: What do you do in the evenings before going to bed?, Number: 7, QuestionType: Daily Routine 🌞
+ID: 567eb0aa-bed2-4fe0-b95e-8d38ec57dda5, Content: Do you have any rituals or habits you follow every day?, Number: 8, QuestionType: Daily Routine 🌞
+ID: 41140d54-c478-4cd9-9b69-51f85bce763b, Content: How do you unwind after a busy day?, Number: 9, QuestionType: Daily Routine 🌞
+ID: 4777b80f-ddd0-491a-b03f-68a03a4c27b0, Content: Do you prefer weekdays or weekends? Why?, Number: 10, QuestionType: Daily Routine 🌞
+ID: 18b03862-cfb4-485b-b967-3171b749fdaf, Content: Do you often use dictionaries?, Number: 1, QuestionType: Dictionaries 📚
+ID: 94608280-fddb-40dd-a7ae-354ab9c180cf, Content: What type of dictionaries do you use the most?, Number: 2, QuestionType: Dictionaries 📚
+ID: ac746aaf-7a60-497f-b68c-30a0fdfafff6, Content: How do dictionaries help you with your studies or work?, Number: 3, QuestionType: Dictionaries 📚
+ID: b6c77aae-1872-4e20-bae4-392b44663a48, Content: Do you prefer using paper dictionaries or digital dictionaries?, Number: 4, QuestionType: Dictionaries 📚
+ID: 467f8c7a-540c-44c4-b79a-c4b09f16ceb9, Content: Have you ever used a bilingual dictionary? If yes, how helpful was it?, Number: 5, QuestionType: Dictionaries 📚
+ID: 76dfd407-5aa8-4768-a4b1-30b3fbd7621b, Content: Do you think dictionaries are still important in the age of the internet?, Number: 6, QuestionType: Dictionaries 📚
+ID: e5fe9def-84a7-4ea0-a03d-8cc4da2aacad, Content: How often do you come across words you don't understand?, Number: 7, QuestionType: Dictionaries 📚
+ID: 2b5ff830-9e52-45cc-a1ba-7545d43eff7f, Content: Can you remember a time when a dictionary helped you solve a problem?, Number: 8, QuestionType: Dictionaries 📚
+ID: c3e65dbf-bdb2-45b4-8f07-f50503213a7b, Content: Do you think it's important for children to learn how to use dictionaries?, Number: 9, QuestionType: Dictionaries 📚
+ID: e53cfb97-6331-4d27-997d-ee11444466ce, Content: How have dictionaries changed over the years?, Number: 10, QuestionType: Dictionaries 📚
+ID: b97a1c65-6d48-4cb6-971f-77ee907a6c33, Content: How do you usually spend your evenings?, Number: 1, QuestionType: Evenings 🌙
+ID: d1a48943-047d-40fb-bdc1-ff5f67576862, Content: Do you prefer staying at home or going out in the evenings?, Number: 2, QuestionType: Evenings 🌙
+ID: 59142a10-49fd-47f3-8ae6-8334b86affba, Content: What activities do you enjoy doing in the evenings?, Number: 3, QuestionType: Evenings 🌙
+ID: d60afcf0-b37c-4401-81b2-4537bfb12e93, Content: How important is it for you to have a relaxing evening?, Number: 4, QuestionType: Evenings 🌙
+ID: d943af39-1d32-4224-a6f6-fe2945afa257, Content: Do you have any evening rituals or routines?, Number: 5, QuestionType: Evenings 🌙
+ID: 0c982da6-afb9-41df-9c1c-c112c28d290d, Content: What do you like to watch or read in the evenings?, Number: 6, QuestionType: Evenings 🌙
+ID: f131e3dd-54d1-4e2f-bd23-367f8520b5f0, Content: Do you prefer spending time alone or with others in the evenings?, Number: 7, QuestionType: Evenings 🌙
+ID: ab70fa6e-5605-4ac5-8e35-b924410f0423, Content: How do you unwind after a long day?, Number: 8, QuestionType: Evenings 🌙
+ID: 886e28d0-bd93-4f1b-a371-48f5992388c8, Content: Do you ever go out for dinner or drinks in the evenings?, Number: 9, QuestionType: Evenings 🌙
+ID: 340effa4-d56a-48fc-87ec-f5a92b94984b, Content: Can you share a memorable evening you've had recently?, Number: 10, QuestionType: Evenings 🌙
+ID: 9d60827a-dbba-4e14-8eb6-2f959169ebe4, Content: How many close friends do you have?, Number: 1, QuestionType: Friends 👫
+ID: ec722fc6-588b-42b3-9666-705d0b57bd37, Content: How did you meet your best friend?, Number: 2, QuestionType: Friends 👫
+ID: f5c34637-7067-429b-a210-68f99983a1f8, Content: What qualities do you look for in a friend?, Number: 3, QuestionType: Friends 👫
+ID: 3040c5fb-de00-4178-900e-810310041b9c, Content: Do you prefer to have a few close friends or many acquaintances?, Number: 4, QuestionType: Friends 👫
+ID: ed2b7466-502e-4143-8c16-1054aa7feccf, Content: How often do you spend time with your friends?, Number: 5, QuestionType: Friends 👫
+ID: f8dfefdd-79fe-4ff5-b46e-6f3117597000, Content: What do you usually do when you hang out with your friends?, Number: 6, QuestionType: Friends 👫
+ID: 5f8dfa2e-a0d8-4863-afe6-e00f83ebaedd, Content: Can you describe a memorable experience you had with your friends?, Number: 7, QuestionType: Friends 👫
+ID: f82e5347-412b-4f1f-81c1-adab5d97dcd8, Content: Do you think it's important to maintain friendships? Why?, Number: 8, QuestionType: Friends 👫
+ID: b4845947-1a25-4bb4-94c2-9cc3423fd362, Content: What makes someone a good friend?, Number: 9, QuestionType: Friends 👫
+ID: e8a7054b-99b8-44e9-8427-016db3c2c74e, Content: How do you make new friends?, Number: 10, QuestionType: Friends 👫
+ID: 2a245cd2-fd81-41e1-a136-1fbd7c137022, Content: Do you like flowers?, Number: 1, QuestionType: Flowers 💐
+ID: 2feb471e-b9d6-4fd4-b899-bb8fb43cd7f3, Content: What is your favorite type of flower?, Number: 2, QuestionType: Flowers 💐
+ID: efc43341-44c6-4833-a098-570a79187557, Content: Do you ever buy or receive flowers? If so, on what occasions?, Number: 3, QuestionType: Flowers 💐
+ID: 11c5a137-de79-4646-aba3-fd9b1256a1e2, Content: Where do you usually see flowers?, Number: 4, QuestionType: Flowers 💐
+ID: 9dae72e6-e8a9-4599-9df6-74abb070ccf0, Content: What do flowers symbolize in your culture?, Number: 5, QuestionType: Flowers 💐
+ID: 31531fc2-71a2-43eb-ad7f-ffb955cac713, Content: Do you have any flowers in your home or garden?, Number: 6, QuestionType: Flowers 💐
+ID: 68569e00-f448-464e-9f43-930da82c33ae, Content: Can you name some occasions when people give flowers as gifts?, Number: 7, QuestionType: Flowers 💐
+ID: 6ddc9ac6-829e-4e83-92cc-4d34df587c8c, Content: What do you think is the significance of flowers in weddings?, Number: 8, QuestionType: Flowers 💐
+ID: 14098884-2cd0-4341-b5a8-02b7dbfacac2, Content: Are there any flowers that have special meaning to you?, Number: 9, QuestionType: Flowers 💐
+ID: 3db3651e-3613-4e56-824f-e837eb2f5d0e, Content: How do you feel when you see flowers?, Number: 10, QuestionType: Flowers 💐
+ID: 8ea02842-604a-4902-afc1-339d59606385, Content: What is your favorite type of cuisine?, Number: 1, QuestionType: Food 🍲
+ID: 7690cc84-8a89-4c48-8a44-02735302500f, Content: Do you enjoy cooking? Why or why not?, Number: 2, QuestionType: Food 🍲
+ID: 2251b114-5253-4115-8999-7ab43df54f0c, Content: What is a traditional dish from your country?, Number: 3, QuestionType: Food 🍲
+ID: 626eff9d-6c79-4924-80f4-eaf10fd85393, Content: How often do you eat out at restaurants?, Number: 4, QuestionType: Food 🍲
+ID: e2ce03e1-f664-4860-968b-a33068a7f100, Content: Do you prefer homemade food or food from restaurants?, Number: 5, QuestionType: Food 🍲
+ID: 15ccee81-4e56-43cd-941b-f4d3c03fbe3a, Content: Can you cook any international dishes?, Number: 6, QuestionType: Food 🍲
+ID: 5cef6d27-42d2-4f97-a96d-4e117b0a499e, Content: What is your favorite comfort food?, Number: 7, QuestionType: Food 🍲
+ID: ad1e3b94-46af-4033-b670-270075ae68f3, Content: Are there any foods you dislike or refuse to eat?, Number: 8, QuestionType: Food 🍲
+ID: a241c0b4-d32a-4c18-bdb0-5bff33c432c3, Content: What is the most exotic food you have ever tried?, Number: 9, QuestionType: Food 🍲
+ID: 8cd15b1f-7898-4cdc-a210-80450020edfa, Content: How important is food in your culture?, Number: 10, QuestionType: Food 🍲
+ID: d423f0c7-7742-4000-a80a-12a178ad435d, Content: How often do you go out with friends or family?, Number: 1, QuestionType: Going out 🎉
+ID: b8100e14-ff0d-4720-a965-e9d4ff97ea26, Content: What do you usually do when you go out?, Number: 2, QuestionType: Going out 🎉
+ID: acbc442e-6f00-4a56-a769-b35c2d962aa1, Content: Do you prefer going out during the day or at night?, Number: 3, QuestionType: Going out 🎉
+ID: 1dbd6912-05cd-4ce7-8903-6ff133c73722, Content: What are some popular places to go out in your city?, Number: 4, QuestionType: Going out 🎉
+ID: 5e4c55e4-65d1-4b8c-bb43-4be098ba4538, Content: Do you enjoy going to parties or social gatherings?, Number: 5, QuestionType: Going out 🎉
+ID: 0866ed07-ca21-4bd7-8d1f-448540af2788, Content: How do you decide where to go when you go out?, Number: 6, QuestionType: Going out 🎉
+ID: f92b5127-17d0-4ea8-8709-ee7ca3704f71, Content: Can you describe a recent memorable outing you had?, Number: 7, QuestionType: Going out 🎉
+ID: 56728bcb-b09f-4817-8ff8-0baf7d0fa87e, Content: What factors do you consider when planning a day out?, Number: 8, QuestionType: Going out 🎉
+ID: 9bd092f4-1f22-4803-98ec-ed104490ff32, Content: Do you prefer going out alone or with others?, Number: 9, QuestionType: Going out 🎉
+ID: f590246e-b403-44dc-be85-a09a6f7bb6da, Content: How do you feel about staying at home instead of going out?, Number: 10, QuestionType: Going out 🎉
+ID: 079ec24e-2b03-4b2a-8675-d38cead4bba9, Content: What makes you happy?, Number: 1, QuestionType: Happiness 😊
+ID: 09334dc2-05f4-4bdb-95b7-3a7b738130ae, Content: Can you describe a recent time when you felt really happy?, Number: 2, QuestionType: Happiness 😊
+ID: 23f746ef-619d-4f62-ad8c-1a983ac3367d, Content: Do you think it's important to be happy?, Number: 3, QuestionType: Happiness 😊
+ID: a2c2bec3-cca1-4448-ac90-5edeca4b7b34, Content: What do you think is the key to happiness?, Number: 4, QuestionType: Happiness 😊
+ID: a4162bd2-869d-4a01-a831-dcb8997f816c, Content: Do you believe money can buy happiness?, Number: 5, QuestionType: Happiness 😊
+ID: 7ea9a70c-1cdd-4280-b7f8-5befed0b7df7, Content: How do you think people can increase their happiness levels?, Number: 6, QuestionType: Happiness 😊
+ID: 70da7e63-9eb0-45d6-bcaf-79d2e57aea19, Content: Can happiness be measured? If so, how?, Number: 7, QuestionType: Happiness 😊
+ID: ee4124eb-f5bb-408e-bf9d-15de0d14923a, Content: Do you think happiness is more important than success?, Number: 8, QuestionType: Happiness 😊
+ID: 71dd2696-860b-4211-a4bd-7dd347f38de0, Content: Are there any specific activities that always make you happy?, Number: 9, QuestionType: Happiness 😊
+ID: 69dfff97-06cf-4a2a-8367-0b9ea310732e, Content: How do you express happiness?, Number: 10, QuestionType: Happiness 😊
+ID: 92a6d2c0-9eb8-46e6-9144-dec4f1a8cea1, Content: How often do you use the internet?, Number: 1, QuestionType: Internet 🌐
+ID: 53e0042f-9a1b-4f3a-a9fa-c3358dd46ccf, Content: What do you mainly use the internet for?, Number: 2, QuestionType: Internet 🌐
+ID: 89fe89a3-df14-4738-8339-941dfaac146d, Content: Can you imagine life without the internet?, Number: 3, QuestionType: Internet 🌐
+ID: dbf640c7-3563-423f-b2bd-3ef8eaa6ffd6, Content: What are the advantages of the internet?, Number: 4, QuestionType: Internet 🌐
+ID: b2875015-b9d3-4331-b4df-33085ff11d5b, Content: Are there any disadvantages to using the internet?, Number: 5, QuestionType: Internet 🌐
+ID: 56949787-0f5b-40e3-9fc3-2378828f3b57, Content: How has the internet changed the way people communicate?, Number: 6, QuestionType: Internet 🌐
+ID: bc74c349-8803-4961-b689-5c00102d4cf8, Content: What role does the internet play in your daily life?, Number: 7, QuestionType: Internet 🌐
+ID: 06b9ff44-16e2-4711-b9f3-44a7973f2ca9, Content: Do you think people spend too much time on the internet?, Number: 8, QuestionType: Internet 🌐
+ID: 95185d71-4f40-41bd-9164-7e74f5cb8157, Content: How do you protect your privacy and security online?, Number: 9, QuestionType: Internet 🌐
+ID: 19c07931-8400-4269-8ef2-372f0e690764, Content: What do you think the future of the internet will be like?, Number: 10, QuestionType: Internet 🌐
+ID: e1000fd8-df70-4766-82b0-f9956ad3e880, Content: What do you like to do in your free time?, Number: 1, QuestionType: Leisure time ⏰
+ID: 1c7cae32-4616-4a27-9b4d-c2b9eae92bb1, Content: How often do you have leisure time?, Number: 2, QuestionType: Leisure time ⏰
+ID: aa7a9ece-7fda-4e80-a4ab-cfa25d39a379, Content: Do you prefer spending your leisure time alone or with others?, Number: 3, QuestionType: Leisure time ⏰
+ID: f23f96ff-a35a-4205-a9e9-e3ae4c232a58, Content: What activities help you relax?, Number: 4, QuestionType: Leisure time ⏰
+ID: 1ab2e41a-c6d7-44c7-a582-ec7f744b164d, Content: Can you describe a typical weekend for you?, Number: 5, QuestionType: Leisure time ⏰
+ID: 97c2cd10-7ae5-4540-be33-fa04fe5ffa94, Content: How do you plan your leisure time activities?, Number: 6, QuestionType: Leisure time ⏰
+ID: cca47606-a11e-455a-a6a6-4c931bee7f06, Content: What are some popular leisure activities in your country?, Number: 7, QuestionType: Leisure time ⏰
+ID: 97eda351-ad45-4735-a83e-d739b13f1a98, Content: Do you think it's important to have hobbies?, Number: 8, QuestionType: Leisure time ⏰
+ID: 636881c4-e527-4168-b9c5-241aae9f8d29, Content: How do you balance work and leisure time?, Number: 9, QuestionType: Leisure time ⏰
+ID: 9f83bc67-cba0-445d-b735-c16d855bf5a0, Content: Do you ever feel guilty about taking leisure time for yourself?, Number: 10, QuestionType: Leisure time ⏰
+ID: 5fd3ae04-dcd7-469a-9394-106c606ccbe0, Content: What type of music do you like?, Number: 1, QuestionType: Music 🎶
+ID: 34877931-27ab-49d4-8775-6b14f4fbd7aa, Content: How often do you listen to music?, Number: 2, QuestionType: Music 🎶
+ID: bf4c1b53-d9a1-4dab-b9cc-d585ec4418e8, Content: Can you play any musical instruments?, Number: 3, QuestionType: Music 🎶
+ID: a4d13dcb-b400-4160-b44d-5ef7ef8a4fcf, Content: What was the last concert or musical event you attended?, Number: 4, QuestionType: Music 🎶
+ID: 82e157e4-8a37-49d4-8091-790fff740b5d, Content: How does music make you feel?, Number: 5, QuestionType: Music 🎶
+ID: 8977a4f4-2dda-4302-ac0c-4d31a02eb67b, Content: Do you have a favorite music genre or artist?, Number: 6, QuestionType: Music 🎶
+ID: e1534536-1741-4a78-b19c-e1447fec807d, Content: Can you name a song that is special to you? Why?, Number: 7, QuestionType: Music 🎶
+ID: 0101f3e4-6120-4fb9-a97c-f6aecc5a7064, Content: Do you think music is important in people's lives?, Number: 8, QuestionType: Music 🎶
+ID: 4697c4f0-df22-425a-8b88-b726b5eed4fd, Content: How has technology changed the way people listen to music?, Number: 9, QuestionType: Music 🎶
+ID: 50f8aa17-d1fb-4488-b243-a283abeb330f, Content: Do you prefer listening to music alone or with others?, Number: 10, QuestionType: Music 🎶
+ID: b9654ddd-f221-470a-a67b-4de07b93ccb4, Content: Do you know your neighbors well?, Number: 1, QuestionType: Neighbours & Neighbourhood 🏘️
+ID: 2da3bc84-6b1b-4c2a-85ea-3ad2c9fbacb1, Content: How do you get along with your neighbors?, Number: 2, QuestionType: Neighbours & Neighbourhood 🏘️
+ID: e14f6fa5-2e50-43e6-8707-23c37d41cd93, Content: Can you describe your neighborhood?, Number: 3, QuestionType: Neighbours & Neighbourhood 🏘️
+ID: 10466dd5-1744-4054-bb69-a44dd4b8efe1, Content: What do you like most about your neighborhood?, Number: 4, QuestionType: Neighbours & Neighbourhood 🏘️
+ID: 61ed2e1e-6c38-4af3-a1c3-3c66fd25fa51, Content: Are there any community events or gatherings in your neighborhood?, Number: 5, QuestionType: Neighbours & Neighbourhood 🏘️
+ID: f0728213-cd4f-4866-9d30-74cbba47ac9e, Content: Do you think it's important to have a good relationship with your neighbors?, Number: 6, QuestionType: Neighbours & Neighbourhood 🏘️
+ID: 945fd9a0-1009-4fb0-850f-70222b63470c, Content: What are some common issues people face with their neighbors?, Number: 7, QuestionType: Neighbours & Neighbourhood 🏘️
+ID: 3ef4986f-510d-47f7-bc47-839c79980a0b, Content: Have you ever helped out a neighbor in need?, Number: 8, QuestionType: Neighbours & Neighbourhood 🏘️
+ID: a3bf43cc-c411-4879-a14c-b40e58605ad4, Content: Do you often read newspapers?, Number: 1, QuestionType: Newspaper 📰
+ID: 2ef94866-f84e-4bf3-a96b-3575fdbdf003, Content: What kind of news do you prefer to read in newspapers?, Number: 2, QuestionType: Newspaper 📰
+ID: 759aa3ac-ab20-4484-bc3e-6624cadd0bfb, Content: How do newspapers influence people's opinions?, Number: 3, QuestionType: Newspaper 📰
+ID: 411b1809-8ba0-4c83-842e-b604e4544ce7, Content: Do you think newspapers are still important in the age of the internet?, Number: 4, QuestionType: Newspaper 📰
+ID: 1118a964-e02c-46aa-886e-cefde8f9c01d, Content: Where do you usually get your newspapers from?, Number: 5, QuestionType: Newspaper 📰
+ID: 80640617-d818-453d-8376-85c2b60a7368, Content: How do you feel about reading newspapers online?, Number: 6, QuestionType: Newspaper 📰
+ID: b5e3f5df-ae3b-4363-a9aa-a3cb0d28a32e, Content: What section of the newspaper do you find most interesting?, Number: 7, QuestionType: Newspaper 📰
+ID: 11e94a24-60cf-409b-863c-b27a60c6bc8b, Content: Do you think newspapers provide unbiased information?, Number: 8, QuestionType: Newspaper 📰
+ID: 4a3e755e-b9b7-4be7-8e93-ae8fa0e5acd2, Content: What role do newspapers play in your daily life?, Number: 9, QuestionType: Newspaper 📰
+ID: 341fe2d2-6bed-49ec-afb3-8cc2f162fdbe, Content: How do you think newspapers have changed over the years?, Number: 10, QuestionType: Newspaper 📰
+ID: 5d450a34-1087-4575-9928-f3f599a19ccc, Content: Do you have any pets?, Number: 1, QuestionType: Pets 🐾
+ID: b19aecbd-0744-474e-b071-7910e107f239, Content: What kind of pets do you like?, Number: 2, QuestionType: Pets 🐾
+ID: c5dbb9aa-ffd9-4297-af24-4b3c01912f06, Content: How do you take care of your pets?, Number: 3, QuestionType: Pets 🐾
+ID: d48d80d1-6a35-4e3b-8479-b6ed8ca3203a, Content: What are the benefits of having pets?, Number: 4, QuestionType: Pets 🐾
+ID: 9761fe09-ae89-4687-bcb1-3431f15f4ee3, Content: Do you think pets can help reduce stress?, Number: 5, QuestionType: Pets 🐾
+ID: 453e0f64-b74f-4a69-bd13-0ede2e964d04, Content: Are there any responsibilities associated with owning pets?, Number: 6, QuestionType: Pets 🐾
+ID: c044b951-050f-42f0-bd01-50ed5648bb83, Content: How do you choose a pet?, Number: 7, QuestionType: Pets 🐾
+ID: 11aacb85-dbca-4522-a7e9-47c5b72cf69e, Content: Do you prefer dogs or cats as pets?, Number: 8, QuestionType: Pets 🐾
+ID: f8443c52-7e8b-4d0a-aed4-400340e99459, Content: What is your favorite memory with your pet?, Number: 9, QuestionType: Pets 🐾
+ID: 5e2dbdfd-6606-43df-8de0-cac776139b67, Content: How do you feel about people having exotic pets?, Number: 10, QuestionType: Pets 🐾
+ID: 67d9901b-7fd9-48ec-9028-e8d4092dc5aa, Content: Do you enjoy reading?, Number: 1, QuestionType: Reading 📚
+ID: 0dcf8160-d417-4748-8334-33f44419d0dc, Content: What kind of books do you like to read?, Number: 2, QuestionType: Reading 📚
+ID: 83709d18-3d52-4fbb-9d41-cba67c7c4a20, Content: How often do you read?, Number: 3, QuestionType: Reading 📚
+ID: 39252906-2b7a-443c-b243-b20e5cd65350, Content: Where do you usually read?, Number: 4, QuestionType: Reading 📚
+ID: 343b7b31-ec31-4122-982e-2ae436c6bda0, Content: What do you like about reading?, Number: 5, QuestionType: Reading 📚
+ID: d0c0971e-e759-4ffa-8a7f-8621ecf3e0a3, Content: Can you remember the first book you ever read?, Number: 6, QuestionType: Reading 📚
+ID: 673f8d55-d709-4250-ac12-e90290612cac, Content: Do you prefer reading physical books or e-books?, Number: 7, QuestionType: Reading 📚
+ID: a514e904-bf41-47aa-b872-0a8f0c7ddc56, Content: How do you choose what to read?, Number: 8, QuestionType: Reading 📚
+ID: 5f377f25-4e9e-4edd-8aa8-5c8b7cf463a6, Content: What was the last book you read?, Number: 9, QuestionType: Reading 📚
+ID: 5bcb6330-80b9-4104-8f74-4602d7de1509, Content: Do you have a favorite author or genre?, Number: 10, QuestionType: Reading 📚
+ID: 425b1022-e6f4-471f-965c-3506831ca1d6, Content: Do you enjoy shopping?, Number: 1, QuestionType: Shopping 🛍️
+ID: 290ef4e2-645f-4961-9e25-1a99543b8abe, Content: What do you usually buy when you go shopping?, Number: 2, QuestionType: Shopping 🛍️
+ID: cb953e32-939d-4b60-a854-89e65c4ebcf7, Content: Where do you like to shop?, Number: 3, QuestionType: Shopping 🛍️
+ID: 14771de3-b3d9-47eb-b631-024fe8f2e181, Content: How often do you go shopping?, Number: 4, QuestionType: Shopping 🛍️
+ID: eaab1caf-bb09-4a62-938a-dafcb9e8543a, Content: Do you prefer shopping alone or with others?, Number: 5, QuestionType: Shopping 🛍️
+ID: 142f77a3-ca17-4174-8995-61fb9edf20d6, Content: What do you think are the advantages of online shopping?, Number: 6, QuestionType: Shopping 🛍️
+ID: 680c17a9-f7cd-4f86-b2a9-6f3183442624, Content: How do you decide what to buy when you go shopping?, Number: 7, QuestionType: Shopping 🛍️
+ID: 465d9850-6d31-43aa-90fd-c6fd30bffa20, Content: Do you prefer shopping in malls or small shops?, Number: 8, QuestionType: Shopping 🛍️
+ID: 379b4929-3213-4488-92b7-7dbf22e3f47f, Content: What was the last thing you bought?, Number: 9, QuestionType: Shopping 🛍️
+ID: 3595d129-c739-4642-9eda-45b23e1811aa, Content: Can you remember a particularly enjoyable shopping experience?, Number: 10, QuestionType: Shopping 🛍️
+ID: f2b0ef45-9dfa-4cf5-b159-6355e6c1418d, Content: Are you interested in sports?, Number: 1, QuestionType: Sport ⚽
+ID: 93a1ec03-8843-485c-bf48-140b21c1d690, Content: What is your favorite sport to watch or play?, Number: 2, QuestionType: Sport ⚽
+ID: 75e04ff2-6218-45ff-b6cf-a1bd18d571a3, Content: How often do you participate in sports activities?, Number: 3, QuestionType: Sport ⚽
+ID: e13a31d8-666b-47d7-b837-7e45461f292e, Content: Do you have a favorite sports team?, Number: 4, QuestionType: Sport ⚽
+ID: 798a9504-570a-4c7a-81e9-5013a25c189a, Content: What do you like about sports?, Number: 5, QuestionType: Sport ⚽
+ID: f3d5a2c1-66c8-491b-a27f-fde2cf69b260, Content: How do sports benefit people's health?, Number: 6, QuestionType: Sport ⚽
+ID: 83f23cf9-c199-4a2c-bcf4-3a1c653ca06e, Content: Have you ever attended a live sports event?, Number: 7, QuestionType: Sport ⚽
+ID: 3277e4d5-5062-49b0-a7ae-0a1c165e33de, Content: Do you think it's important for children to play sports?, Number: 8, QuestionType: Sport ⚽
+ID: befb0480-21f3-471d-a931-48b15f092764, Content: What sports are popular in your country?, Number: 9, QuestionType: Sport ⚽
+ID: c1f3ac28-ad0a-4717-8b04-ae9f42f291ff, Content: Can you play any sports well?, Number: 10, QuestionType: Sport ⚽
+ID: ff304ea4-4bcc-4163-9a33-344a6dac494c, Content: Do you watch TV regularly?, Number: 1, QuestionType: TV 📺
+ID: 9f1a1670-80cc-441f-8376-cc4508be04c9, Content: What kind of TV programs do you enjoy watching?, Number: 2, QuestionType: TV 📺
+ID: 09a22788-41d0-4cc1-8fe6-9c4885e755bc, Content: How much time do you spend watching TV each day?, Number: 3, QuestionType: TV 📺
+ID: f77296f8-7667-468f-8d05-0d8801fb9baf, Content: Do you prefer watching TV alone or with others?, Number: 4, QuestionType: TV 📺
+ID: ebc03061-2fdf-4fbe-b1f4-699687940db5, Content: What are the advantages and disadvantages of watching TV?, Number: 5, QuestionType: TV 📺
+ID: 7327fc0c-27ce-4a02-9426-706ae518a758, Content: Can you remember the first TV show you ever watched?, Number: 6, QuestionType: TV 📺
+ID: 861c5c50-3e9b-43c7-b6e8-be49828e97a4, Content: How do you choose what to watch on TV?, Number: 7, QuestionType: TV 📺
+ID: 19ddcb4a-d760-4f22-a6f8-4f7f874c6df1, Content: Do you think TV influences people's behavior?, Number: 8, QuestionType: TV 📺
+ID: 54795305-c415-4c4e-b9e8-69e06bc6852f, Content: What was the last TV show or series you watched?, Number: 9, QuestionType: TV 📺
+ID: df972b55-8b76-47d5-86cd-77e086bed3eb, Content: Do you follow any TV channels regularly?, Number: 10, QuestionType: TV 📺
+ID: 340e7eaa-8cd8-42fd-98bf-8cc173421201, Content: How do you usually travel from one place to another?, Number: 1, QuestionType: Transport 🚗
+ID: b4a70c4e-26a5-449b-a2f6-f58d94d10c9b, Content: What is the most common form of transportation in your city?, Number: 2, QuestionType: Transport 🚗
+ID: 3eafe763-09bd-4caa-9ad6-431030654dcc, Content: Do you prefer public transportation or private transportation?, Number: 3, QuestionType: Transport 🚗
+ID: a8b99f75-857f-4b5a-93c4-e78c51361793, Content: How often do you use public transportation?, Number: 4, QuestionType: Transport 🚗
+ID: c25b1924-4522-411d-8ff2-2c8eb742cfa6, Content: What improvements would you like to see in the transportation system in your city?, Number: 5, QuestionType: Transport 🚗
+ID: e73c1b8c-e438-4cc2-95d1-6c92354acd6f, Content: Have you ever had a bad experience while using public transportation?, Number: 6, QuestionType: Transport 🚗
+ID: 2a9c0233-0795-4b2e-94ac-592c101cebce, Content: How do you think transportation has changed over the years?, Number: 7, QuestionType: Transport 🚗
+ID: c84feb12-a587-4ac6-8966-d48a299ee383, Content: Do you think it's important for cities to have good transportation infrastructure?, Number: 8, QuestionType: Transport 🚗
+ID: c112c926-dd9e-4baf-a01e-87569f867219, Content: Have you ever traveled long distances by car or train?, Number: 9, QuestionType: Transport 🚗
+ID: cd61e147-471c-441d-ad1b-8afc8eac3928, Content: How do you think people will travel in the future?, Number: 10, QuestionType: Transport 🚗
+ID: 78034ae3-ebc7-4356-8379-7abc40425753, Content: What is the weather like today?, Number: 1, QuestionType: Weather ☀️
+ID: 585777f0-7625-4813-a9d2-2b7406dfd662, Content: Do you pay attention to the weather forecast?, Number: 2, QuestionType: Weather ☀️
+ID: 7d3c7e25-f57a-4d95-b6ec-bb18b1629b2f, Content: What is your favorite type of weather?, Number: 3, QuestionType: Weather ☀️
+ID: 204216f5-e924-4173-b150-f8d173797f65, Content: How does the weather affect your daily activities?, Number: 4, QuestionType: Weather ☀️
+ID: 3ac67c93-a407-4856-97f0-c85679cd4a01, Content: Do you prefer hot or cold weather?, Number: 5, QuestionType: Weather ☀️
+ID: 0115a101-7903-4855-95fd-0d1d582304bb, Content: What outdoor activities do you enjoy doing in good weather?, Number: 6, QuestionType: Weather ☀️
+ID: 746dbf57-d986-49a5-914d-cb0dee176229, Content: How do people in your country typically dress during different seasons?, Number: 7, QuestionType: Weather ☀️
+ID: 5f85f4d2-0189-4142-8abd-188f70ce4c50, Content: Have you ever experienced extreme weather conditions?, Number: 8, QuestionType: Weather ☀️
+ID: 24523aa1-de70-482a-8255-208a71282bcb, Content: How do you feel when it's raining outside?, Number: 9, QuestionType: Weather ☀️
+ID: 75ee1447-f0b9-4b84-8e62-ffaa4637fc8d, Content: Do you think climate change is affecting the weather patterns in your region?, Number: 10, QuestionType: Weather ☀️
