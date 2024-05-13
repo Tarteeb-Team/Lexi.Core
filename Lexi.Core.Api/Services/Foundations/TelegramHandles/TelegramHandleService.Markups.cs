@@ -56,8 +56,12 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
             {
                 new KeyboardButton[]
                 {
-                    new KeyboardButton("Emma 🧑🏽‍🏫"),
                     new KeyboardButton("Brian 👨🏽‍🏫")
+                },
+                new KeyboardButton[]
+                {
+                    new KeyboardButton("Emma 🧑🏽‍🏫"),
+                    new KeyboardButton("Ana 🧑🏽‍💻 (girl)")
                 },
             };
 
@@ -168,7 +172,13 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
                 {
                     new KeyboardButton("Menu 🎙"),
                 };
+            
+            var generateButton = new KeyboardButton[]
+                {
+                    new KeyboardButton("Generate a question 🎁"),
+                };
             keyboardButtons.Add(menuButton);
+            keyboardButtons.Add(generateButton);
 
             for (int i = 0; i < 6; i += 2)
             {

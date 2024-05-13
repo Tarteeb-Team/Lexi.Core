@@ -256,6 +256,22 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
                 Console.WriteLine($"Error sending daily notifications: {ex.Message}");
             }
         }
+        public async Task NotifyAllUsersReleaseAsync()
+        {
+            try
+            {
+                var allUsers = updateStorageBroker.SelectAllUsers();
+
+                foreach (var user in allUsers)
+                {
+                    await NotificationRelease(user);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending daily notifications: {ex.Message}");
+            }
+        }
 
         public async Task NotifyAllUsersGoodAsync()
         {
@@ -346,6 +362,44 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
                 string notificationMessage = $"⚠️ Dear {user.Name},\n\nWe apologize for the inconvenience, but there seems to be an issue with our application. " +
                     $"Our team is working to resolve it as soon as possible. " +
                     $"Please try again later. Thank you for your patience and understanding. 😃";
+
+                await botClient.SendTextMessageAsync(
+                    chatId: user.TelegramId,
+                    text: notificationMessage);
+            }
+            catch (Exception)
+            {
+                return;
+            }
+        }
+        
+        private async Task NotificationRelease(Lexi.Core.Api.Models.Foundations.Users.User user)
+        {
+            try
+            {
+                string notificationMessage = @$"📣 Exciting Updates Await You! 🚀
+
+Dear Users,
+
+We're thrilled to announce some fantastic new features in our bot, designed to enhance your learning experience like never before! Here's what's new:
+
+1. Personalize Your Experience: Now you can customize your learning journey by choosing your assistant's voice! Select from a range of options to find the perfect fit for you.
+
+2. IELTS Practice - Part 1: Mastering IELTS just got easier! We've added comprehensive practice sessions tailored specifically to help you excel in Part 1 of the IELTS exam.
+
+3. Explore Diverse Topics: Dive deep into various subjects with our extensive collection of topic-based questions. From science to literature, there's something for everyone!
+
+4. Train While You Wait: Turn idle moments into learning opportunities! Now, you can train and expand your vocabulary while waiting for feedback or responses.
+
+To explore these exciting features and more, for a detailed explanation:
+
+https://www.loom.com/share/86d6f510493f496e8c6c62f712034d29
+
+Get ready to elevate your learning experience to new heights with our enhanced bot! 🚀
+
+Happy learning!
+
+©️ Tarteeb Team";
 
                 await botClient.SendTextMessageAsync(
                     chatId: user.TelegramId,

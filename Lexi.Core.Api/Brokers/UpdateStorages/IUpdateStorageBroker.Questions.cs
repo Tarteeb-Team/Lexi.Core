@@ -10,6 +10,7 @@ namespace Lexi.Core.Api.Brokers.UpdateStorages
         ValueTask<Question> InsertQuestionAsync(Question question);
         IQueryable<Question> SelectAllQuestions();
         ValueTask<Question> DeleteQuestionAsync(Question question);
+        ValueTask<Question> UpdateQuestionAsync(Question question);
         ValueTask<Question> SelectQuestionByIdAsync(Guid id);
     }
 }

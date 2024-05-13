@@ -29,7 +29,7 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
                 var loadingMessage = await client.SendTextMessageAsync(
                     chatId: update.Message.Chat.Id,
                     text: $"🎙️ Checking Pronunciation 🎙️\n\n" +
-                    $"{textWithRandomWords}\n\n" + 
+                    $"{textWithRandomWords}\n\n" +
                     $"Loading...");
 
 

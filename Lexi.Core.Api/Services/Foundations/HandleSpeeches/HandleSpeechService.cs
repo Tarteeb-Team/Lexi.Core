@@ -43,10 +43,11 @@ namespace aisha_ai.Services.Foundations.HandleSpeeches
 
             string? voice = "en-US-AndrewNeural";
 
-            if (voiceType is not null)
+            if (voiceType.Type is not null)
             {
                 voice = voiceType.Type;
             }
+
             SpeechSynthesisResult speechSynthesisResult =
                     await this.speechBroker.GetSpeechResultAsync(text, voice);
 

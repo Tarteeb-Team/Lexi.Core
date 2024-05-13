@@ -1,6 +1,7 @@
 ﻿using Lexi.Core.Api.Models.Foundations.Questions;
 using Lexi.Core.Api.Models.Foundations.Users;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -25,6 +26,29 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
                           $"Choose a type of question to practice:");
 
                 user.State = State.ChooseTypeOfQuestion;
+                await this.updateStorageBroker.UpdateUserAsync(user);
+
+                return true;
+            }
+            if (user.State is State.ChooseTypeOfQuestion && update.Message.Text == "Generate a question 🎁")
+            {
+                List<Question> questions = this.updateStorageBroker.SelectAllQuestions().ToList();
+                var random = new Random();
+                var randomIndex = random.Next(0, questions.Count);
+
+                var question = questions[randomIndex];
+                var questionText = question.Content;
+
+                await client.SendTextMessageAsync(
+                    chatId: update.Message.Chat.Id,
+                    replyMarkup: new ReplyKeyboardMarkup("Menu 🎙") { ResizeKeyboard = true },
+                    text: $"🎯 Here's a crucial question for IELTS Part 1 ({question.QuestionType}):\n\n{question.Content}\n\n" +
+                      "🎙️ Now, it's your turn! Take your time to articulate your thoughts clearly and confidently. " +
+                      "Once you're ready, send a voice message with your response. 🌟");
+
+                user.ImprovedSpeech = question.Content;
+
+                user.State = State.PartOneTest;
                 await this.updateStorageBroker.UpdateUserAsync(user);
 
                 return true;

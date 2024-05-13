@@ -18,12 +18,13 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
             if (user.State is State.Settigns && update.Message.Text is "Voice 🗣️")
             {
                 await client.SendTextMessageAsync(
-                   chatId: update.Message.Chat.Id,
-                   replyMarkup: VoiceMarkup(),
-                   text: $"🎙️ Choose Your Teacher's Voice! 🎙️\r\n\r\nSelect a voice to personalize your learning experience:" +
-                   $"\r\n\r\nEmma \U0001f9d1🏽‍🏫: " +
-                   $"Clear and soothing voice.\r\n\nBrian 👨🏽‍🏫: " +
-                   $"Energetic and engaging tone.\r\n\nPick your preference and let's get started! 😊🎶");
+                    chatId: update.Message.Chat.Id,
+                    replyMarkup: VoiceMarkup(),
+                    text: $"🎙️ Choose Your Teacher's Voice! 🎙️\r\n\r\nSelect a voice to personalize your learning experience:" +
+                    $"\r\n\r\nEmma 🧑🏽‍🏫: Clear and soothing voice." +
+                    $"\r\n\nBrian 👨🏽‍🏫: Energetic and engaging tone." +
+                    $"\r\n\nAna 🧑🏽‍💻 (Girl for Kids): Friendly and helpful demeanor, perfect for children." + 
+                    $"\r\n\nPick your preference and let's get started! 😊🎶");
 
                 user.State = State.ChooseVoice;
                 await this.updateStorageBroker.UpdateUserAsync(user);
@@ -31,7 +32,9 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
                 return true;
             }
             if (user.State is State.ChooseVoice
-                && (update.Message.Text == "Emma 🧑🏽‍🏫" || update.Message.Text == "Brian 👨🏽‍🏫"))
+                && (update.Message.Text == "Emma 🧑🏽‍🏫" 
+                || update.Message.Text == "Brian 👨🏽‍🏫"
+                || update.Message.Text == "Ana 🧑🏽‍💻 (girl)"))
             {
                 string chosenVoice = update.Message.Text;
 
@@ -52,11 +55,14 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
                         TelegramId = user.TelegramId,
                     };
 
-                    if (update.Message.Text == "Emma 🧑🏽‍🏫")
+                    if (update.Message.Text == "Emma 🧑🏽‍🏫 (woman)")
                         voicetype.Type = "en-US-EmmaNeural";
 
-                    if (update.Message.Text == "Brian 👨🏽‍🏫")
+                    if (update.Message.Text == "Brian 👨🏽‍🏫 (man)")
                         voicetype.Type = "en-US-AndrewNeural";
+                    
+                    if (update.Message.Text == "Ana 🧑🏽‍💻 (girl)")
+                        voicetype.Type = "en-US-AnaNeural";
 
                     await this.updateStorageBroker.InsertQuestionTypeAsync(voicetype);
                 }
@@ -67,6 +73,9 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
 
                     if (update.Message.Text == "Brian 👨🏽‍🏫")
                         possibleVoiceType.Type = "en-US-AndrewNeural";
+
+                    if (update.Message.Text == "Ana 🧑🏽‍💻 (girl)")
+                        possibleVoiceType.Type = "en-US-AnaNeural";
 
                     await this.updateStorageBroker.UpdateQuestionTypeAsync(possibleVoiceType);
 

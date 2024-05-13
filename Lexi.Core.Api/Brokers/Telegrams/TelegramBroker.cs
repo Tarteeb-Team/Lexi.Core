@@ -17,7 +17,7 @@ namespace Lexi.Core.Api.Brokers.Telegrams
 
         public TelegramBroker(IConfiguration configuration)
         {
-            var token = "6908660319:AAE5I0sDaBLp5P5nm1Kf1ywdl7LmZXC-kqQ";
+            var token = "6711423187:AAE7aKHmambee8P35yWEPU41dW7dXSj2siQ";
             this.telegramBotClient = new TelegramBotClient(token);
             ReceiverOptions receiverOptions = new()
             {

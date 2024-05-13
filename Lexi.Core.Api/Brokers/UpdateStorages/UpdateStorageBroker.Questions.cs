@@ -1,4 +1,5 @@
 ﻿using Lexi.Core.Api.Models.Foundations.Questions;
+using Lexi.Core.Api.Models.Foundations.QuestionTypes;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -15,6 +16,9 @@ namespace Lexi.Core.Api.Brokers.UpdateStorages
 
         public IQueryable<Question> SelectAllQuestions() =>
             SelectAll<Question>();
+
+        public async ValueTask<Question> UpdateQuestionAsync(Question question) =>
+            await UpdateAsync(question);
 
         public ValueTask<Question> DeleteQuestionAsync(Question question) =>
             DeleteAsync(question);
