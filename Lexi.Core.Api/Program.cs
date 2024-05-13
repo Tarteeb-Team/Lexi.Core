@@ -31,6 +31,7 @@ builder.Services.AddTransient<ISpeechBroker, SpeechBroker>();
 builder.Services.AddTransient<IUpdateStorageBroker, UpdateStorageBroker>();
 builder.Services.AddTransient<IHandleSpeechService, HandleSpeechService>();
 builder.Services.AddTransient<IOpenAIService, OpenAIService>();
+builder.Services.AddTransient<IWordsToLearn, WordsToLearn>();
 builder.Services.AddTransient<IOpenAIBroker, OpenAIBroker>();
 builder.Services.AddScoped<IOrchestrationService, OrchestrationService>();
 builder.Services.AddTransient<ICognitiveServices, CognitiveServices>();

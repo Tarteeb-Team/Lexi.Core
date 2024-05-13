@@ -7,16 +7,15 @@ using Lexi.Core.Api.Brokers.Speeches;
 using Lexi.Core.Api.Brokers.Telegrams;
 using Lexi.Core.Api.Brokers.UpdateStorages;
 using Lexi.Core.Api.Services.Foundations.ImproveSpeech;
-using Lexi.Core.Api.Services.Foundations.TelegramHandles;
 using Lexi.Core.Api.Services.Orchestrations;
 using Microsoft.AspNetCore.Hosting;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
-using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 
 namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
@@ -24,7 +23,6 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
     public partial class TelegramHandleService : ITelegramHandleService
     {
 
-        private TelegramBotClient botClient;
         private static Func<Update, ValueTask> taskHandler;
         private IOrchestrationService orchestrationService;
         private readonly IOpenAIService openAIService;
@@ -32,6 +30,8 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
         private readonly IUpdateStorageBroker updateStorageBroker;
         private readonly ISpeechBroker speechBroker;
         private readonly ITelegramBroker telegramBroker;
+        private readonly IWordsToLearn wordsToLearn;
+        private readonly TelegramBotClient botClient;
         private static readonly AsyncLocal<long> storedTelegramId = new AsyncLocal<long>();
         private static readonly AsyncLocal<int> messageId = new AsyncLocal<int>();
         private static readonly AsyncLocal<int> messageId2 = new AsyncLocal<int>();
@@ -40,6 +40,7 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
         private static readonly AsyncLocal<string> storedLevel = new AsyncLocal<string>();
         private readonly System.Timers.Timer dailyNotificationTimer;
         private readonly System.Timers.Timer requestTimer;
+        private readonly System.Timers.Timer newWordsTimer;
         private DateTime lastNotificationTime;
         private string filePath;
         private string filePath2;
@@ -51,7 +52,8 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
             IOpenAIService openAIService,
             IUpdateStorageBroker updateStorageBroker,
             ISpeechBroker speechBroker,
-            ITelegramBroker telegramBroker)
+            ITelegramBroker telegramBroker,
+            IWordsToLearn wordsToLearn)
         {
             this._hostingEnvironment = hostingEnvironment;
             filePath = Path.Combine(this._hostingEnvironment.WebRootPath, "outputWavs/");
@@ -62,7 +64,7 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
 
             dailyNotificationTimer = new System.Timers.Timer
             {
-                Interval = TimeSpan.FromHours(24).TotalMilliseconds,
+                Interval = TimeSpan.FromDays(7).TotalMilliseconds,
                 AutoReset = true,
                 Enabled = true
             };
@@ -72,18 +74,31 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
 
             requestTimer = new System.Timers.Timer
             {
-                Interval = TimeSpan.FromMinutes(10).TotalMilliseconds,
+                Interval = TimeSpan.FromDays(1).TotalMilliseconds,
                 AutoReset = true,
                 Enabled = true
             };
 
-            requestTimer.Elapsed += async (sender, e) => await SendRequest(this.botClient);
+            requestTimer.Elapsed += async (sender, e) => await SendRequest(botClient);
+
+            newWordsTimer = new System.Timers.Timer
+            {
+                Interval = TimeSpan.FromDays(3).TotalMilliseconds,
+                AutoReset = true,
+                Enabled = true
+            };
+
+            newWordsTimer.Elapsed += async (sender, e) => await GetAndSendRandomWords(7);
+
             this.updateStorageBroker = updateStorageBroker;
             this.speechBroker = speechBroker;
             this.telegramBroker = telegramBroker;
+            botClient = this.telegramBroker.ReturnTelegramBotClient();
 
             requestTimer.Start();
+            newWordsTimer.Start();
             dailyNotificationTimer.Start();
+            this.wordsToLearn = wordsToLearn;
         }
 
         public void ListenTelegramUserMessage()

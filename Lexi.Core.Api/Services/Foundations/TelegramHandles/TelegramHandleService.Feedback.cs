@@ -33,7 +33,7 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
             {
                 await client.SendTextMessageAsync(
                    chatId: update.Message.Chat.Id,
-                   replyMarkup: new ReplyKeyboardRemove(),
+                   replyMarkup: new ReplyKeyboardMarkup("Menu 🎙") { ResizeKeyboard = true},
                    text: $"Leave a review as text ✏️");
 
                 user.State = State.LeaveReview;

@@ -153,6 +153,16 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
 
                 return true;
             }
+            else if (update.Message.Text == "/wordsnotification")
+            {
+                await GetAndSendRandomWords(7);
+
+                await client.SendTextMessageAsync(
+                    chatId: update.Message.Chat.Id,
+                    text: "Notification sent to all users successfully!");
+
+                return true;
+            }
             else if (update.Message.Text == "/notifygood")
             {
                 await NotifyAllUsersGoodAsync();

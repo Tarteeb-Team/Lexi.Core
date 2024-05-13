@@ -8,5 +8,6 @@ namespace Lexi.Core.Api.Brokers.Telegrams
     public interface ITelegramBroker
     {
         void RegisterTelegramEventHandler(Func<Update, ITelegramBotClient, ValueTask> eventHandler);
+        TelegramBotClient ReturnTelegramBotClient();
     }
 }

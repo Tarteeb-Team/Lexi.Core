@@ -41,8 +41,14 @@ namespace aisha_ai.Services.Foundations.HandleSpeeches
             var voiceType = this.updateStorageBroker.SelectAllQuestionTypes()
                 .FirstOrDefault(q => q.TelegramId == telegramId);
 
+            string? voice = "en-US-AndrewNeural";
+
+            if (voiceType is not null)
+            {
+                voice = voiceType.Type;
+            }
             SpeechSynthesisResult speechSynthesisResult =
-                    await this.speechBroker.GetSpeechResultAsync(text, voiceType.Type);
+                    await this.speechBroker.GetSpeechResultAsync(text, voice);
 
                 await SaveSpeechSynthesisResultToLocalDirectoryAsync(
                            speechSynthesisResult: speechSynthesisResult,
@@ -62,8 +68,15 @@ namespace aisha_ai.Services.Foundations.HandleSpeeches
             var voiceType = this.updateStorageBroker.SelectAllQuestionTypes()
                 .FirstOrDefault(q => q.TelegramId == telegramId);
 
+            string? voice = "en-US-AndrewNeural";
+
+            if (voiceType is not null)
+            {
+                voice = voiceType.Type;
+            }
+
             SpeechSynthesisResult speechSynthesisResult =
-                    await this.speechBroker.GetSpeechResultAsync(text, voiceType.Type);
+                    await this.speechBroker.GetSpeechResultAsync(text, voice);
 
                 await SaveSpeechSynthesisResultToLocalDirectoryAsync(
                            speechSynthesisResult: speechSynthesisResult,

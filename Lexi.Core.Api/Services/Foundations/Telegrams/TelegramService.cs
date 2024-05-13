@@ -61,7 +61,6 @@ namespace Lexi.Core.Api.Services.Foundations.Telegrams
 
             await this.telegramBroker.SendTextMessageAsync(telegramId, readyFeedback);
 
-
         }
 
         public void StartListening() =>

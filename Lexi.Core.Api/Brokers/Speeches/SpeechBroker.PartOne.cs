@@ -18,7 +18,14 @@ namespace Lexi.Core.Api.Brokers.Speeches
             var voiceType = this.updateStorageBroker.SelectAllQuestionTypes()
                 .FirstOrDefault(q => q.TelegramId == telegramId);
 
-            SpeechSynthesisResult speechSynthesisResult = await GetSpeechResultAsync(text, voiceType.Type);
+            string? voice = "en-US-AndrewNeural";
+
+            if (voiceType is not null)
+            {
+                voice = voiceType.Type;
+            }
+
+            SpeechSynthesisResult speechSynthesisResult = await GetSpeechResultAsync(text, voice);
 
             await SaveSpeechSynthesisResultToLocalDirectoryAsync(
                        speechSynthesisResult: speechSynthesisResult,

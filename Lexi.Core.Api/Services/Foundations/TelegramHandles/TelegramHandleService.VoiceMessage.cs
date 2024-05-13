@@ -1,5 +1,6 @@
 ﻿using Lexi.Core.Api.Models.Foundations.Users;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -16,10 +17,21 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
         {
             if (update.Message.Voice is not null && user.State is State.TestSpeechPronun)
             {
+                List<(string, string, string)> wordsToLearn = this.wordsToLearn.NewWordsToLearn();
+
+                var random = new Random();
+                var randomWord1 = wordsToLearn[random.Next(wordsToLearn.Count)];
+                var randomWord2 = wordsToLearn[random.Next(wordsToLearn.Count)];
+
+                var textWithRandomWords = $"🔍 Practice 🔍\n\n" +
+                                           $"{randomWord1.Item1} - {randomWord1.Item2} {randomWord1.Item3}";
+
                 var loadingMessage = await client.SendTextMessageAsync(
                     chatId: update.Message.Chat.Id,
                     text: $"🎙️ Checking Pronunciation 🎙️\n\n" +
-                          $"Loading...");
+                    $"{textWithRandomWords}\n\n" + 
+                    $"Loading...");
+
 
                 messageId.Value = loadingMessage.MessageId;
 
@@ -41,10 +53,22 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
             }
             else if (user.State is State.PartOneTest && update.Message.Voice is not null)
             {
+                List<(string, string, string)> wordsToLearn = this.wordsToLearn.NewWordsToLearn();
+
+                var random = new Random();
+                var randomWord1 = wordsToLearn[random.Next(wordsToLearn.Count)];
+                var randomWord2 = wordsToLearn[random.Next(wordsToLearn.Count)];
+
+                var textWithRandomWords = $"🔍 Practice them 🔍\n\n" +
+                                           $"1. {randomWord1.Item1} - {randomWord1.Item2} {randomWord1.Item3}\n\n" +
+                                           $"2. {randomWord2.Item1} - {randomWord2.Item2} {randomWord2.Item3}";
+
+
                 var loadingMessage = await client.SendTextMessageAsync(
                 chatId: update.Message.Chat.Id,
                 text: $"📝 Submitting Answer for IELTS Part 1\n\n" +
-                      $"Loading...");
+                $"{textWithRandomWords}\n\n" +
+                $"Loading...");
 
                 messageId2.Value = loadingMessage.MessageId;
                 var file = await client.GetFileAsync(update.Message.Voice.FileId);
@@ -74,9 +98,9 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
                 {
                     System.IO.File.Delete(filePath);
                 }
-                string feedbackTemplate = $@"📝 *Feedback for IELTS Part 1 Answer* 📝
+                string feedbackTemplate = $@"📝 *Feedback for IELTS Part 1 Answer*
 
-📝 *{user.Name}'s Answer:* 
+🗣 *{user.Name}'s Answer:* 
 
 {speechText}
 

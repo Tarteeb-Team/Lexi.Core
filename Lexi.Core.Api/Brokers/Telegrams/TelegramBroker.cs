@@ -12,7 +12,7 @@ namespace Lexi.Core.Api.Brokers.Telegrams
 {
     public class TelegramBroker : ITelegramBroker
     {
-        private readonly ITelegramBotClient telegramBotClient;
+        private readonly TelegramBotClient telegramBotClient;
         private static Func<Update, ITelegramBotClient, ValueTask> taskHandler;
 
         public TelegramBroker(IConfiguration configuration)
@@ -30,6 +30,9 @@ namespace Lexi.Core.Api.Brokers.Telegrams
                 receiverOptions: receiverOptions);
         }
 
+        public TelegramBotClient ReturnTelegramBotClient() =>
+            this.telegramBotClient;
+
         private async Task HandleUpdateAsync(ITelegramBotClient telegramBotClient, Update update, CancellationToken ct)
         {
             try
@@ -38,7 +41,6 @@ namespace Lexi.Core.Api.Brokers.Telegrams
             }
             catch (Exception ex)
             {
-
                 Console.Write($"{ex}");
             }
         }

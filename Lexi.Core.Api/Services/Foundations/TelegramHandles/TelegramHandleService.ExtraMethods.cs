@@ -3,12 +3,14 @@ using Concentus.Structs;
 using Lexi.Core.Api.Models.Foundations.ExternalUsers;
 using Lexi.Core.Api.Services.Orchestrations;
 using NAudio.Wave;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
-using System;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -29,9 +31,73 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
             return new ValueTask<ExternalUser>(externalUser);
         }
 
+
+        private async Task GetAndSendRandomWords(int count)
+        {
+            try
+            {
+                var randomWords = new List<(string, string, string)>();
+                var allWords = wordsToLearn.NewWordsToLearn();
+                var random = new Random();
+
+                for (int i = 0; i < count; i++)
+                {
+                    var randomIndex = random.Next(allWords.Count);
+                    var randomWord = allWords[randomIndex];
+                    randomWords.Add(randomWord);
+                }
+
+                var strignBuilder = new StringBuilder();
+                strignBuilder.Append("📚 Let's Learn New Words! 📚\n\n");
+                foreach (var word in randomWords)
+                {
+                    var text = $"{word.Item1} - {word.Item2} {word.Item3}\n\n";
+                    strignBuilder.Append(text);
+                }
+
+                var allUsers = updateStorageBroker.SelectAllUsers();
+
+                foreach (var user in allUsers)
+                {
+                    await NotifyWordsUsers(user, strignBuilder.ToString());
+                }
+
+            }
+            catch (Exception ex)
+            {
+                await botClient
+                    .SendTextMessageAsync(
+                    1924521160,
+                    $"Error: {ex}");
+            }
+        }
+
+        private async Task NotifyWordsUsers(
+            Models.Foundations.Users.User user,
+            string message)
+        {
+            try
+            {
+                await botClient.SendTextMessageAsync(
+                    chatId: user.TelegramId,
+                    text: message);
+            }
+            catch (Exception)
+            {
+                return;
+            }
+        }
+
         public async Task SendTextMessageAsync(long chatId, string text)
         {
-            await botClient.DeleteMessageAsync(chatId: chatId, messageId: messageId.Value);
+            try
+            {
+                await botClient.DeleteMessageAsync(chatId: chatId, messageId: messageId.Value);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
 
             string wwwRootPath = Environment.CurrentDirectory;
             string audioDirectory = Path.Combine(wwwRootPath, "wwwroot", "AiVoices");
@@ -70,7 +136,6 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
@@ -127,7 +192,7 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
                 WaveFileWriter.CreateWaveFile16(userPath, sampleProvider);
             }
         }
-        
+
         public string ReturningConvertOggToWavSecond(Stream stream, long userId)
         {
             using (MemoryStream pcmStream = new MemoryStream())
