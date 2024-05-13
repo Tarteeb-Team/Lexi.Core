@@ -397,7 +397,9 @@ Get ready to elevate your learning experience to new heights with our enhanced b
 
 Happy learning!
 
-©️ Tarteeb Team";
+©️ Tarteeb Team
+
+#tarteeb #ai #english #bot";
 
                 string wwwRootPath = Environment.CurrentDirectory;
                 string audioDirectory = Path.Combine(wwwRootPath, "wwwroot", "ReleaseVideos");
@@ -408,10 +410,13 @@ Happy learning!
                 {
                     using (var fileStream = System.IO.File.OpenRead(filePath))
                     {
+                        await botClient.SendTextMessageAsync(
+                            chatId: user.TelegramId,
+                            text: notificationMessage);
+
                         await botClient.SendVideoAsync(
                             chatId: user.TelegramId,
                             video: InputFile.FromStream(fileStream),
-                            caption: notificationMessage,
                             replyMarkup: MenuMarkup());
                     }
                 }
