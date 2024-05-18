@@ -88,7 +88,7 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
             {
                 IQueryable<Models.Foundations.Users.User> allUsers = this.updateStorageBroker.SelectAllUsers();
                 int totalUsers = allUsers.Count();
-                int usersPerMessage = 80;
+                int usersPerMessage = 50; // Adjusted to 50 users per message
 
                 int partsCount = totalUsers / usersPerMessage + (totalUsers % usersPerMessage == 0 ? 0 : 1);
 
@@ -103,7 +103,11 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
 
                     foreach (var user1 in usersInCurrentPart)
                     {
-                        stringBuilder.Append($"{skipCount + 1}. {user1.Name} | @{user1.TelegramName} | {user1.Level}\n\n");
+                        var voice = this.updateStorageBroker.SelectAllQuestionTypes()
+                            .FirstOrDefault(v => v.TelegramId == user1.TelegramId);
+
+                        stringBuilder.Append($"{skipCount + 1}. {user1.Name} " +
+                            $"| @{user1.TelegramName} | {user1.Level} | {user1.State} | {voice.Type}\n\n");
                         skipCount++;
                     }
 
@@ -116,6 +120,7 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
 
                 return true;
             }
+
             else if (update.Message.Text == "Admin tools")
             {
                 await client.SendTextMessageAsync(
@@ -126,13 +131,11 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
                     "/notifyallreview - Notify all users to leave review\n\n" +
                     "/notify-@(userName) - Notify specific user to proceed using the bot" +
                     "\n\n/time - Shows time\n\n" +
-                    "\n\n/notificationtime - Auto notitfication info" +
-                    "delete-reviewText - Delete review of a user");
+                    "notificationtime - Auto notitfication info" +
+                    "\n\ndelete-reviewText - Delete review of a user");
 
                 return true;
             }
-
-
 
             else if (update.Message.Text == "/notifyall")
             {
@@ -279,6 +282,16 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
                 await client.SendTextMessageAsync(
                     chatId: update.Message.Chat.Id,
                     text: "Notification sent to all users successfully!");
+
+                return true;
+            }
+            else if (update.Message.Text == "/active")
+            {
+                await ChangeUsersStatusToActiveAsync();
+
+                await client.SendTextMessageAsync(
+                    chatId: update.Message.Chat.Id,
+                    text: "done!");
 
                 return true;
             }

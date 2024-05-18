@@ -1,6 +1,7 @@
 ﻿using Concentus.Oggfile;
 using Concentus.Structs;
 using Lexi.Core.Api.Models.Foundations.ExternalUsers;
+using Lexi.Core.Api.Models.Foundations.Users;
 using Lexi.Core.Api.Services.Orchestrations;
 using NAudio.Wave;
 using System;
@@ -301,6 +302,25 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
             }
         }
 
+        public async Task ChangeUsersStatusToActiveAsync()
+        {
+            try
+            {
+                var allUsers = updateStorageBroker.SelectAllUsers();
+
+                foreach (var user in allUsers)
+                {
+                    await ChangeStatus(user);
+                }
+            }
+            catch (Exception ex)
+            {
+                await botClient.SendTextMessageAsync(
+                        chatId: 1924521160,
+                        text: $"{ex.Message}");
+            }
+        }
+
         public async Task NotifyUsersWithoutReviewAsync()
         {
             try
@@ -477,7 +497,27 @@ Happy learning!
             }
         }
 
+        private async Task ChangeStatus(Lexi.Core.Api.Models.Foundations.Users.User user)
+        {
+            try
+            {
+                user.State = State.Active;
+                await this.updateStorageBroker.UpdateUserAsync(user);
 
+                var maybeVoice = this.updateStorageBroker
+                    .SelectAllQuestionTypes().FirstOrDefault(v => v.TelegramId == user.TelegramId);
+
+                if (maybeVoice.Type is "en-IN-NeerjaNeural")
+                {
+                    maybeVoice.Type = "en-US-AnaNeural";
+                    await this.updateStorageBroker.UpdateQuestionTypeAsync(maybeVoice);
+                }
+            }
+            catch (Exception)
+            {
+                return;
+            }
+        }
 
         private async Task SendDailyNotification(Lexi.Core.Api.Models.Foundations.Users.User user)
         {

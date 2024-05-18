@@ -26,7 +26,7 @@ namespace Lexi.Core.Api.Services.Foundations.ImproveSpeech
             {
                 Request = new ChatCompletionRequest
                 {
-                    Model = "gpt-4-1106-preview",
+                    Model = "gpt-4o",
                     MaxTokens = 1500,
                     Messages = new ChatCompletionMessage[]
                    {

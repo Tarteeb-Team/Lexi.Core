@@ -43,8 +43,8 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
                     chatId: update.Message.Chat.Id,
                     replyMarkup: new ReplyKeyboardMarkup("Menu 🎙") { ResizeKeyboard = true },
                     text: $"🎯 Here's a crucial question for IELTS Part 1 ({question.QuestionType}):\n\n{question.Content}\n\n" +
-                      "🎙️ Now, it's your turn! Take your time to articulate your thoughts clearly and confidently. " +
-                      "Once you're ready, send a voice message with your response. 🌟");
+                      "🎙️ Now, it's your turn! Take your time to articulate your thoughts clearly and confidently.\n" +
+                      "Once you're ready, send a voice message with your response. 🌟 (~ 30 seconds)");
 
                 user.ImprovedSpeech = question.Content;
 
@@ -71,8 +71,8 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
                         chatId: update.Message.Chat.Id,
                         replyMarkup: new ReplyKeyboardMarkup("Menu 🎙") { ResizeKeyboard = true },
                         text: $"🎯 Here's a crucial question for IELTS Part 1 ({chosenType}):\n\n{randomQuestion.Content}\n\n" +
-                          "🎙️ Now, it's your turn! Take your time to articulate your thoughts clearly and confidently. " +
-                          "Once you're ready, send a voice message with your response. 🌟");
+                          "🎙️ Now, it's your turn! Take your time to articulate your thoughts clearly and confidently.\n" +
+                          "Once you're ready, send a voice message with your response. 🌟 (~ 30 seconds)");
 
                     user.ImprovedSpeech = randomQuestion.Content;
 

@@ -33,6 +33,10 @@ namespace Lexi.Core.Api.Brokers.Speeches
 
         public async ValueTask<SpeechSynthesisResult> GetSpeechResultAsync(string text, string voiceType)
         {
+            if(voiceType is null)
+            {
+                voiceType = "en-IN-NeerjaNeural";
+            }
             this.speechConfig.SpeechSynthesisVoiceName = voiceType;
 
             using (var speechSynthesizer = new SpeechSynthesizer(speechConfig, null))

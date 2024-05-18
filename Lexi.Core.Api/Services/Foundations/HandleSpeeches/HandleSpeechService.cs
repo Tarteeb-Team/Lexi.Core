@@ -1,5 +1,6 @@
 ﻿using Lexi.Core.Api.Brokers.Speeches;
 using Lexi.Core.Api.Brokers.UpdateStorages;
+using Lexi.Core.Api.Models.Foundations.QuestionTypes;
 using Lexi.Core.Api.Services.Foundations.Telegrams;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.CognitiveServices.Speech;
@@ -38,12 +39,12 @@ namespace aisha_ai.Services.Foundations.HandleSpeeches
 
             long telegramId = Convert.ToInt64(fileName);
 
-            var voiceType = this.updateStorageBroker.SelectAllQuestionTypes()
+            QuestionType? voiceType = this.updateStorageBroker.SelectAllQuestionTypes()
                 .FirstOrDefault(q => q.TelegramId == telegramId);
 
-            string? voice = "en-US-AndrewNeural";
+            string voice = "en-IN-NeerjaNeura";
 
-            if (voiceType.Type is not null)
+            if (voiceType.Type is not null || voiceType is not null)
             {
                 voice = voiceType.Type;
             }
@@ -66,12 +67,12 @@ namespace aisha_ai.Services.Foundations.HandleSpeeches
 
             long telegramId = Convert.ToInt64(fileName);
 
-            var voiceType = this.updateStorageBroker.SelectAllQuestionTypes()
+            QuestionType? voiceType = this.updateStorageBroker.SelectAllQuestionTypes()
                 .FirstOrDefault(q => q.TelegramId == telegramId);
 
-            string? voice = "en-US-AndrewNeural";
+            string voice = "en-IN-NeerjaNeura";
 
-            if (voiceType is not null)
+            if (voiceType.Type is not null || voiceType is not null)
             {
                 voice = voiceType.Type;
             }

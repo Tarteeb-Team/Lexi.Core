@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System;
 using System.Linq;
 using Telegram.Bot;
+using Lexi.Core.Api.Models.Foundations.QuestionTypes;
 
 namespace Lexi.Core.Api.Brokers.Speeches
 {
@@ -15,12 +16,12 @@ namespace Lexi.Core.Api.Brokers.Speeches
             string audioFolderPath = Path.Combine(this.wwwRootPath, "PartOneFeedbackTwo", $"{fileName}.wav");
             long telegramId = Convert.ToInt64(fileName);
 
-            var voiceType = this.updateStorageBroker.SelectAllQuestionTypes()
+            QuestionType? voiceType = this.updateStorageBroker.SelectAllQuestionTypes()
                 .FirstOrDefault(q => q.TelegramId == telegramId);
 
-            string? voice = "en-US-AndrewNeural";
+            string voice = "en-US-AndrewNeural";
 
-            if (voiceType.Type is not null)
+            if (voiceType.Type is not null || voiceType is not null)
             {
                 voice = voiceType.Type;
             }

@@ -23,7 +23,7 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
                     replyMarkup: PronunciationMarkup(),
                     text: $"🎧 Pronunciation test\r\n\r\n" +
                           $"You can:\r\n" +
-                          $"1. Send a voice message 🎙 to check pronunciation and fluency.\r\n" +
+                          $"1. Send a voice message 🎙 to check pronunciation and fluency. (~ 15 seconds)\r\n" +
                           $"2. Click 'Generate Question' if it's difficult to think of what to say.\r\n" +
                           $"\r\nI will evaluate your pronunciation and fluency based on your response. 😁");
 
@@ -47,7 +47,7 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
                     await client.SendTextMessageAsync(
                         chatId: update.Message.Chat.Id,
                         text: $"🎁 Here's your question: \n\n❓{questionText} \n\n" +
-                              "🎙️ Now, it's your turn! Express yourself with a beautiful voice message. " +
+                              "🎙️ Now, it's your turn! Express yourself with a beautiful voice message. (~ 15 seconds)\n" +
                               "Let your pronunciation and fluency shine! 🌟");
                     return true;
                 }

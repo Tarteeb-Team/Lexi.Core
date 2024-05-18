@@ -17,7 +17,7 @@ namespace Lexi.Core.Api.Services.Foundations.TelegramHandles
                 await client.SendTextMessageAsync(
                    chatId: update.Message.Chat.Id,
                    replyMarkup: TestSpeechMarkup(),
-                   text: $"Welcome to the Speech Studio ❕");
+                   text: $"Welcome to the Speech Studio ✨");
 
                 user.State = State.TestSpeech;
                 await this.updateStorageBroker.UpdateUserAsync(user);
